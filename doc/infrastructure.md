@@ -10,7 +10,7 @@ Project orchestration in a git repository got some benefits:
 - versioning of your entire application enables you to roll-back your application entirely
 - system / service documentation
 
-The Dockamster builds the [docker](http://www.docker.io/) images of all services and bundels them
+The Dockmaster builds the [docker](http://www.docker.io/) images of all services and bundels them
 under the branch / tag name they are built from.
 
 To define an infrastructure you need a git-repository with an ``infrastructure.(yml | json)``
