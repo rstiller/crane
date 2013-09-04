@@ -1,0 +1,6 @@
+paths:
+    images: /var/dockmaster/images
+    repositories: /var/dockmaster/repositories
+
+db:
+    path: /var/dockmaster/data.db
