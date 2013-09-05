@@ -18,13 +18,13 @@ module Dockmaster
     Settings.read "/etc/dockmaster/config.yml"
     Settings.resolve!
     
-    @database = Sequel.sqlite(Settings["db.path"])
+    @database = Sequel.connect("sqlite://" + Settings['db.path'])
     
     class App
         
         project = Dockmaster::Models::Project.new("linux", "https://github.com/torvalds/linux.git")
         
-        puts @database.tables
+        puts @database
         
     end
     
