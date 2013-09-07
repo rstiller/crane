@@ -7,7 +7,7 @@ module Dockmaster
             
             branches = {}
             
-            IO.popen("git ls-remote --heads " + url) { |process|
+            IO.popen("git ls-remote --heads #{url}") { |process|
 
                 # TODO: operation log
                 content = process.gets(nil)
@@ -34,7 +34,7 @@ module Dockmaster
             
             tags = {}
             
-            IO.popen("git ls-remote --tags " + url) { |process|
+            IO.popen("git ls-remote --tags #{url}") { |process|
 
                 # TODO: operation log
                 content = process.gets(nil)
@@ -59,7 +59,7 @@ module Dockmaster
         
         def clone(url, folder)
             
-            IO.popen("git clone " + url + " " + folder) { |process|
+            IO.popen("git clone #{url}  #{folder}") { |process|
                 
                 content = process.gets(nil)
                 # TODO: operation log
@@ -83,7 +83,7 @@ module Dockmaster
         def checkout(ref, folder)
             
             Dir.chdir(folder)
-            IO.popen("git checkout " + ref.name) { |process|
+            IO.popen("git checkout #{ref.name}") { |process|
                 
                 content = process.gets(nil)
                 # TODO: operation log
@@ -95,7 +95,7 @@ module Dockmaster
         def pull(ref, folder)
             
             Dir.chdir(folder)
-            IO.popen("git pull origin " + ref.name) { |process|
+            IO.popen("git pull origin #{ref.name}") { |process|
                 
                 content = process.gets(nil)
                 # TODO: operation log

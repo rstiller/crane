@@ -28,7 +28,13 @@ module Dockmaster
     
     class App
         
-        project = Dockmaster::Models::Project.new("linux", "https://github.com/torvalds/linux.git")
+        unless Dockmaster::Models::Project[:name => "linux"]
+            
+            project = Dockmaster::Models::Project.new(:name => "linux", :url => "https://github.com/torvalds/linux.git")
+            project.save
+            
+        end
+        
         scheduler = Dockmaster::Scheduler.new
         
     end
