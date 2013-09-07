@@ -1,11 +1,12 @@
 
 require "digest/md5"
+require "sequel"
 
 module Dockmaster
     
     module Models
         
-        class Project
+        class Project < Sequel::Model
             
             @name = ""
             @url = ""

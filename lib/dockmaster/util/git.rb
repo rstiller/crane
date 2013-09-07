@@ -1,23 +1,6 @@
 
 module Dockmaster
     
-    class Ref
-        
-        def initialize(name, ref)
-            @name = name
-            @ref = ref
-        end
-        
-        def name
-            @name
-        end
-        
-        def ref
-            @ref
-        end
-        
-    end
-    
     class Git
         
         def remoteBranches(url)

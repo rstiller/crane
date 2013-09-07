@@ -6,38 +6,30 @@ $:.unshift File.dirname(__FILE__)
 require "sinatra"
 require "configliere"
 require "sequel"
-
-require "dockmaster/models/project"
-require "dockmaster/util/git"
-require "dockmaster/util/scheduler"
-require "dockmaster/util/threadpool"
+require "fileutils"
 
 # main application module
 module Dockmaster
     
-    Settings.read "./config/application.yml"
+    Settings.read "./config/defaults.yml"
     Settings.read "/etc/dockmaster/config.yml"
     Settings.resolve!
     
-    @database = Sequel.connect("sqlite://test.db")
+    unless File.directory?(File.dirname(Settings["db.path"]))
+        
+        FileUtils.mkdir_p(File.dirname(Settings["db.path"]))
+            
+    end
+    
+    @database = Sequel.connect("sqlite://" + Settings["db.path"])
+    
+    require "dockmaster/models/project"
+    require "dockmaster/util/scheduler"
     
     class App
         
         project = Dockmaster::Models::Project.new("linux", "https://github.com/torvalds/linux.git")
-        
-        pool = Dockmaster::ThreadPool.new 4
-        
-        1000.times do |i|
-            
-            func = Proc.new do |dist, *args|
-                
-                puts "#{i}"
-                
-            end
-            
-            pool.submit func
-            
-        end
+        scheduler = Dockmaster::Scheduler.new
         
     end
     
