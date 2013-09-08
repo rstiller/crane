@@ -1,6 +1,9 @@
 
 require "digest/md5"
 require "sequel"
+require "configliere"
+
+require "dockmaster/util/git"
 
 module Dockmaster
     
@@ -50,10 +53,6 @@ module Dockmaster
                     
                 end
                 
-            end
-            
-            def getFolder()
-                Digest::MD5.hexdigest("#{name}-#{url}")
             end
             
         end

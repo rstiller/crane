@@ -83,7 +83,7 @@ module Dockmaster
         def checkout(ref, folder)
             
             Dir.chdir(folder)
-            IO.popen("git checkout #{ref.name}") { |process|
+            IO.popen("git checkout #{ref}") { |process|
                 
                 content = process.gets(nil)
                 # TODO: operation log
@@ -95,7 +95,7 @@ module Dockmaster
         def pull(ref, folder)
             
             Dir.chdir(folder)
-            IO.popen("git pull origin #{ref.name}") { |process|
+            IO.popen("git pull origin #{ref}") { |process|
                 
                 content = process.gets(nil)
                 # TODO: operation log

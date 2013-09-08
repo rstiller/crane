@@ -28,10 +28,14 @@ module Dockmaster
     
     class App
         
-        unless Dockmaster::Models::Project[:name => "linux"]
+        unless Dockmaster::Models::Project[:name => "jpuppet/java"]
             
-            project = Dockmaster::Models::Project.new(:name => "linux", :url => "https://github.com/torvalds/linux.git")
+            project = Dockmaster::Models::Project.new(:name => "jpuppet/java", :url => "https://github.com/jpuppet/java.git")
             project.save
+            
+        else
+            
+            project = Dockmaster::Models::Project[:name => "jpuppet/java"]
             
         end
         

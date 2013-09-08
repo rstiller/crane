@@ -23,6 +23,24 @@ module Dockmaster
             
             many_to_one :project
             
+            def clone
+                git = Git.new
+                git.clone url, getCheckoutFolder
+            end
+            
+            def checkout
+                git = Git.new
+                git.checkout name, getCheckoutFolder
+            end
+            
+            def checkoutFolder
+                
+                path = Settings["paths.repositories"]
+                hash = Digest::MD5.hexdigest "#{project.name}-#{project.url}-#{name}"
+                File.absolute_path hash, path
+                
+            end
+            
         end
         
     end
