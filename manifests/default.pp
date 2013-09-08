@@ -4,9 +4,23 @@ exec { 'apt-get update':
     path => [ '/usr/bin/' ],
 } ->
 
-package { ['ruby1.9.3', 'make', 'git', 'sqlite3', 'libsqlite3-ruby1.9.1', 'lxc']:
+package { [
+    'ruby1.9.3',
+    'make',
+    'git',
+    'sqlite3',
+    'libsqlite3-ruby1.9.1',
+    'lxc',
+#    'linux-image-3.8.0-30-generic',
+#    'linux-headers-3.8.0-30-generic',
+#    'linux-generic-lts-raring',
+    ]:
     ensure => latest,
 } ->
+
+#package { ['virtualbox-guest-additions']:
+#    ensure => latest,
+#} ->
 
 exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/docker-latest && chmod +x /usr/bin/docker':
     cwd     => '/usr/bin',
