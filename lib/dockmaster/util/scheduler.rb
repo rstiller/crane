@@ -15,7 +15,6 @@ module Dockmaster
             
             @scheduler = Rufus::Scheduler.start_new
             @threadpool = ThreadPool.new worker
-            @git = Dockmaster::Git.new
             
             @scheduler.every "10s" do
                 
@@ -25,7 +24,7 @@ module Dockmaster
                         
                         begin
                             
-                            tags = @git.remoteTags project.url
+                            tags = Dockmaster::Git.remoteTags project.url
                             checkTags project, tags
                             
                         rescue => exception

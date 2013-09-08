@@ -24,13 +24,11 @@ module Dockmaster
             many_to_one :project
             
             def clone
-                git = Git.new
-                git.clone url, getCheckoutFolder
+                Git.clone url, checkoutFolder
             end
             
             def checkout
-                git = Git.new
-                git.checkout name, getCheckoutFolder
+                Git.checkout name, checkoutFolder
             end
             
             def checkoutFolder

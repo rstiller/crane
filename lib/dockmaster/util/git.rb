@@ -3,7 +3,7 @@ module Dockmaster
     
     class Git
         
-        def remoteBranches(url)
+        def self.remoteBranches(url)
             
             branches = {}
             
@@ -30,7 +30,7 @@ module Dockmaster
             
         end
         
-        def remoteTags(url)
+        def self.remoteTags(url)
             
             tags = {}
             
@@ -57,7 +57,7 @@ module Dockmaster
             
         end
         
-        def clone(url, folder)
+        def self.clone(url, folder)
             
             IO.popen("git clone #{url}  #{folder}") { |process|
                 
@@ -68,7 +68,7 @@ module Dockmaster
             
         end
         
-        def fetch(folder)
+        def self.fetch(folder)
             
             Dir.chdir(folder)
             IO.popen("git fetch") { |process|
@@ -80,7 +80,7 @@ module Dockmaster
             
         end
         
-        def checkout(ref, folder)
+        def self.checkout(ref, folder)
             
             Dir.chdir(folder)
             IO.popen("git checkout #{ref}") { |process|
@@ -92,7 +92,7 @@ module Dockmaster
             
         end
         
-        def pull(ref, folder)
+        def self.pull(ref, folder)
             
             Dir.chdir(folder)
             IO.popen("git pull origin #{ref}") { |process|
