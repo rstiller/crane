@@ -7,9 +7,9 @@ module Dockmaster
         
         class WorkingCopy < Sequel::Model
             
-            unless WorkingCopy.db.table_exists? WorkingCopy.table_name
+            Sequel::Model.db.transaction do
                 
-                WorkingCopy.db.create_table WorkingCopy.table_name do
+                WorkingCopy.db.create_table? WorkingCopy.table_name do
                     
                     primary_key :id
                     foreign_key :project_id

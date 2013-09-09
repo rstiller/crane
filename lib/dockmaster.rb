@@ -24,18 +24,30 @@ module Dockmaster
     @database = Sequel.connect("sqlite://" + Settings["db.path"])
     
     require "dockmaster/models/project"
+    require "dockmaster/models/infrastructure"
     require "dockmaster/util/scheduler"
     
     class App
         
-        unless Dockmaster::Models::Project[:name => "jpuppet/java"]
+        Dockmaster::Models::Infrastructure.new "infra.yml"
+        
+        Dockmaster::Models::Project.doInTransaction do
             
-            project = Dockmaster::Models::Project.new(:name => "jpuppet/java", :url => "https://github.com/jpuppet/java.git")
-            project.save
-            
-        else
-            
-            project = Dockmaster::Models::Project[:name => "jpuppet/java"]
+            unless Dockmaster::Models::Project[:name => "jpuppet/java"]
+                
+                Dockmaster::Models::Project.new do |project|
+                    
+                    project.name = "jpuppet/java"
+                    project.url = "https://github.com/jpuppet/java.git"
+                    project.save
+                    
+                end
+                
+            else
+                
+                project = Dockmaster::Models::Project[:name => "jpuppet/java"]
+                
+            end
             
         end
         

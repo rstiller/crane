@@ -55,8 +55,6 @@ module Dockmaster
                     tag = Models::WorkingCopy.new(:type => "tag", :name => name, :ref => ref)
                     project.add_workingCopy tag
                     
-                    tag.checkoutFolder
-                    
                     # TODO: trigger build
                     
                 end

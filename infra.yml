@@ -1,0 +1,27 @@
+services:
+    mongodb:
+        nodes: auto
+        minNodes: 3
+        maxNodes: 9
+        manifest: mongodb.yml
+    nginx:
+        nodes: auto
+        manifest: nginx.yml
+    my_app:
+        nodes: auto
+        manifest: my_app.yml
+    haproxy:
+        nodes: 2
+        manifest: https://raw.github.com/user/repo/master/haproxy.yml
+
+environments:
+    staging:
+        env_var1: xyz1
+    test:
+        env_var1: xyz2
+    development:
+        env_var1: xyz3
+    production:
+        env_var1: xyz
+    production_mirrowed:
+        env_var1: xyz

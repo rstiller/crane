@@ -11,9 +11,9 @@ module Dockmaster
         
         class Project < Sequel::Model
             
-            unless Sequel::Model.db.table_exists? Project.table_name
+            Sequel::Model.db.transaction do
                 
-                Sequel::Model.db.create_table Project.table_name do
+                Sequel::Model.db.create_table? Project.table_name do
                     
                     primary_key :id
                     String :name, :unique => true
