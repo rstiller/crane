@@ -11,7 +11,7 @@ module Dockmaster
                 
                 raw = YAML.load_file file
                 
-                puts raw
+                Dockmaster.hashToObject self, raw
                 
             end
             

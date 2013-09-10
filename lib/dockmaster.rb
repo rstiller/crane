@@ -11,6 +11,8 @@ require "fileutils"
 # main application module
 module Dockmaster
     
+    require "dockmaster/util/hashToObject"
+    
     Settings.read "./config/defaults.yml"
     Settings.read "/etc/dockmaster/config.yml"
     Settings.resolve!
@@ -29,7 +31,9 @@ module Dockmaster
     
     class App
         
-        Dockmaster::Models::Infrastructure.new "infra.yml"
+        infra = Dockmaster::Models::Infrastructure.new "infra.yml"
+        
+        puts infra.services.mongodb
         
         Dockmaster::Models::Project.doInTransaction do
             
