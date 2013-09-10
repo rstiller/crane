@@ -31,7 +31,7 @@ module Dockmaster
     
     class App
         
-        infra = Dockmaster::Models::Infrastructure.new "infra.yml"
+        infra = Dockmaster::Models::Infrastructure.new "example/infra.yml"
         
         puts infra.services.mongodb
         

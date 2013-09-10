@@ -3,16 +3,11 @@ services:
         nodes: auto
         minNodes: 3
         maxNodes: 9
-        manifest: mongodb.yml
-    nginx:
-        nodes: auto
-        manifest: nginx.yml
-    my_app:
-        nodes: auto
-        manifest: my_app.yml
+        manifest: example/mongodb.yml
     haproxy:
-        nodes: 2
-        manifest: https://raw.github.com/user/repo/master/haproxy.yml
+        manifest: example/haproxy.yml
+    my_servcie:
+        nodes: auto
 
 environments:
     staging:
