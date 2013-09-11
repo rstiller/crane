@@ -4,3 +4,11 @@ paths:
 
 db:
     path: /var/dockmaster/data.db
+
+schedule:
+    check: 10s
+
+logging:
+    level: DEBUG
+    file: /var/log/dockmaster.log
+    period: daily

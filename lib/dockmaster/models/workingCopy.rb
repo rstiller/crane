@@ -39,6 +39,37 @@ module Dockmaster
                 
             end
             
+            def infrastructure
+                
+                infrastructureFile = File.absolute_path "infrastructure.yml", checkoutFolder
+                
+                if !File.exists? infrastructureFile
+                    
+                    raise "infrastructure file not found"
+                    
+                end
+                
+                Infrastructure.new infrastructureFile
+                
+            end
+            
+            def buildImages
+                
+                infra = infrastructure
+                
+                infra.environments.each do |environment, variables|
+                    
+                    infra.services.each do |service|
+                        
+                        service.generateDockerfile self, environment, variables
+                        service.buildImage self, environment
+                        
+                    end
+                    
+                end
+                
+            end
+            
         end
         
     end

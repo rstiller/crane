@@ -47,8 +47,12 @@ module Dockmaster
                     
                         yield
                         
-                    rescue
+                    rescue => exception
+                        
+                        puts exception, exception.backtrace
+                        
                         raise Sequel::Rollback
+                        
                     end
                     
                 end
