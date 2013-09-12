@@ -54,12 +54,18 @@ module Dockmaster
         
         Dockmaster::Models::Project.doInTransaction do
             
-            unless Dockmaster::Models::Project[:name => "jpuppet/java"]
+            unless Dockmaster::Models::Project[:name => "dockmaster-example"]
                 
                 project = Dockmaster::Models::Project.new
-                project[:name] = "jpuppet/java"
-                project[:url] = "https://github.com/jpuppet/java.git"
+                project[:name] = "dockmaster-example"
+                project[:url] = "https://github.com/rstiller/dockmaster-example.git"
                 project.save
+                
+                branch = Dockmaster::Models::WorkingCopy.new
+                branch[:name] = "master"
+                branch[:type] = "branch"
+                branch[:project_id] = project[:id]
+                project.add_workingCopy branch
                 
                 Dockmaster::log.info "new test-project saved"
                 

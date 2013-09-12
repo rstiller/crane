@@ -5,36 +5,38 @@ module Dockmaster
     
     module Models
         
-        class WorkingCopy < Sequel::Model
+        require "dockmaster/models/infrastructure"
+        
+        Sequel::Model.db.transaction do
             
-            Sequel::Model.db.transaction do
+            Sequel::Model.db.create_table? "working_copies" do
                 
-                WorkingCopy.db.create_table? WorkingCopy.table_name do
-                    
-                    primary_key :id
-                    foreign_key :project_id
-                    String :name
-                    String :ref
-                    String :type
-                    
-                end
+                primary_key :id
+                foreign_key :project_id
+                String :name
+                String :ref
+                String :type
                 
             end
             
+        end
+        
+        class WorkingCopy < Sequel::Model
+            
             many_to_one :project
             
-            def clone
+            def clone(url)
                 Git.clone url, checkoutFolder
             end
             
             def checkout
-                Git.checkout name, checkoutFolder
+                Git.checkout :name, checkoutFolder
             end
             
             def checkoutFolder
                 
                 path = Settings["paths.repositories"]
-                hash = Digest::MD5.hexdigest "#{project.name}-#{project.url}-#{name}"
+                hash = Digest::MD5.hexdigest "#{project[:name]}-#{project[:url]}-#{self[:name]}"
                 File.absolute_path hash, path
                 
             end
@@ -49,11 +51,14 @@ module Dockmaster
                     
                 end
                 
-                Infrastructure.new infrastructureFile
+                Models::Infrastructure.new infrastructureFile
                 
             end
             
-            def buildImages
+            def buildImages(project)
+                
+                clone project.url
+                checkout
                 
                 infra = infrastructure
                 

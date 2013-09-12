@@ -54,6 +54,8 @@ module Dockmaster
         
         def checkBranches(project, remoteBranches)
             
+            puts remoteBranches
+            
             Dockmaster::Models::Project.doInTransaction do
                 
                 branches = project.workingCopy_dataset.where(:type => "branch").map(:name)
@@ -64,7 +66,7 @@ module Dockmaster
                     
                     branch = project.workingCopy_dataset.where(:type => "branch", :name => name)
                     
-                    if remoteBranches.has_key? name
+                    if !remoteBranches.has_key? name
                         
                         project.workingCopy_dataset.where(:type => "branch", :name => name).delete
                         
@@ -76,7 +78,8 @@ module Dockmaster
                             
                             begin
                                 
-                                branch.buildImages
+                                branchObject = Dockmaster::Models::WorkingCopy.where(:name => name, :project_id => project[:id]).first
+                                branchObject.buildImages project
                                 
                             rescue => exception
                                 
@@ -113,7 +116,7 @@ module Dockmaster
                     tag[:ref] = ref
                     tag[:name] = name
                     tag[:type] = "tag"
-                    
+                    tag[:project_id] = project[:id]
                     project.add_workingCopy tag
                     
                     Dockmaster::log.info "checkTags - tag #{name} added to project #{project[:name]} (#{project[:url]})"
@@ -122,7 +125,7 @@ module Dockmaster
                         
                         begin
                             
-                            tag.buildImages
+                            tag.buildImages project
                             
                         rescue => exception
                             

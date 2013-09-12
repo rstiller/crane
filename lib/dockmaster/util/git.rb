@@ -11,14 +11,19 @@ module Dockmaster
 
                 # TODO: operation log
                 content = process.gets(nil)
-                content.gsub!(/\r\n?/, "\n")
-                content.each_line do |line|
+                
+                if !content.nil?
                     
-                    line =~ /([^\t]*)\trefs\/heads\/([^\^\n]*)/
-                    
-                    if !branches[$2]
+                    content.gsub!(/\r\n?/, "\n")
+                    content.each_line do |line|
                         
-                        branches[$2] = $1
+                        line =~ /([^\t]*)\trefs\/heads\/([^\^\n]*)/
+                        
+                        if !branches[$2]
+                            
+                            branches[$2] = $1
+                            
+                        end
                         
                     end
                     
@@ -38,14 +43,19 @@ module Dockmaster
 
                 # TODO: operation log
                 content = process.gets(nil)
-                content.gsub!(/\r\n?/, "\n")
-                content.each_line do |line|
-                    
-                    line =~ /([^\t]*)\trefs\/tags\/([^\^\n]*)/
-                    
-                    if !tags[$2]
+
+                if !content.nil?
                         
-                        tags[$2] = $1
+                    content.gsub!(/\r\n?/, "\n")
+                    content.each_line do |line|
+                        
+                        line =~ /([^\t]*)\trefs\/tags\/([^\^\n]*)/
+                        
+                        if !tags[$2]
+                            
+                            tags[$2] = $1
+                            
+                        end
                         
                     end
                     

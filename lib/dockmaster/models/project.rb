@@ -9,19 +9,19 @@ module Dockmaster
     
     module Models
         
-        class Project < Sequel::Model
+        Sequel::Model.db.transaction do
             
-            Sequel::Model.db.transaction do
+            Sequel::Model.db.create_table? "projects" do
                 
-                Sequel::Model.db.create_table? Project.table_name do
-                    
-                    primary_key :id
-                    String :name, :unique => true
-                    String :url
-                    
-                end
+                primary_key :id
+                String :name, :unique => true
+                String :url
                 
             end
+            
+        end
+        
+        class Project < Sequel::Model
             
             one_to_many :workingCopy
             
