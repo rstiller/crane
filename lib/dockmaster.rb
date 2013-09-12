@@ -82,6 +82,16 @@ module Dockmaster
                 
             end
             
+            project = Dockmaster::Models::Project[:name => "dockmaster-example"]
+            
+            Dockmaster::log.info "#{project.name} (#{project.url})"
+            project.workingCopy_dataset.each do |workingCopy|
+                Dockmaster::log.info "    - #{workingCopy.name} (#{workingCopy.type} - #{workingCopy.ref})"
+                workingCopy.buildHistory_dataset.each do |buildHistory|
+                    Dockmaster::log.info "        * #{buildHistory.date} - #{buildHistory.successful} (#{buildHistory.ref})"
+                end
+            end
+            
         end
         
         scheduler = Dockmaster::Scheduler.new
