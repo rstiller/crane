@@ -9,7 +9,7 @@ module Dockmaster
     
     module Models
         
-        Sequel::Model.db.transaction do
+        Dockmaster::tx do
             
             Sequel::Model.db.create_table? "projects" do
                 
@@ -27,31 +27,11 @@ module Dockmaster
             
             def self.forEachProject
                 
-                Project.doInTransaction do
+                Dockmaster::tx do
                     
                     Project.all.each do |project|
                         
                         yield project
-                        
-                    end
-                    
-                end
-                
-            end
-            
-            def self.doInTransaction
-                
-                Sequel::Model.db.transaction do
-                    
-                    begin
-                    
-                        yield
-                        
-                    rescue => exception
-                        
-                        puts exception, exception.backtrace
-                        
-                        raise Sequel::Rollback
                         
                     end
                     

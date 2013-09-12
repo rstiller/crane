@@ -1,13 +1,15 @@
 
 require "sequel"
+require "fileutils"
 
 module Dockmaster
     
     module Models
         
+        require "dockmaster/models/buildHistory"
         require "dockmaster/models/infrastructure"
         
-        Sequel::Model.db.transaction do
+        Dockmaster::tx do
             
             Sequel::Model.db.create_table? "working_copies" do
                 
@@ -24,19 +26,26 @@ module Dockmaster
         class WorkingCopy < Sequel::Model
             
             many_to_one :project
+            one_to_many :buildHistory
             
             def clone(url)
                 Git.clone url, checkoutFolder
             end
             
             def checkout
-                Git.checkout :name, checkoutFolder
+                Git.checkout name, checkoutFolder
+            end
+            
+            def clearCheckoutFolder
+                
+                FileUtils.rm_rf checkoutFolder
+                
             end
             
             def checkoutFolder
                 
                 path = Settings["paths.repositories"]
-                hash = Digest::MD5.hexdigest "#{project[:name]}-#{project[:url]}-#{self[:name]}"
+                hash = Digest::MD5.hexdigest "#{project.name}-#{project.url}-#{name}"
                 File.absolute_path hash, path
                 
             end
@@ -55,8 +64,9 @@ module Dockmaster
                 
             end
             
-            def buildImages(project)
+            def buildImages(project, buildHistory)
                 
+                clearCheckoutFolder
                 clone project.url
                 checkout
                 
@@ -64,10 +74,10 @@ module Dockmaster
                 
                 infra.environments.each do |environment, variables|
                     
-                    infra.services.each do |service|
+                    infra.services.each do |serviceName, service|
                         
-                        service.generateDockerfile self, environment, variables
-                        service.buildImage self, environment
+                        service.instance.generateDockerfile self, environment, variables
+                        service.instance.buildImage self, environment
                         
                     end
                     

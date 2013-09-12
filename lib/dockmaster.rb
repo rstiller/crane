@@ -45,26 +45,37 @@ module Dockmaster
             
     end
     
-    @database = Sequel.connect("sqlite://" + Settings["db.path"])
+    @database = Sequel.connect("sqlite://" + Settings["db.path"], :max_connections => 20)
+    
+    def self.tx
+        
+        begin
+        
+            yield
+            
+        rescue => exception
+            
+            Dockmaster::log.error exception
+            
+            raise Sequel::Rollback
+            
+        end
+        
+    end
     
     require "dockmaster/models/project"
     require "dockmaster/util/scheduler"
     
     class App
         
-        Dockmaster::Models::Project.doInTransaction do
+        Dockmaster::tx do
             
             unless Dockmaster::Models::Project[:name => "dockmaster-example"]
                 
-                project = Dockmaster::Models::Project.new
-                project[:name] = "dockmaster-example"
-                project[:url] = "https://github.com/rstiller/dockmaster-example.git"
+                project = Dockmaster::Models::Project.new :name => "dockmaster-example", :url => "https://github.com/rstiller/dockmaster-example.git"
                 project.save
                 
-                branch = Dockmaster::Models::WorkingCopy.new
-                branch[:name] = "master"
-                branch[:type] = "branch"
-                branch[:project_id] = project[:id]
+                branch = Dockmaster::Models::WorkingCopy.new :name => "master", :type => "branch"
                 project.add_workingCopy branch
                 
                 Dockmaster::log.info "new test-project saved"
