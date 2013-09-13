@@ -1,6 +1,8 @@
 
+require "digest/md5"
 require "sequel"
 require "fileutils"
+require "configliere"
 
 module Dockmaster
     
@@ -8,6 +10,8 @@ module Dockmaster
         
         require "dockmaster/models/buildHistory"
         require "dockmaster/models/infrastructure"
+        require "dockmaster/models/service"
+        require "dockmaster/util/docker"
         
         Dockmaster::tx do
             
@@ -93,9 +97,12 @@ module Dockmaster
                     infra.services.each do |serviceName, serviceConfig|
                         
                         service = Service.new infra, serviceName, serviceConfig
-                        puts service.name
-                        service.generateDockerfile self, environment, variables
-                        service.buildImage self, environment
+                        
+                        dockerfile = service.generateDockerfile self, environment, variables
+                        name = "#{project.name}-#{serviceName}"
+                        version = "#{environment}-#{name}"
+                        
+                        Dockmaster::Util::Docker.build dockerfile, name, version
                         
                     end
                     

@@ -1,4 +1,5 @@
 
+require "digest/md5"
 require "yaml"
 require "fileutils"
 
@@ -30,7 +31,8 @@ module Dockmaster
             
             def generateDockerfile(workingCopy, environment, variables)
                 
-                folder = "#{workingCopy.imageFolder}/#{name}/#{environment}"
+                folder = Digest::MD5.hexdigest "#{workingCopy.project.name}-#{workingCopy.name}-#{name}-#{environment}"
+                folder = "#{workingCopy.imageFolder}/#{folder}"
                 
                 unless File.directory? folder
                     
@@ -42,21 +44,20 @@ module Dockmaster
                 
                 File.open dockerfile, "w:UTF-8" do |file|
                     
+                    file.puts "# #{name} (#{version})"
                     file.puts "FROM #{base}"
-                    file.puts "RUN echo #{name}"
-                    file.puts "RUN echo #{description}"
-                    file.puts "RUN echo #{version}"
-                    file.puts "RUN echo #{category}"
-                    file.puts "RUN echo #{ports}"
-                    file.puts "RUN echo #{options}"
+                    
+                    variables.each do |key, value|
+                        
+                        file.puts "ENV #{key} #{value}"
+                        
+                    end
+                    
+                    file.puts "EXPOSE #{ports.join(' ')}"
                     
                 end
                 
-            end
-            
-            def buildImage(workingCopy, environment)
-                
-                # TODO
+                dockerfile
                 
             end
             

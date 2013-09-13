@@ -12,6 +12,8 @@ require "logger"
 # main application module
 module Dockmaster
     
+    VERSION = "0.0.1"
+    
     require "dockmaster/util/hashToObject"
     
     Settings.read "./config/defaults.yml"
