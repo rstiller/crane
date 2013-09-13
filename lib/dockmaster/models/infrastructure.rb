@@ -16,8 +16,6 @@ module Dockmaster
                 
                 Dockmaster.hashToObject self, raw
                 
-                parseServices
-                
             end
             
             def file
@@ -26,38 +24,6 @@ module Dockmaster
             
             def services
                 @services
-            end
-            
-            def parseServices
-                
-                folderName = File.dirname @file
-                
-                @services.each do |serviceName, config|
-                    
-                    hasManifest = config.has_key? "manifest"
-                    
-                    if hasManifest
-                        
-                        fileName = config["manifest"]
-                        
-                    else
-                        
-                        fileName = "#{folderName}/#{serviceName}.yml"
-                        
-                    end
-                    
-                    service = Service.new fileName
-                    
-                    config.instance_variable_set("@instance", service)
-                    config.class.send(:define_method, "instance", proc {
-                        config.instance_variable_get("@instance")
-                    })
-                    config.class.send(:define_method, "instance=", proc { |v|
-                        config.instance_variable_set("@instance", v)
-                    })
-                    
-                end
-                
             end
             
         end

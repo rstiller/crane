@@ -36,6 +36,20 @@ module Dockmaster
                 Git.checkout name, checkoutFolder
             end
             
+            def clearImageFolder
+                
+                FileUtils.rm_rf imageFolder
+                
+            end
+            
+            def imageFolder
+                
+                path = Settings["paths.images"]
+                hash = Digest::MD5.hexdigest "#{project.name}-#{project.url}-#{name}"
+                File.absolute_path hash, path
+                
+            end
+            
             def clearCheckoutFolder
                 
                 FileUtils.rm_rf checkoutFolder
@@ -70,14 +84,18 @@ module Dockmaster
                 clone project.url
                 checkout
                 
+                clearImageFolder
+                
                 infra = infrastructure
                 
                 infra.environments.each do |environment, variables|
                     
-                    infra.services.each do |serviceName, service|
+                    infra.services.each do |serviceName, serviceConfig|
                         
-                        service.instance.generateDockerfile self, environment, variables
-                        service.instance.buildImage self, environment
+                        service = Service.new infra, serviceName, serviceConfig
+                        puts service.name
+                        service.generateDockerfile self, environment, variables
+                        service.buildImage self, environment
                         
                     end
                     
