@@ -1,12 +1,11 @@
 
 require "sequel"
-require "configliere"
-
-require "dockmaster/util/git"
 
 module Dockmaster
     
     module Models
+        
+        require "dockmaster/models/workingCopy"
         
         Dockmaster::tx do
             

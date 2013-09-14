@@ -97,11 +97,15 @@ module Dockmaster
 #            
 #        end
         
+        rubyPackage = Dockmaster::Models::Package.new :name => "ruby1.9.1"
+        
         baseImage = Dockmaster::Models::BaseImage.new :name => "base-puppet",
-                :version => "ruby1.9.3+puppet-3.1",
+                :version => "ruby1.9.3+puppet-2.7.19",
                 :baseImage => "base",
                 :provision => "puppet",
                 :provisionVersion => "2.7.19-1puppetlabs1"
+        baseImage.save
+        baseImage.add_package rubyPackage
         baseImage.buildImage
         
 #        scheduler = Dockmaster::Scheduler.new

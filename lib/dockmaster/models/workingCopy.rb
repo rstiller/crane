@@ -33,11 +33,23 @@ module Dockmaster
             one_to_many :buildHistory
             
             def clone(url)
-                Git.clone url, checkoutFolder
+                
+                input, output, error, waiter = Git.clone url, checkoutFolder
+                
+                [input, output, error].each do |stream|
+                    stream.close
+                end
+                
             end
             
             def checkout
-                Git.checkout name, checkoutFolder
+                
+                input, output, error, waiter = Git.checkout name, checkoutFolder
+                
+                [input, output, error].each do |stream|
+                    stream.close
+                end
+                
             end
             
             def clearImageFolder

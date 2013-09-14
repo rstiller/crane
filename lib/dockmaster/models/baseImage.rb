@@ -8,11 +8,13 @@ module Dockmaster
     
     module Models
         
+        require "dockmaster/models/package"
+        
         Sequel::Model.db.transaction do
             
             Sequel::Model.db.create_table? "base_images" do
                 
-                primary_key :name, :version
+                primary_key :id
                 DateTime :date
                 String :name
                 String :version
@@ -25,6 +27,8 @@ module Dockmaster
         end
         
         class BaseImage < Sequel::Model
+            
+            one_to_many :package
             
             def generateDockerfile
                 
@@ -43,6 +47,24 @@ module Dockmaster
                     
                     file.puts "# #{name} (#{version})"
                     file.puts "FROM #{baseImage}"
+                    
+                    if !package_dataset.empty?
+                        
+                        file.puts "RUN apt-get update -q"
+                        
+                        package_dataset.each do |package|
+                            
+                            packageName = "#{package.name}"
+                            
+                            if package.version
+                                packageName = "#{package.name}=#{package.version}"
+                            end
+                            
+                            file.puts "RUN apt-get install -f -y --force-yes --no-install-recommends #{packageName}"
+                            
+                        end
+                        
+                    end
                     
                     if provision == "puppet"
                         
@@ -72,7 +94,9 @@ module Dockmaster
                 input, output, error, waiter = Dockmaster::Docker.build dockerfile, name, version
                 # TODO: output
                 
-                puts output.read
+                while !output.eof?
+                    puts output.read(1024)
+                end
                 
                 [input, output, error].each do |stream|
                     stream.close
