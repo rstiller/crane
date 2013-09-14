@@ -65,39 +65,47 @@ module Dockmaster
         
     end
     
+    require "dockmaster/models/baseImage"
     require "dockmaster/models/project"
     require "dockmaster/util/scheduler"
     
     class App
         
-        Dockmaster::tx do
-            
-            unless Dockmaster::Models::Project[:name => "dockmaster-example"]
-                
-                project = Dockmaster::Models::Project.new :name => "dockmaster-example", :url => "https://github.com/rstiller/dockmaster-example.git"
-                project.save
-                
-                branch = Dockmaster::Models::WorkingCopy.new :name => "master", :type => "branch"
-                project.add_workingCopy branch
-                
-                Dockmaster::log.info "new test-project saved"
-                
-            end
-            
-            project = Dockmaster::Models::Project[:name => "dockmaster-example"]
-            
-            Dockmaster::log.info "#{project.name} (#{project.url})"
-            project.workingCopy_dataset.each do |workingCopy|
-                Dockmaster::log.info "    - #{workingCopy.name} (#{workingCopy.type} - #{workingCopy.ref})"
-                workingCopy.buildHistory_dataset.each do |buildHistory|
-                    Dockmaster::log.info "        * #{buildHistory.date} - #{buildHistory.successful} (#{buildHistory.ref})"
-                end
-            end
-            
-        end
+#        Dockmaster::tx do
+#            
+#            unless Dockmaster::Models::Project[:name => "dockmaster-example"]
+#                
+#                project = Dockmaster::Models::Project.new :name => "dockmaster-example", :url => "https://github.com/rstiller/dockmaster-example.git"
+#                project.save
+#                
+#                branch = Dockmaster::Models::WorkingCopy.new :name => "master", :type => "branch"
+#                project.add_workingCopy branch
+#                
+#                Dockmaster::log.info "new test-project saved"
+#                
+#            end
+#            
+#            project = Dockmaster::Models::Project[:name => "dockmaster-example"]
+#            
+#            Dockmaster::log.info "#{project.name} (#{project.url})"
+#            project.workingCopy_dataset.each do |workingCopy|
+#                Dockmaster::log.info "    - #{workingCopy.name} (#{workingCopy.type} - #{workingCopy.ref})"
+#                workingCopy.buildHistory_dataset.each do |buildHistory|
+#                    Dockmaster::log.info "        * #{buildHistory.date} - #{buildHistory.successful} (#{buildHistory.ref})"
+#                end
+#            end
+#            
+#        end
         
-        scheduler = Dockmaster::Scheduler.new
-        Dockmaster::log.info "scheduler started"
+        baseImage = Dockmaster::Models::BaseImage.new :name => "base-puppet",
+                :version => "ruby1.9.3+puppet-3.1",
+                :baseImage => "base",
+                :provision => "puppet",
+                :provisionVersion => "2.7.19-1puppetlabs1"
+        baseImage.buildImage
+        
+#        scheduler = Dockmaster::Scheduler.new
+#        Dockmaster::log.info "scheduler started"
         
     end
     

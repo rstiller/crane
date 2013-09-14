@@ -18,6 +18,7 @@ module Dockmaster
                 String :version
                 String :baseImage
                 String :provision
+                String :provisionVersion
                 
             end
             
@@ -41,13 +42,41 @@ module Dockmaster
                 File.open dockerfile, "w:UTF-8" do |file|
                     
                     file.puts "# #{name} (#{version})"
-                    file.puts "FROM #{base}"
+                    file.puts "FROM #{baseImage}"
+                    
+                    if provision == "puppet"
+                        
+                        puppetversion = "puppet-common puppet"
+                        
+                        if provisionVersion
+                            puppetversion = "puppet-common=#{provisionVersion} puppet=#{provisionVersion}"
+                        end
+                        
+                        file.puts "RUN apt-get install wget -y"
+                        file.puts "RUN wget http://apt.puppetlabs.com/puppetlabs-release-`lsb_release -cs`.deb; dpkg -i puppetlabs-release-`lsb_release -cs`.deb"
+                        file.puts "RUN apt-get update -q"
+                        file.puts "RUN apt-get install -f -y --force-yes --no-install-recommends #{puppetversion}"
+                        
+                    end
                     
                 end
                 
-                # TODO: provisioner
-                
                 dockerfile
+                
+            end
+            
+            def buildImage
+                
+                dockerfile = generateDockerfile#
+                Dockmaster::log.info "building baseImage #{name} (#{version}) from #{dockerfile}"
+                input, output, error, waiter = Dockmaster::Docker.build dockerfile, name, version
+                # TODO: output
+                
+                puts output.read
+                
+                [input, output, error].each do |stream|
+                    stream.close
+                end
                 
             end
             

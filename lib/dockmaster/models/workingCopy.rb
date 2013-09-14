@@ -102,7 +102,11 @@ module Dockmaster
                         name = "#{project.name}-#{serviceName}"
                         version = "#{environment}-#{name}"
                         
-                        Dockmaster::Util::Docker.build dockerfile, name, version
+                        input, output, error, waiter = Dockmaster::Docker.build dockerfile, name, version
+                        # TODO: output
+                        [input, output, error].each do |stream|
+                            stream.close
+                        end
                         
                     end
                     

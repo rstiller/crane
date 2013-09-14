@@ -1,4 +1,6 @@
 
+require "open3"
+
 module Dockmaster
     
     class Git
@@ -7,10 +9,9 @@ module Dockmaster
             
             branches = {}
             
-            IO.popen("git ls-remote --heads #{url}") { |process|
-
-                # TODO: operation log
-                content = process.gets(nil)
+            Open3.popen3 "git ls-remote --heads #{url}" do |input, output, error, pid|
+                
+                content = output.read
                 
                 if !content.nil?
                     
@@ -29,9 +30,9 @@ module Dockmaster
                     
                 end
                 
-            }
+            end
             
-            return branches
+            branches
             
         end
         
@@ -39,13 +40,12 @@ module Dockmaster
             
             tags = {}
             
-            IO.popen("git ls-remote --tags #{url}") { |process|
-
-                # TODO: operation log
-                content = process.gets(nil)
-
+            Open3.popen3 "git ls-remote --tags #{url}" do |input, output, error, pid|
+                
+                content = output.read
+                
                 if !content.nil?
-                        
+                    
                     content.gsub!(/\r\n?/, "\n")
                     content.each_line do |line|
                         
@@ -53,7 +53,7 @@ module Dockmaster
                         
                         if !tags[$2]
                             
-                            tags[$2] = $1
+                        tags[$2] = $1
                             
                         end
                         
@@ -61,56 +61,33 @@ module Dockmaster
                     
                 end
                 
-            }
+            end
             
-            return tags
+            tags
             
         end
         
         def self.clone(url, folder)
             
-            IO.popen("git clone #{url}  #{folder}") { |process|
-                
-                content = process.gets(nil)
-                # TODO: operation log
-                
-            }
+            Open3.popen3 "git clone #{url}  #{folder}"
             
         end
         
         def self.fetch(folder)
             
-            Dir.chdir(folder)
-            IO.popen("git fetch") { |process|
-                
-                content = process.gets(nil)
-                # TODO: operation log
-                
-            }
+            Open3.popen3 "git fetch", :chdir => folder
             
         end
         
         def self.checkout(ref, folder)
             
-            Dir.chdir(folder)
-            IO.popen("git checkout #{ref}") { |process|
-                
-                content = process.gets(nil)
-                # TODO: operation log
-                
-            }
+            Open3.popen3 "git checkout #{ref}", :chdir => folder
             
         end
         
         def self.pull(ref, folder)
             
-            Dir.chdir(folder)
-            IO.popen("git pull origin #{ref}") { |process|
-                
-                content = process.gets(nil)
-                # TODO: operation log
-                
-            }
+            Open3.popen3 "git pull origin #{ref}", :chdir => folder
             
         end
         
