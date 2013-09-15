@@ -16,19 +16,19 @@ module Dockmaster
                 
                 if config.has_key? "manifest"
                     
-                    file = config["manifest"]
+                    @file = config["manifest"]
                     
-                    if !(file =~ URI::regexp)
-                        file = "#{folderName}/#{config['manifest']}"
+                    if !(@file =~ URI::regexp)
+                        @file = "#{folderName}/#{config['manifest']}"
                     end
                     
                 else
                     
-                    file = "#{folderName}/#{serviceName}.yml"
+                    @file = "#{folderName}/#{serviceName}.yml"
                     
                 end
                 
-                raw = YAML.load_file file
+                raw = YAML.load_file @file
                 
                 Dockmaster.hashToObject self, raw
                 
@@ -59,6 +59,36 @@ module Dockmaster
                     end
                     
                     file.puts "EXPOSE #{ports.join(' ')}"
+                    
+                    if provision
+                        
+                        if provision.provider == "puppet"
+                        elsif provision.provider == "shell"
+                            
+                            provision.directories.each do |source, target|
+                                
+                                sourcePath = File.dirname @file
+                                sourcePath = File.absolute_path source, sourcePath
+                                
+                                file.puts "ADD #{sourcePath} #{target}"
+                                
+                            end
+                            
+                            if !provision.path.empty?
+                                
+                                file.puts "RUN PATH=#{provision.path.join(':')}:$PATH"
+                                
+                            end
+                            
+                            provision.commands.each do |command|
+                                
+                                file.puts "RUN #{command}"
+                                
+                            end
+                            
+                        end
+                        
+                    end
                     
                     # TODO: provisioning
                     
