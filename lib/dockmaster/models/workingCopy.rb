@@ -9,8 +9,10 @@ module Dockmaster
     module Models
         
         require "dockmaster/models/buildHistory"
+        require "dockmaster/models/buildOutput"
         require "dockmaster/models/infrastructure"
         require "dockmaster/models/service"
+        require "dockmaster/util/buildProgressMonitor"
         require "dockmaster/util/docker"
         
         Dockmaster::tx do
@@ -36,6 +38,9 @@ module Dockmaster
                 
                 input, output, error, waiter = Git.clone url, checkoutFolder
                 
+                output.each {||}
+                error.each {||}
+                
                 [input, output, error].each do |stream|
                     stream.close
                 end
@@ -45,6 +50,9 @@ module Dockmaster
             def checkout
                 
                 input, output, error, waiter = Git.checkout name, checkoutFolder
+                
+                output.each {||}
+                error.each {||}
                 
                 [input, output, error].each do |stream|
                     stream.close
@@ -96,6 +104,10 @@ module Dockmaster
             
             def buildImages(project, buildHistory)
                 
+                monitors = {}
+                    
+                buildHistory.successful = Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL
+                
                 clearCheckoutFolder
                 clone project.url
                 checkout
@@ -106,23 +118,43 @@ module Dockmaster
                 
                 infra.environments.each do |environment, variables|
                     
+                    monitors[environment] = {}
+                    
                     infra.services.each do |serviceName, serviceConfig|
                         
                         service = Service.new infra, serviceName, serviceConfig
                         
-                        dockerfile = service.generateDockerfile self, environment, variables
-                        name = "#{project.name}-#{serviceName}"
-                        version = "#{environment}-#{name}"
+                        buildOutput = Dockmaster::Models::BuildOutput.new :name => "#{environment}-#{serviceName}"
+                        buildHistory.add_buildOutput buildOutput
                         
-                        input, output, error, waiter = Dockmaster::Docker.build dockerfile, name, version
-                        # TODO: output
-                        [input, output, error].each do |stream|
-                            stream.close
-                        end
+                        dockerfile = service.generateDockerfile self, environment, variables
+                        imageName = "#{project.name}-#{serviceName}"
+                        imageVersion = "#{environment}-#{name}"
+                        lineCount = File.open(dockerfile).readlines.length
+                        
+                        input, output, error, waiter = Dockmaster::Docker.build dockerfile, imageName, imageVersion
+                        
+                        out = ""
+                        
+                        monitor = Dockmaster::BuildProgressMonitor.new out, input, output, error, waiter, lineCount - 1
+                        monitor.errorCallback = proc {
+                            buildOutput.output = out
+                            buildHistory.successful = Dockmaster::Models::BuildHistory::BUILD_BROKEN
+                            buildHistory.save
+                            buildOutput.save
+                        }
+                        monitor.finishCallback = proc {
+                            buildOutput.output = out
+                            buildHistory.save
+                            buildOutput.save
+                        }
+                        monitors[environment][serviceName] = monitor
                         
                     end
                     
                 end
+                
+                monitors
                 
             end
             

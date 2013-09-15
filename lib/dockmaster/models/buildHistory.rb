@@ -13,7 +13,6 @@ module Dockmaster
                 foreign_key :working_copy_id
                 DateTime :date
                 String :ref
-                String :output, :text => true
                 Integer :successful
                 
             end
@@ -21,6 +20,13 @@ module Dockmaster
         end
         
         class BuildHistory < Sequel::Model
+            
+            BUILD_SUCCESSFUL = 1
+            BUILD_BROKEN = 0
+            
+            one_to_many :buildOutput
+            many_to_one :workingCopy
+            
         end
         
     end

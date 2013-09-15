@@ -70,7 +70,8 @@ module Dockmaster
             
             begin
                 
-                localWorkingCopy.buildImages project, buildHistory
+                # TODO: make monitors available
+                monitors = localWorkingCopy.buildImages project, buildHistory
                 
                 Dockmaster::tx do
                     

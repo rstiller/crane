@@ -97,7 +97,11 @@ module Dockmaster
                 
                 input, output, error, waiter = Dockmaster::Docker.build dockerfile, name, version
                 
-                Dockmaster::BuildProgressMonitor.new STDOUT, input, output, error, lineCount - 1
+                out = ""
+                
+                monitor = Dockmaster::BuildProgressMonitor.new out, input, output, error, waiter, lineCount - 1
+                
+                return monitor, out
                 
             end
             

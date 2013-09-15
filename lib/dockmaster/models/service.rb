@@ -2,6 +2,7 @@
 require "digest/md5"
 require "yaml"
 require "fileutils"
+require "uri"
 
 module Dockmaster
     
@@ -16,6 +17,10 @@ module Dockmaster
                 if config.has_key? "manifest"
                     
                     file = config["manifest"]
+                    
+                    if !(file =~ URI::regexp)
+                        file = "#{folderName}/#{config['manifest']}"
+                    end
                     
                 else
                     
@@ -54,6 +59,8 @@ module Dockmaster
                     end
                     
                     file.puts "EXPOSE #{ports.join(' ')}"
+                    
+                    # TODO: provisioning
                     
                 end
                 

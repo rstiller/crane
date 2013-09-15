@@ -9,7 +9,7 @@ module Dockmaster
             
             folder = File.dirname file
             
-            Open3.popen3 "docker build -t #{name}/#{tag} .", :chdir => folder
+            Open3.popen3 "docker build -t #{name}:#{tag} .", :chdir => folder
             
         end
         

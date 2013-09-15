@@ -3,14 +3,16 @@ module Dockmaster
     
     class BuildProgressMonitor
         
-        def initialize(channel, input, output, error, stepCount)
+        def initialize(channel, input, output, error, waiter, stepCount)
             
             @step = 0
             @stepCount = stepCount
             @channel = channel
             @output = output
             @error = error
-            @callback = nil
+            @updateCallback = nil
+            @finishCallback = nil
+            @errorCallback = nil
             
             Thread.new {
                 
@@ -22,17 +24,25 @@ module Dockmaster
                         
                         @step = @step + 1
                         
-                        channel.puts line
+                        if channel.is_a? String
+                            channel.concat line
+                        elsif
+                            channel.puts line
+                        end
                         
-                        if !@callback.nil?
+                        if !@updateCallback.nil?
                             
-                            @callback.call
+                            @updateCallback.call
                             
                         end
                         
                     elsif
-    
-                        channel.puts line
+                        
+                        if channel.is_a? String
+                            channel.concat line
+                        elsif
+                            channel.puts line
+                        end
                         
                     end
                     
@@ -41,7 +51,29 @@ module Dockmaster
                 while !@error.eof?
                     
                     line = @error.gets
-                    channel.puts line
+                    if channel.is_a? String
+                        channel.concat line
+                    elsif
+                        channel.puts line
+                    end
+                    
+                end
+                
+                if waiter.value != 0
+                    
+                    if !@errorCallback.nil?
+                        
+                        @errorCallback.call
+                        
+                    end
+                    
+                elsif
+                    
+                    if !@finishCallback.nil?
+                        
+                        @finishCallback.call
+                        
+                    end
                     
                 end
                 
@@ -65,8 +97,16 @@ module Dockmaster
             ((@step * 1.0) / (@stepCount * 1.0)) * 100.0
         end
         
-        def callback= (clb)
-            @callback = clb
+        def updateCallback= (clb)
+            @updateCallback = clb
+        end
+        
+        def errorCallback= (clb)
+            @errorCallback = clb
+        end
+        
+        def finishCallback= (clb)
+            @finishCallback = clb
         end
         
     end
