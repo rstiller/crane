@@ -9,6 +9,7 @@ module Dockmaster
     module Models
         
         require "dockmaster/models/package"
+        require "dockmaster/util/buildProgressMonitor"
         
         Sequel::Model.db.transaction do
             
@@ -89,18 +90,14 @@ module Dockmaster
             
             def buildImage
                 
-                dockerfile = generateDockerfile#
+                dockerfile = generateDockerfile
                 Dockmaster::log.info "building baseImage #{name} (#{version}) from #{dockerfile}"
+                
+                lineCount = File.open(dockerfile).readlines.length
+                
                 input, output, error, waiter = Dockmaster::Docker.build dockerfile, name, version
-                # TODO: output
                 
-                while !output.eof?
-                    puts output.read(1024)
-                end
-                
-                [input, output, error].each do |stream|
-                    stream.close
-                end
+                Dockmaster::BuildProgressMonitor.new STDOUT, input, output, error, lineCount - 1
                 
             end
             

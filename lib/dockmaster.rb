@@ -106,7 +106,10 @@ module Dockmaster
                 :provisionVersion => "2.7.19-1puppetlabs1"
         baseImage.save
         baseImage.add_package rubyPackage
-        baseImage.buildImage
+        monitor = baseImage.buildImage
+        monitor.callback = Proc.new do |dist, *args|
+            puts "#{monitor.progress}%"
+        end
         
 #        scheduler = Dockmaster::Scheduler.new
 #        Dockmaster::log.info "scheduler started"
