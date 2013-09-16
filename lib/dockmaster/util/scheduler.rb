@@ -29,8 +29,12 @@ module Dockmaster
                         
                         begin
                             
-                            tags = Dockmaster::Git.remoteTags project.url
-                            checkTags project, tags
+                            if project.buildsTags?
+                                
+                                tags = Dockmaster::Git.remoteTags project.url
+                                checkTags project, tags
+                                
+                            end
                             
                             branches = Dockmaster::Git.remoteBranches project.url
                             checkBranches project, branches

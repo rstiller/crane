@@ -34,9 +34,9 @@ The service definition file can be referenced in the infrastructure file as mani
 provision:
     provider: puppet
     manifest: my_service/default.pp # relative to this file
-    factors:
-        fact1: value1
-        fact2: value2
+    facts:
+        fact1: fact1.rb             # relative to this file
+        fact2: fact2.rb
     modulePaths:
         - my_service/modules        # relative to this file
         - my_service/manifests      # relative to this file

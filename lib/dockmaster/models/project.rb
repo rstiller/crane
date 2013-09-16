@@ -14,6 +14,7 @@ module Dockmaster
                 primary_key :id
                 String :name, :unique => true
                 String :url
+                Integer :buildTags
                 
             end
             
@@ -21,7 +22,14 @@ module Dockmaster
         
         class Project < Sequel::Model
             
+            BUILD_NO_TAGS = 0
+            BUILD_TAGS = 1
+            
             one_to_many :workingCopy
+            
+            def buildsTags?
+                buildTags == BUILD_TAGS
+            end
             
             def self.forEachProject
                 

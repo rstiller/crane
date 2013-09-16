@@ -69,7 +69,7 @@ module Dockmaster
         
         def self.clone(url, folder)
             
-            Open3.popen3 "git clone #{url}  #{folder}"
+            Open3.popen3 "git clone --recursive #{url}  #{folder}"
             
         end
         

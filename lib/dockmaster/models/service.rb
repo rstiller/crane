@@ -3,6 +3,7 @@ require "digest/md5"
 require "yaml"
 require "fileutils"
 require "uri"
+require "pathname"
 
 module Dockmaster
     
@@ -34,6 +35,74 @@ module Dockmaster
                 
             end
             
+            def getRelativePath(checkoutDirectory, serviceManifest, source)
+                
+                relativeManifestPath = serviceManifest.relative_path_from checkoutDirectory
+                relativeFolderPath = Pathname.new File.dirname(relativeManifestPath.to_s)
+                relativeSourcePath = Pathname.new "#{relativeFolderPath.to_s}/#{source}"
+                
+                relativeSourcePath
+                
+            end
+            
+            def applyPuppetProvisioning(file, checkoutPath, serviceManifest)
+                
+                index = 0
+                modules = []
+                
+                provision.facts.each do |fact|
+                    
+                    sourcePath = getRelativePath checkoutPath, serviceManifest, fact
+                    
+                    file.puts "ADD #{sourcePath.to_s} /etc/facter/facts.d/"
+                    
+                end
+                
+                provision.modulePaths.each do |moduleFolder|
+                    
+                    sourcePath = getRelativePath checkoutPath, filePath, moduleFolder
+                    
+                    modules.push "/tmp/puppet/_modules-#{index}/"
+                    file.puts "ADD #{sourcePath.to_s} /tmp/puppet/_modules-#{index}/"
+                    
+                    index = index + 1
+                    
+                end
+                
+                sourcePath = File.dirname @file
+                sourcePath = File.absolute_path provision.manifest, sourcePath
+                
+                file.puts "ADD #{sourcePath} /tmp/puppet/_manifest/manifest.pp"
+                
+                # http://docs.puppetlabs.com/references/stable/configuration.html#modulepath
+                file.puts "RUN puppet apply --modulepath=#{modules.join(':')} /tmp/puppet/_manifest/manifest.pp"
+                
+            end
+            
+            def applyShellProvisioning(file, checkoutPath, serviceManifest)
+                
+                provision.directories.each do |source, target|
+                    
+                    sourcePath = getRelativePath checkoutPath, serviceManifest, source
+                    
+                    file.puts "ADD #{sourcePath.to_s} #{target}"
+                    
+                end
+                
+                if !provision.path.empty?
+                    
+                    file.puts "RUN PATH=#{provision.path.join(':')}:$PATH"
+                    
+                end
+                
+                provision.commands.each do |command|
+                    
+                    file.puts "RUN #{command}"
+                    
+                end
+                
+            end
+            
             def generateDockerfile(workingCopy, environment, variables)
                 
                 folder = Digest::MD5.hexdigest "#{workingCopy.project.name}-#{workingCopy.name}-#{name}-#{environment}"
@@ -47,6 +116,20 @@ module Dockmaster
                 
                 dockerfile = "#{folder}/Dockerfile"
                 
+                Dir.foreach workingCopy.checkoutFolder do |file|
+                    
+                    if file != "." && file != ".."
+                        
+                        FileUtils::cp_r "#{workingCopy.checkoutFolder}/#{file}", folder
+                        
+                    end
+                    
+                end
+                
+                
+                checkoutPath = Pathname.new workingCopy.checkoutFolder
+                filePath = Pathname.new @file
+                
                 File.open dockerfile, "w:UTF-8" do |file|
                     
                     file.puts "# #{name} (#{version})"
@@ -58,39 +141,21 @@ module Dockmaster
                         
                     end
                     
-                    file.puts "EXPOSE #{ports.join(' ')}"
-                    
                     if provision
                         
                         if provision.provider == "puppet"
+                            
+                            applyPuppetProvisioning file, checkoutPath, filePath
+                            
                         elsif provision.provider == "shell"
                             
-                            provision.directories.each do |source, target|
-                                
-                                sourcePath = File.dirname @file
-                                sourcePath = File.absolute_path source, sourcePath
-                                
-                                file.puts "ADD #{sourcePath} #{target}"
-                                
-                            end
-                            
-                            if !provision.path.empty?
-                                
-                                file.puts "RUN PATH=#{provision.path.join(':')}:$PATH"
-                                
-                            end
-                            
-                            provision.commands.each do |command|
-                                
-                                file.puts "RUN #{command}"
-                                
-                            end
+                            applyShellProvisioning file, checkoutPath, filePath
                             
                         end
                         
                     end
                     
-                    # TODO: provisioning
+                    file.puts "EXPOSE #{ports.join(' ')}"
                     
                 end
                 
