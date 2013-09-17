@@ -5,6 +5,7 @@ exec { 'apt-get update':
 } ->
 
 package { [
+    'g++',
     'ruby1.9.3',
     'make',
     'git',
@@ -13,7 +14,7 @@ package { [
     'lxc',
     'cgroup-lite',
     'redir',
-    'linux-image-extra-3.2.0-23-virtual',
+#    'linux-image-extra-3.2.0-23-virtual',
 #    'linux-image-3.8.0-30-generic',
 #    'linux-headers-3.8.0-30-generic',
 #    'linux-generic-lts-raring',
