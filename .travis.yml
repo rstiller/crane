@@ -6,4 +6,4 @@ gemfile:
 script: rspec
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq g++ make git sqlite3 libsqlite3-ruby1.9.1 lxc cgroup-lite redir
+    - sudo apt-get install -qq g++ make git sqlite3 libsqlite3-ruby1.9.1 cgroup-lite redir
