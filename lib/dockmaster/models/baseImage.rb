@@ -31,6 +31,46 @@ module Dockmaster
             
             one_to_many :package
             
+            def getPackageName(package, version)
+                
+                packageName = package
+                
+                if version
+                    packageName = "#{package}=#{version}"
+                end
+                
+            end
+            
+            def applyPackages(file)
+                
+                if !package_dataset.empty?
+                    
+                    file.puts "RUN apt-get update -q"
+                    
+                    package_dataset.each do |package|
+                        
+                        packageName = getPackageName package.name, package.version
+                        
+                        file.puts "RUN apt-get install -f -y --force-yes --no-install-recommends #{packageName}"
+                        
+                    end
+                    
+                end
+                
+            end
+            
+            def applyPuppetProvisioning(file)
+                
+                puppetCommon = getPackageName "puppet-common", provisionVersion
+                puppet = getPackageName "puppet", provisionVersion
+                
+                file.puts "RUN apt-get install wget -y"
+                file.puts "RUN wget http://apt.puppetlabs.com/puppetlabs-release-`lsb_release -cs`.deb; dpkg -i puppetlabs-release-`lsb_release -cs`.deb"
+                file.puts "RUN apt-get update -q"
+                file.puts "RUN apt-get install -f -y --force-yes --no-install-recommends #{puppetCommon} #{puppet}"
+                
+            end
+            
             def generateDockerfile
                 
                 folder = Digest::MD5.hexdigest "#{name}-#{version}"
@@ -49,36 +89,11 @@ module Dockmaster
                     file.puts "# #{name} (#{version})"
                     file.puts "FROM #{baseImage}"
                     
-                    if !package_dataset.empty?
-                        
-                        file.puts "RUN apt-get update -q"
-                        
-                        package_dataset.each do |package|
-                            
-                            packageName = "#{package.name}"
-                            
-                            if package.version
-                                packageName = "#{package.name}=#{package.version}"
-                            end
-                            
-                            file.puts "RUN apt-get install -f -y --force-yes --no-install-recommends #{packageName}"
-                            
-                        end
-                        
-                    end
+                    applyPackages file
                     
                     if provision == "puppet"
                         
-                        puppetversion = "puppet-common puppet"
-                        
-                        if provisionVersion
-                            puppetversion = "puppet-common=#{provisionVersion} puppet=#{provisionVersion}"
-                        end
-                        
-                        file.puts "RUN apt-get install wget -y"
-                        file.puts "RUN wget http://apt.puppetlabs.com/puppetlabs-release-`lsb_release -cs`.deb; dpkg -i puppetlabs-release-`lsb_release -cs`.deb"
-                        file.puts "RUN apt-get update -q"
-                        file.puts "RUN apt-get install -f -y --force-yes --no-install-recommends #{puppetversion}"
+                        applyPuppetProvisioning file
                         
                     end
                     

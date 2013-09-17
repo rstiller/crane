@@ -5,11 +5,11 @@ module Dockmaster
     
     class Git
         
-        def self.remoteBranches(url)
+        def self.remoteWorkingCopies(url, type)
             
-            branches = {}
+            workingCopies = {}
             
-            Open3.popen3 "git ls-remote --heads #{url}" do |input, output, error, pid|
+            Open3.popen3 "git ls-remote --#{type} #{url}" do |input, output, error, pid|
                 
                 content = output.read
                 
@@ -18,11 +18,11 @@ module Dockmaster
                     content.gsub!(/\r\n?/, "\n")
                     content.each_line do |line|
                         
-                        line =~ /([^\t]*)\trefs\/heads\/([^\^\n]*)/
+                        line =~ /([^\t]*)\trefs\/#{type}\/([^\^\n]*)/
                         
-                        if !branches[$2]
+                        if !workingCopies[$2]
                             
-                            branches[$2] = $1
+                            workingCopies[$2] = $1
                             
                         end
                         
@@ -32,44 +32,25 @@ module Dockmaster
                 
             end
             
-            branches
+            workingCopies
+            
+        end
+        
+        def self.remoteBranches(url)
+            
+            Dockmaster::Git.remoteWorkingCopies url, "heads"
             
         end
         
         def self.remoteTags(url)
             
-            tags = {}
-            
-            Open3.popen3 "git ls-remote --tags #{url}" do |input, output, error, pid|
-                
-                content = output.read
-                
-                if !content.nil?
-                    
-                    content.gsub!(/\r\n?/, "\n")
-                    content.each_line do |line|
-                        
-                        line =~ /([^\t]*)\trefs\/tags\/([^\^\n]*)/
-                        
-                        if !tags[$2]
-                            
-                        tags[$2] = $1
-                            
-                        end
-                        
-                    end
-                    
-                end
-                
-            end
-            
-            tags
+            Dockmaster::Git.remoteWorkingCopies url, "tags"
             
         end
         
         def self.clone(url, folder)
             
-            Open3.popen3 "git clone --recursive #{url}  #{folder}"
+            Open3.popen3 "git clone --recursive #{url} #{folder}"
             
         end
         

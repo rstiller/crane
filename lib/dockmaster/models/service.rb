@@ -48,12 +48,10 @@ module Dockmaster
             def applyPuppetProvisioning(file, checkoutPath, serviceManifest)
                 
                 index = 0
-                modules = []
                 
                 provision.facts.each do |fact|
                     
                     sourcePath = getRelativePath checkoutPath, serviceManifest, fact
-                    
                     file.puts "ADD #{sourcePath.to_s} /etc/facter/facts.d/"
                     
                 end
@@ -61,16 +59,12 @@ module Dockmaster
                 provision.modulePaths.each do |moduleFolder|
                     
                     sourcePath = getRelativePath checkoutPath, filePath, moduleFolder
-                    
-                    modules.push "/tmp/puppet/_modules-#{index}/"
                     file.puts "ADD #{sourcePath.to_s} /tmp/puppet/_modules-#{index}/"
-                    
                     index = index + 1
                     
                 end
                 
-                sourcePath = File.dirname @file
-                sourcePath = File.absolute_path provision.manifest, sourcePath
+                sourcePath = getRelativePath checkoutPath, filePath, provision.manifest
                 
                 file.puts "ADD #{sourcePath} /tmp/puppet/_manifest/manifest.pp"
                 

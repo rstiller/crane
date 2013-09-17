@@ -18,70 +18,77 @@ module Dockmaster
                 
                 while !@output.eof?
                     
-                    line = @output.gets
-                    
-                    if line.match /^Step /
-                        
-                        @step = @step + 1
-                        
-                        if channel.is_a? String
-                            channel.concat line
-                        elsif
-                            channel.puts line
-                        end
-                        
-                        if !@updateCallback.nil?
-                            
-                            @updateCallback.call
-                            
-                        end
-                        
-                    elsif
-                        
-                        if channel.is_a? String
-                            channel.concat line
-                        elsif
-                            channel.puts line
-                        end
-                        
-                    end
+                    readNextLine channel, @output, true
                     
                 end
                 
                 while !@error.eof?
                     
-                    line = @error.gets
-                    if channel.is_a? String
-                        channel.concat line
-                    elsif
-                        channel.puts line
-                    end
+                    readNextLine channel, @error, false
                     
                 end
                 
-                if waiter.value != 0
-                    
-                    if !@errorCallback.nil?
-                        
-                        @errorCallback.call
-                        
-                    end
-                    
-                elsif
-                    
-                    if !@finishCallback.nil?
-                        
-                        @finishCallback.call
-                        
-                    end
-                    
-                end
+                finish waiter
                 
                 [input, output, error].each do |stream|
                     stream.close
                 end
                 
             }
+            
+        end
+        
+        def finish(waiter)
+            
+            if waiter.value != 0
+                
+                if !@errorCallback.nil?
+                    
+                    @errorCallback.call
+                    
+                end
+                
+            elsif
+                
+                if !@finishCallback.nil?
+                    
+                    @finishCallback.call
+                    
+                end
+                
+            end
+            
+        end
+        
+        def readNextLine(channel, stream, inspect)
+            
+            line = stream.gets
+            
+            if inspect == true and line.match /^Step /
+                
+                @step = @step + 1
+                
+                if channel.is_a? String
+                    channel.concat line
+                elsif
+                    channel.puts line
+                end
+                
+                if !@updateCallback.nil?
+                    
+                    @updateCallback.call
+                    
+                end
+                
+            else
+                
+                if channel.is_a? String
+                    channel.concat line
+                elsif
+                    channel.puts line
+                end
+                
+            end
             
         end
         
