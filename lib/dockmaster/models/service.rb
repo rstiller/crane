@@ -45,9 +45,7 @@ module Dockmaster
                 
             end
             
-            def applyPuppetProvisioning(file, checkoutPath, serviceManifest)
-                
-                index = 0
+            def addPuppetFacts(file, checkoutPath, serviceManifest)
                 
                 provision.facts.each do |fact|
                     
@@ -56,17 +54,33 @@ module Dockmaster
                     
                 end
                 
+            end
+            
+            def addPuppetModules(file, checkoutPath, serviceManifest)
+                
+                index = 0
                 provision.modulePaths.each do |moduleFolder|
                     
-                    sourcePath = getRelativePath checkoutPath, filePath, moduleFolder
+                    sourcePath = getRelativePath checkoutPath, serviceManifest, moduleFolder
                     file.puts "ADD #{sourcePath.to_s} /tmp/puppet/_modules-#{index}/"
                     index = index + 1
                     
                 end
                 
-                sourcePath = getRelativePath checkoutPath, filePath, provision.manifest
+            end
+            
+            def addPuppetManifest(file, checkoutPath, serviceManifest)
                 
+                sourcePath = getRelativePath checkoutPath, serviceManifest, provision.manifest
                 file.puts "ADD #{sourcePath} /tmp/puppet/_manifest/manifest.pp"
+                
+            end
+            
+            def applyPuppetProvisioning(file, checkoutPath, serviceManifest)
+                
+                addPuppetFacts file, checkoutPath, serviceManifest
+                addPuppetModules file, checkoutPath, serviceManifest
+                addPuppetManifest file, checkoutPath, serviceManifest
                 
                 # http://docs.puppetlabs.com/references/stable/configuration.html#modulepath
                 file.puts "RUN puppet apply --modulepath=#{modules.join(':')} /tmp/puppet/_manifest/manifest.pp"
