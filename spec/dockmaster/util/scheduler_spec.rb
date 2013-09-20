@@ -5,7 +5,8 @@ describe "Scheduler" do
     
     require "config"    
     
-    Settings["db.path"] = "/tmp/dockamster_testdatabase.db"
+    Settings["db.path"] = ":memory:"
+    Settings["logging.level"] = "FATAL"
     
     require "log"
     require "database"

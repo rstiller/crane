@@ -10,7 +10,7 @@ module Dockmaster
             
     end
     
-    @database = Sequel.connect("sqlite://" + Settings["db.path"], :max_connections => 20)
+    @database = Sequel.sqlite(Settings["db.path"], :max_connections => 20)
     
     def self.tx
         
