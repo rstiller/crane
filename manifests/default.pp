@@ -11,6 +11,7 @@ package { [
     'git',
     'sqlite3',
     'libsqlite3-ruby1.9.1',
+    'libsqlite3-dev',
     'lxc',
     'cgroup-lite',
     'redir',
