@@ -25,35 +25,41 @@ module Dockmaster
                 
                 Dockmaster::Models::Project.forEachProject do |project|
                     
-                    func = Proc.new do |dist, *args|
-                        
-                        begin
-                            
-                            if project.buildsTags?
-                                
-                                tags = Dockmaster::Git.remoteTags project.url
-                                checkTags project, tags
-                                
-                            end
-                            
-                            branches = Dockmaster::Git.remoteBranches project.url
-                            checkBranches project, branches
-                            
-                        rescue => exception
-                            
-                            Dockmaster::log.error exception
-                            
-                        end
-                        
-                    end
-                    
-                    @checkoutThreadpool.submit func
-                    
-                    Dockmaster::log.info "schedule - scheduled checking for project '#{project.name}' (#{project.url})"
+                    checkProject project
                     
                 end
                 
             end
+            
+        end
+        
+        def checkProject(project)
+            
+            func = Proc.new do |dist, *args|
+                
+                begin
+                    
+                    if project.buildsTags?
+                        
+                        tags = Dockmaster::Git.remoteTags project.url
+                        checkTags project, tags
+                        
+                    end
+                    
+                    branches = Dockmaster::Git.remoteBranches project.url
+                    checkBranches project, branches
+                    
+                rescue => exception
+                    
+                    Dockmaster::log.error exception
+                    
+                end
+                
+            end
+            
+            @checkoutThreadpool.submit func
+            
+            Dockmaster::log.info "checkProject - scheduled checking for project '#{project.name}' (#{project.url})"
             
         end
         
@@ -122,29 +128,24 @@ module Dockmaster
             
             procs = []
             
-            Dockmaster::tx do
+            branches = Dockmaster::Models::WorkingCopy.where(:project_id => project.id, :type => "branch")
+            
+            Dockmaster::log.info "checkBranches - branches to check for project '#{project.name}' (#{project.url}): #{branches}"
+            
+            branches.each do |branch|
                 
-                branches = Dockmaster::Models::WorkingCopy.where(:project_id => project.id, :type => "branch")
-                
-                Dockmaster::log.info "checkBranches - branches to check for project '#{project.name}' (#{project.url}): #{branches}"
-                
-                branches.each do |branch|
+                if !remoteBranches.has_key? branch.name
                     
-                    if !remoteBranches.has_key? branch.name
-                        
-                        branch.delete
-                        
-                        Dockmaster::log.info "checkBranches - branch '#{branch.name}' not any longer in project '#{project.name}' (#{project.url}) - deleting branch"
-                        
-                    elsif remoteBranches[branch.name] != branch.ref
-                        
-                        proc = buildImageProc project, branch, remoteBranches[branch.name]
-                        procs.push proc
-                        
-                        Dockmaster::log.info "checkBranches - branch '#{branch.name}' changed (from '#{branch.ref}' to '#{remoteBranches[branch.name]}') " +
-                            "for project '#{project.name}' (#{project.url}) - triggering (re)build"
-                        
-                    end
+                    branch.delete
+                    
+                    Dockmaster::log.info "checkBranches - branch '#{branch.name}' not any longer in project '#{project.name}' (#{project.url}) - deleting branch"
+                    
+                elsif remoteBranches[branch.name] != branch.ref
+                    
+                    procs.push buildImageProc(project, branch, remoteBranches[branch.name])
+                    
+                    Dockmaster::log.info "checkBranches - branch '#{branch.name}' changed (from '#{branch.ref}' to '#{remoteBranches[branch.name]}') " +
+                        "for project '#{project.name}' (#{project.url}) - triggering (re)build"
                     
                 end
                 
@@ -162,29 +163,21 @@ module Dockmaster
             
             procs = []
             
-            Dockmaster::tx do
+            oldTags = project.workingCopy_dataset.where(:type => "tag").map(:name)
+            newTags = remoteTags.select { |key| !oldTags.include? key }
+            
+            Dockmaster::log.info "checkTags - tags to check for project #{project.name} (#{project.url}): #{newTags}"
+            
+            newTags.each do |name, ref|
                 
-                oldTags = project.workingCopy_dataset.where(:type => "tag").map(:name)
-                newTags = remoteTags.select { |key| !oldTags.include? key }
-                    
-                Dockmaster::log.info "checkTags - tags to check for project #{project.name} (#{project.url}): #{newTags}"
+                tag = Models::WorkingCopy.new :ref => ref, :name => name, :type => "tag"
+                project.add_workingCopy tag
                 
-                newTags.each do |name, ref|
-                    
-                    tag = Models::WorkingCopy.new
-                    tag[:ref] = ref
-                    tag[:name] = name
-                    tag[:type] = "tag"
-                    project.add_workingCopy tag
-                    
-                    Dockmaster::log.info "checkTags - tag '#{name}' added to project '#{project.name}' (#{project.url})"
-                    
-                    proc = buildImageProc project, tag, ref
-                    procs.push proc
-                    
-                    Dockmaster::log.info "checkTags - triggered build for tag '#{name}' in project '#{project.name}' (#{project.url})"
-                    
-                end
+                Dockmaster::log.info "checkTags - tag '#{name}' added to project '#{project.name}' (#{project.url})"
+                
+                procs.push buildImageProc(project, tag, ref)
+                
+                Dockmaster::log.info "checkTags - triggered build for tag '#{name}' in project '#{project.name}' (#{project.url})"
                 
             end
             

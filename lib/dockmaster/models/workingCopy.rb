@@ -60,6 +60,13 @@ module Dockmaster
                 
             end
             
+            def computeFolder(path)
+                
+                hash = Digest::MD5.hexdigest "#{project.name}-#{project.url}-#{name}"
+                File.absolute_path hash, path
+                
+            end
+            
             def clearImageFolder
                 
                 FileUtils.rm_rf imageFolder
@@ -68,9 +75,7 @@ module Dockmaster
             
             def imageFolder
                 
-                path = Settings["paths.images"]
-                hash = Digest::MD5.hexdigest "#{project.name}-#{project.url}-#{name}"
-                File.absolute_path hash, path
+                computeFolder Settings["paths.images"]
                 
             end
             
@@ -82,9 +87,7 @@ module Dockmaster
             
             def checkoutFolder
                 
-                path = Settings["paths.repositories"]
-                hash = Digest::MD5.hexdigest "#{project.name}-#{project.url}-#{name}"
-                File.absolute_path hash, path
+                computeFolder Settings["paths.repositories"]
                 
             end
             
@@ -99,6 +102,58 @@ module Dockmaster
                 end
                 
                 Models::Infrastructure.new infrastructureFile
+                
+            end
+            
+            def serviceMonitor(input, output, error, waiter, lineCount)
+                
+                out = ""
+                monitor = Dockmaster::BuildProgressMonitor.new out, input, output, error, waiter, lineCount
+                monitor.errorCallback = proc {
+                    buildOutput.output = out
+                    buildHistory.successful = Dockmaster::Models::BuildHistory::BUILD_BROKEN
+                    buildHistory.save
+                    buildOutput.save
+                }
+                monitor.finishCallback = proc {
+                    buildOutput.output = out
+                    buildHistory.save
+                    buildOutput.save
+                }
+                
+                monitor
+                
+            end
+            
+            def buildServiceImage(infra, environment, variables, serviceName, serviceConfig)
+                
+                service = Service.new infra, serviceName, serviceConfig
+                
+                buildOutput = Dockmaster::Models::BuildOutput.new :name => "#{environment}-#{serviceName}"
+                buildHistory.add_buildOutput buildOutput
+                
+                dockerfile = service.generateDockerfile self, environment, variables
+                imageName = "#{project.name}-#{serviceName}"
+                imageVersion = "#{environment}-#{name}"
+                lineCount = File.open(dockerfile).readlines.length
+                
+                input, output, error, waiter = Dockmaster::Docker.build dockerfile, imageName, imageVersion
+                
+                serviceMonitor input, output, error, waiter, lineCount - 1
+                
+            end
+            
+            def buildEnvironment(infra, environment, variables)
+                
+                monitors = {}
+                
+                infra.services.each do |serviceName, serviceConfig|
+                    
+                    monitors[serviceName] = buildServiceImage infra, environment, variables, serviceName, serviceConfig
+                    
+                end
+                
+                monitors
                 
             end
             
@@ -118,39 +173,7 @@ module Dockmaster
                 
                 infra.environments.each do |environment, variables|
                     
-                    monitors[environment] = {}
-                    
-                    infra.services.each do |serviceName, serviceConfig|
-                        
-                        service = Service.new infra, serviceName, serviceConfig
-                        
-                        buildOutput = Dockmaster::Models::BuildOutput.new :name => "#{environment}-#{serviceName}"
-                        buildHistory.add_buildOutput buildOutput
-                        
-                        dockerfile = service.generateDockerfile self, environment, variables
-                        imageName = "#{project.name}-#{serviceName}"
-                        imageVersion = "#{environment}-#{name}"
-                        lineCount = File.open(dockerfile).readlines.length
-                        
-                        input, output, error, waiter = Dockmaster::Docker.build dockerfile, imageName, imageVersion
-                        
-                        out = ""
-                        
-                        monitor = Dockmaster::BuildProgressMonitor.new out, input, output, error, waiter, lineCount - 1
-                        monitor.errorCallback = proc {
-                            buildOutput.output = out
-                            buildHistory.successful = Dockmaster::Models::BuildHistory::BUILD_BROKEN
-                            buildHistory.save
-                            buildOutput.save
-                        }
-                        monitor.finishCallback = proc {
-                            buildOutput.output = out
-                            buildHistory.save
-                            buildOutput.save
-                        }
-                        monitors[environment][serviceName] = monitor
-                        
-                    end
+                    monitors[environment] = buildEnvironment infra, environment, variables
                     
                 end
                 
