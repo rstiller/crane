@@ -26,9 +26,20 @@ package { [
 #    ensure => latest,
 #} ->
 
+package { ['bundler']:
+    provider => gem,
+    ensure   => latest,
+} ->
+
 exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/docker-latest && chmod +x /usr/bin/docker':
     cwd     => '/usr/bin',
     user    => root,
     path    => [ '/usr/bin/', '/bin' ],
     creates => '/usr/bin/docker',
+} ->
+
+exec { 'bundle install':
+    cwd     => '/vagrant',
+    user    => root,
+    path    => [ '/usr/bin/', '/bin' ],
 }
