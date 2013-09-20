@@ -111,18 +111,7 @@ module Dockmaster
                 
             end
             
-            def generateDockerfile(workingCopy, environment, variables)
-                
-                folder = Digest::MD5.hexdigest "#{workingCopy.project.name}-#{workingCopy.name}-#{name}-#{environment}"
-                folder = "#{workingCopy.imageFolder}/#{folder}"
-                
-                unless File.directory? folder
-                    
-                    FileUtils.mkdir_p folder
-                        
-                end
-                
-                dockerfile = "#{folder}/Dockerfile"
+            def copyCheckoutFolder(workingCopy, folder)
                 
                 Dir.foreach workingCopy.checkoutFolder do |file|
                     
@@ -134,6 +123,57 @@ module Dockmaster
                     
                 end
                 
+            end
+            
+            def calculateFolder(workingCopy, environment)
+                
+                folder = Digest::MD5.hexdigest "#{workingCopy.project.name}-#{workingCopy.name}-#{name}-#{environment}"
+                folder = "#{workingCopy.imageFolder}/#{folder}"
+                
+                unless File.directory? folder
+                    
+                    FileUtils.mkdir_p folder
+                        
+                end
+                
+                folder
+                
+            end
+            
+            def applyEnvironmentVariables(file, variables)
+                
+                variables.each do |key, value|
+                    
+                    file.puts "ENV #{key} #{value}"
+                    
+                end
+                
+            end
+            
+            def applyProvisioning(file, checkoutPath, filePath)
+                
+                if provision
+                    
+                    if provision.provider == "puppet"
+                        
+                        applyPuppetProvisioning file, checkoutPath, filePath
+                        
+                    elsif provision.provider == "shell"
+                        
+                        applyShellProvisioning file, checkoutPath, filePath
+                        
+                    end
+                    
+                end
+                
+            end
+            
+            def generateDockerfile(workingCopy, environment, variables)
+                
+                folder = calculateFolder workingCopy, environment
+                dockerfile = "#{folder}/Dockerfile"
+                
+                copyCheckoutFolder workingCopy, folder
                 
                 checkoutPath = Pathname.new workingCopy.checkoutFolder
                 filePath = Pathname.new @file
@@ -143,25 +183,8 @@ module Dockmaster
                     file.puts "# #{name} (#{version})"
                     file.puts "FROM #{base}"
                     
-                    variables.each do |key, value|
-                        
-                        file.puts "ENV #{key} #{value}"
-                        
-                    end
-                    
-                    if provision
-                        
-                        if provision.provider == "puppet"
-                            
-                            applyPuppetProvisioning file, checkoutPath, filePath
-                            
-                        elsif provision.provider == "shell"
-                            
-                            applyShellProvisioning file, checkoutPath, filePath
-                            
-                        end
-                        
-                    end
+                    applyEnvironmentVariables file, variables
+                    applyProvisioning file, checkoutPath, filePath
                     
                     file.puts "EXPOSE #{ports.join(' ')}"
                     
