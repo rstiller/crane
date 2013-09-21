@@ -39,8 +39,7 @@ describe "Scheduler" do
             url = "url"
             project = Dockmaster::Models::Project.new
             pool = Dockmaster::ThreadPool.new 1
-            func = Proc.new do
-            end
+            func = Proc.new {}
             originalFunc = nil
             
             expect(Proc).to receive(:new) do |*args, &block|
@@ -75,8 +74,7 @@ describe "Scheduler" do
             url = "url"
             project = Dockmaster::Models::Project.new
             pool = Dockmaster::ThreadPool.new 1
-            func = Proc.new do
-            end
+            func = Proc.new {}
             originalFunc = nil
             
             expect(Proc).to receive(:new) do |*args, &block|
@@ -139,7 +137,28 @@ describe "Scheduler" do
     
     context "buildImageProc" do
         
-        it "nothing" do
+        it "check buildImage call" do
+            
+            project = Dockmaster::Models::Project.new
+            localWorkingCopy = Dockmaster::Models::WorkingCopy.new
+            remoteWorkingCopyRef = "ref_id"
+            pool = Dockmaster::ThreadPool.new 1
+            func = Proc.new {}
+            originalFunc = nil
+            
+            expect(Dockmaster::ThreadPool).to receive(:new).twice.and_return(pool)
+            expect(Proc).to receive(:new) do |*args, &block|
+                originalFunc = block
+                func
+            end
+            
+            scheduler = Dockmaster::Scheduler.new 1, 1
+            scheduler.buildImageProc project, localWorkingCopy, remoteWorkingCopyRef
+            
+            expect(scheduler).to receive(:buildImage).with(project, localWorkingCopy, remoteWorkingCopyRef)
+            
+            originalFunc.call
+            
         end
         
     end
