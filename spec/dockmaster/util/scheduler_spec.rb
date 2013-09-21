@@ -165,7 +165,96 @@ describe "Scheduler" do
     
     context "checkBranches" do
         
-        it "nothing" do
+        it "no local or remote branches" do
+            
+            checkPool = Dockmaster::ThreadPool.new 1
+            workerPool = Dockmaster::ThreadPool.new 1
+            project = Dockmaster::Models::Project.new
+            localBranches = []
+            remoteBranches = {}
+            
+            expect(project).to receive(:id).and_return(1)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(2).and_return(checkPool)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(4).and_return(workerPool)
+            expect(Dockmaster::Models::WorkingCopy).to receive(:where).with(:project_id => 1, :type => "branch").and_return(localBranches)
+            expect(workerPool).not_to receive(:submit)
+            
+            scheduler = Dockmaster::Scheduler.new 2, 4
+            scheduler.checkBranches project, remoteBranches
+            
+        end
+        
+        it "old local branch" do
+            
+            checkPool = Dockmaster::ThreadPool.new 1
+            workerPool = Dockmaster::ThreadPool.new 1
+            project = Dockmaster::Models::Project.new
+            oldBranch = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "master_ref_id"
+            localBranches = [
+                oldBranch
+            ]
+            remoteBranches = { "develop" => "ref_id" }
+            
+            expect(project).to receive(:id).and_return(1)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(2).and_return(checkPool)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(4).and_return(workerPool)
+            expect(Dockmaster::Models::WorkingCopy).to receive(:where).with(:project_id => 1, :type => "branch").and_return(localBranches)
+            expect(oldBranch).to receive(:delete)
+            expect(workerPool).not_to receive(:submit)
+            
+            scheduler = Dockmaster::Scheduler.new 2, 4
+            scheduler.checkBranches project, remoteBranches
+            
+        end
+        
+        it "no new ref for branch" do
+            
+            checkPool = Dockmaster::ThreadPool.new 1
+            workerPool = Dockmaster::ThreadPool.new 1
+            project = Dockmaster::Models::Project.new
+            oldBranch = Dockmaster::Models::WorkingCopy.new :name => "develop", :ref => "ref_id"
+            localBranches = [
+                oldBranch
+            ]
+            remoteBranches = { "develop" => "ref_id" }
+            
+            expect(project).to receive(:id).and_return(1)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(2).and_return(checkPool)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(4).and_return(workerPool)
+            expect(Dockmaster::Models::WorkingCopy).to receive(:where).with(:project_id => 1, :type => "branch").and_return(localBranches)
+            expect(oldBranch).not_to receive(:delete)
+            expect(workerPool).not_to receive(:submit)
+            
+            scheduler = Dockmaster::Scheduler.new 2, 4
+            scheduler.checkBranches project, remoteBranches
+            
+        end
+        
+        it "new ref for branch" do
+            
+            checkPool = Dockmaster::ThreadPool.new 1
+            workerPool = Dockmaster::ThreadPool.new 1
+            project = Dockmaster::Models::Project.new
+            oldBranch = Dockmaster::Models::WorkingCopy.new :name => "develop", :ref => "ref_id"
+            localBranches = [
+                oldBranch
+            ]
+            remoteBranches = { "develop" => "new_ref_id" }
+            func = Proc.new {}
+            
+            expect(project).to receive(:id).and_return(1)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(2).and_return(checkPool)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(4).and_return(workerPool)
+            expect(Dockmaster::Models::WorkingCopy).to receive(:where).with(:project_id => 1, :type => "branch").and_return(localBranches)
+            expect(oldBranch).not_to receive(:delete)
+            
+            scheduler = Dockmaster::Scheduler.new 2, 4
+            
+            expect(scheduler).to receive(:buildImageProc).with(project, oldBranch, "new_ref_id").and_return(func)
+            expect(workerPool).to receive(:submit).with(func)
+            
+            scheduler.checkBranches project, remoteBranches
+            
         end
         
     end

@@ -163,7 +163,7 @@ module Dockmaster
             
             procs = []
             
-            oldTags = project.workingCopy_dataset.where(:type => "tag").map(:name)
+            oldTags = Dockmaster::Models::WorkingCopy.where(:project_id => project.id, :type => "tag").map(:name)
             newTags = remoteTags.select { |key| !oldTags.include? key }
             
             Dockmaster::log.info "checkTags - tags to check for project #{project.name} (#{project.url}): #{newTags}"
