@@ -261,7 +261,58 @@ describe "Scheduler" do
     
     context "checkTags" do
         
-        it "nothing" do
+        it "no local or remote tags" do
+            
+            checkPool = Dockmaster::ThreadPool.new 1
+            workerPool = Dockmaster::ThreadPool.new 1
+            project = Dockmaster::Models::Project.new
+            localTag = Dockmaster::Models::WorkingCopy.new :name => "v1.0.0", :ref => "1.0.0"
+            localTags = [
+                localTag
+            ]
+            remoteTags = {}
+            func = Proc.new {}
+            
+            expect(project).to receive(:id).and_return(1)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(2).and_return(checkPool)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(4).and_return(workerPool)
+            expect(Dockmaster::Models::WorkingCopy).to receive(:where).with(:project_id => 1, :type => "tag").and_return(localTags)
+            expect(localTags).to receive(:map).with(:name).and_return([])
+            expect(workerPool).not_to receive(:submit)
+            
+            scheduler = Dockmaster::Scheduler.new 2, 4
+            scheduler.checkTags project, remoteTags
+            
+        end
+        
+        it "new remote tag" do
+            
+            checkPool = Dockmaster::ThreadPool.new 1
+            workerPool = Dockmaster::ThreadPool.new 1
+            project = Dockmaster::Models::Project.new
+            localTag = Dockmaster::Models::WorkingCopy.new :name => "v1.0.0", :ref => "1.0.0"
+            remoteTag = Dockmaster::Models::WorkingCopy.new :name => "v2.0.0", :ref => "new_ref_id"
+            localTags = [
+                localTag
+            ]
+            remoteTags = { remoteTag.name => remoteTag.ref }
+            func = Proc.new {}
+            
+            expect(project).to receive(:id).and_return(1)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(2).and_return(checkPool)
+            expect(Dockmaster::ThreadPool).to receive(:new).with(4).and_return(workerPool)
+            expect(Dockmaster::Models::WorkingCopy).to receive(:where).with(:project_id => 1, :type => "tag").and_return(localTags)
+            expect(localTags).to receive(:map).with(:name).and_return(["v1.0.0"])
+            expect(workerPool).to receive(:submit).with(func)
+            expect(Dockmaster::Models::WorkingCopy).to receive(:new).with(:ref => remoteTag.ref, :name => remoteTag.name, :type => "tag").and_return(remoteTag)
+            expect(project).to receive(:add_workingCopy).with(remoteTag)
+            
+            scheduler = Dockmaster::Scheduler.new 2, 4
+            
+            expect(scheduler).to receive(:buildImageProc).with(project, remoteTag, remoteTag.ref).and_return(func)
+            
+            scheduler.checkTags project, remoteTags
+            
         end
         
     end
