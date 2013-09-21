@@ -72,7 +72,7 @@ module Dockmaster
                 buildHistory = Dockmaster::Models::BuildHistory.new
                 buildHistory.ref = remoteWorkingCopyRef
                 buildHistory.date = Time.now
-                buildHistory.successful = 0
+                buildHistory.successful = Dockmaster::Models::BuildHistory::BUILD_BROKEN
                 
                 localWorkingCopy.add_buildHistory buildHistory
                 
@@ -88,7 +88,7 @@ module Dockmaster
                     localWorkingCopy.ref = remoteWorkingCopyRef
                     localWorkingCopy.save
                     
-                    buildHistory.successful = 1
+                    buildHistory.successful = Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL
                     
                 end
                 

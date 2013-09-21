@@ -11,19 +11,15 @@ module Dockmaster
         require "dockmaster/models/package"
         require "dockmaster/util/buildProgressMonitor"
         
-        Sequel::Model.db.transaction do
+        Sequel::Model.db.create_table? "base_images" do
             
-            Sequel::Model.db.create_table? "base_images" do
-                
-                primary_key :id
-                DateTime :date
-                String :name
-                String :version
-                String :baseImage
-                String :provision
-                String :provisionVersion
-                
-            end
+            primary_key :id
+            DateTime :date
+            String :name
+            String :version
+            String :baseImage
+            String :provision
+            String :provisionVersion
             
         end
         

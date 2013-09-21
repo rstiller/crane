@@ -6,7 +6,7 @@ describe "Scheduler" do
     require "config"    
     
     Settings["db.path"] = ":memory:"
-    Settings["logging.level"] = "FATAL"
+    Settings["logging.level"] = "ERROR"
     
     require "log"
     require "database"
@@ -51,7 +51,7 @@ describe "Scheduler" do
             expect(Dockmaster::ThreadPool).to receive(:new).twice.and_return(pool)
             expect(pool).to receive(:submit).with(func)
             
-            scheduler = Dockmaster::Scheduler.new 2, 4
+            scheduler = Dockmaster::Scheduler.new 1, 1
             scheduler.checkProject project
             
             expect(originalFunc).not_to eq(nil)
@@ -87,7 +87,7 @@ describe "Scheduler" do
             expect(Dockmaster::ThreadPool).to receive(:new).twice.and_return(pool)
             expect(pool).to receive(:submit).with(func)
             
-            scheduler = Dockmaster::Scheduler.new 2, 4
+            scheduler = Dockmaster::Scheduler.new 1, 1
             scheduler.checkProject project
             
             expect(originalFunc).not_to eq(nil)
@@ -109,7 +109,30 @@ describe "Scheduler" do
     
     context "buildImage" do
         
-        it "nothing" do
+        it "regular workflow" do
+            
+            project = Dockmaster::Models::Project.new
+            localWorkingCopy = Dockmaster::Models::WorkingCopy.new
+            remoteWorkingCopyRef = "ref_id"
+            
+            pool = Dockmaster::ThreadPool.new 1
+            buildHistory = Dockmaster::Models::BuildHistory.new
+            
+            expect(Dockmaster::ThreadPool).to receive(:new).twice.and_return(pool)
+            expect(Dockmaster::Models::BuildHistory).to receive(:new).and_return(buildHistory)
+            expect(buildHistory).to receive(:ref=).with(remoteWorkingCopyRef)
+            expect(buildHistory).to receive(:date=)
+            expect(buildHistory).to receive(:successful=).with(Dockmaster::Models::BuildHistory::BUILD_BROKEN)
+            expect(buildHistory).to receive(:successful=).with(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(localWorkingCopy).to receive(:add_buildHistory).with(buildHistory)
+            expect(localWorkingCopy).to receive(:buildImages).with(project, buildHistory)
+            expect(localWorkingCopy).to receive(:ref=).with(remoteWorkingCopyRef)
+            expect(localWorkingCopy).to receive(:save)
+            expect(buildHistory).to receive(:save)
+            
+            scheduler = Dockmaster::Scheduler.new 1, 1
+            scheduler.buildImage project, localWorkingCopy, remoteWorkingCopyRef
+            
         end
         
     end

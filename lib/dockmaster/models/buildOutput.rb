@@ -5,16 +5,12 @@ module Dockmaster
     
     module Models
         
-        Sequel::Model.db.transaction do
+        Sequel::Model.db.create_table? "build_outputs" do
             
-            Sequel::Model.db.create_table? "build_outputs" do
-                
-                primary_key :id
-                foreign_key :build_history_id
-                String :name
-                String :output, :text => true
-                
-            end
+            primary_key :id
+            foreign_key :build_history_id
+            String :name
+            String :output, :text => true
             
         end
         

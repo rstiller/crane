@@ -15,17 +15,13 @@ module Dockmaster
         require "dockmaster/util/buildProgressMonitor"
         require "dockmaster/util/docker"
         
-        Dockmaster::tx do
+        Sequel::Model.db.create_table? "working_copies" do
             
-            Sequel::Model.db.create_table? "working_copies" do
-                
-                primary_key :id
-                foreign_key :project_id
-                String :name
-                String :ref
-                String :type
-                
-            end
+            primary_key :id
+            foreign_key :project_id
+            String :name
+            String :ref
+            String :type
             
         end
         

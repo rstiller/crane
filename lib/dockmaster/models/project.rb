@@ -7,16 +7,12 @@ module Dockmaster
         
         require "dockmaster/models/workingCopy"
         
-        Dockmaster::tx do
+        Sequel::Model.db.create_table? "projects" do
             
-            Sequel::Model.db.create_table? "projects" do
-                
-                primary_key :id
-                String :name, :unique => true
-                String :url
-                Integer :buildTags
-                
-            end
+            primary_key :id
+            String :name, :unique => true
+            String :url
+            Integer :buildTags
             
         end
         
