@@ -42,5 +42,5 @@ exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/
 exec { 'bundle install':
     cwd     => '/vagrant',
     user    => root,
-    path    => [ '/usr/bin/', '/bin' ],
+    path    => [ '/usr/bin/', '/bin', '/usr/local/bin/', ],
 }
