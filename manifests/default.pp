@@ -15,21 +15,19 @@ package { [
     'lxc',
     'cgroup-lite',
     'redir',
-#    'linux-image-extra-3.2.0-23-virtual',
-#    'linux-image-3.8.0-30-generic',
-#    'linux-headers-3.8.0-30-generic',
-#    'linux-generic-lts-raring',
     ]:
     ensure => latest,
 } ->
 
-#package { ['virtualbox-guest-additions']:
-#    ensure => latest,
-#} ->
-
 package { ['bundler']:
     provider => gem,
     ensure   => latest,
+} ->
+
+exec { 'bundle install':
+    cwd     => '/vagrant',
+    user    => root,
+    path    => [ '/usr/bin/', '/bin', '/usr/local/bin/', ],
 } ->
 
 exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/docker-latest && chmod +x /usr/bin/docker':
@@ -39,8 +37,32 @@ exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/
     creates => '/usr/bin/docker',
 } ->
 
-exec { 'bundle install':
-    cwd     => '/vagrant',
+file { '/etc/init/docker.conf':
+    source => "puppet:///modules/dockmaster/docker.upstart",
+    owner  => root,
+    group  => root,
+    mode   => 0755,
+} ->
+
+service { 'docker':
+    ensure => running,
+} ->
+
+exec { 'docker pull samalba/docker-registry':
     user    => root,
-    path    => [ '/usr/bin/', '/bin', '/usr/local/bin/', ],
+    path    => [ '/usr/bin/', ],
+    timeout => 0,
+} ->
+
+file { '/var/dockmaster/registry.yml':
+    source => "puppet:///modules/dockmaster/registry.yml",
+    owner  => root,
+    group  => root,
+} ->
+
+exec { 'docker run -d samalba/docker-registry && touch /var/lock/docker-registry.lock':
+    environment => [ 'SETTINGS_FLAVOR=prod', 'DOCKER_REGISTRY_CONFIG=/var/dockmaster/registry.yml', ],
+    user    => root,
+    path    => [ '/usr/bin/', '/bin' ],
+    creates => "/var/lock/docker-registry.lock",
 }
