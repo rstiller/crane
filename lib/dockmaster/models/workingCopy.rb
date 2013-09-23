@@ -11,6 +11,7 @@ module Dockmaster
         require "dockmaster/models/buildHistory"
         require "dockmaster/models/buildOutput"
         require "dockmaster/models/infrastructure"
+        require "dockmaster/models/runConfig"
         require "dockmaster/models/service"
         require "dockmaster/util/buildProgressMonitor"
         require "dockmaster/util/docker"
@@ -121,7 +122,19 @@ module Dockmaster
                 
             end
             
-            def buildServiceImage(infra, environment, variables, serviceName, serviceConfig)
+            def buildRunCommand(project, environment, serviceName, serviceConfig, imageName, imageVersion)
+                
+                runConfig = Models::RunConfig.new :service => serviceName,
+                    :environment => environment,
+                    :workingCopy => name,
+                    :image => "#{imageName}:#{imageVersion}",
+                    :command => "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
+                
+                project.add_runConfig runConfig
+                
+            end
+            
+            def buildServiceImage(project, infra, environment, variables, serviceName, serviceConfig, buildHistory)
                 
                 service = Service.new infra, serviceName, serviceConfig
                 
@@ -133,19 +146,21 @@ module Dockmaster
                 imageVersion = "#{environment}-#{name}"
                 lineCount = File.open(dockerfile).readlines.length
                 
+                buildRunCommand project, environment, serviceName, service, imageName, imageVersion
+                
                 input, output, error, waiter = Dockmaster::Docker.build dockerfile, imageName, imageVersion
                 
                 serviceMonitor input, output, error, waiter, lineCount - 1
                 
             end
             
-            def buildEnvironment(infra, environment, variables)
+            def buildEnvironment(project, infra, environment, variables, buildHistory)
                 
                 monitors = {}
                 
                 infra.services.each do |serviceName, serviceConfig|
                     
-                    monitors[serviceName] = buildServiceImage infra, environment, variables, serviceName, serviceConfig
+                    monitors[serviceName] = buildServiceImage project, infra, environment, variables, serviceName, serviceConfig, buildHistory
                     
                 end
                 
@@ -169,7 +184,7 @@ module Dockmaster
                 
                 infra.environments.each do |environment, variables|
                     
-                    monitors[environment] = buildEnvironment infra, environment, variables
+                    monitors[environment] = buildEnvironment project, infra, environment, variables, buildHistory
                     
                 end
                 

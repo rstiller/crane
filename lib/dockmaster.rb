@@ -15,6 +15,9 @@ module Dockmaster
     
     require "dockmaster/models/baseImage"
     require "dockmaster/models/project"
+    require "dockmaster/models/account"
+    require "dockmaster/models/client"
+    require "dockmaster/models/clientGroup"
     require "dockmaster/util/scheduler"
     
     class App
@@ -36,6 +39,11 @@ module Dockmaster
             project = Dockmaster::Models::Project[:name => "dockmaster-example"]
             
             Dockmaster::log.info "#{project.name} (#{project.url})"
+            
+            project.runConfig_dataset.each do |runConfig|
+                Dockmaster::log.info "    - #{runConfig.service} #{runConfig.environment} #{runConfig.workingCopy} #{runConfig.image} #{runConfig.command}"
+            end
+            
             project.workingCopy_dataset.each do |workingCopy|
                 Dockmaster::log.info "    - #{workingCopy.name} (#{workingCopy.type} - #{workingCopy.ref})"
                 workingCopy.buildHistory_dataset.each do |buildHistory|
