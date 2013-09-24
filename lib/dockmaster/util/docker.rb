@@ -13,6 +13,12 @@ module Dockmaster
             
         end
         
+        def self.pullImage(name)
+            
+            Open3.popen3 "docker pull #{name}"
+            
+        end
+        
     end
     
 end

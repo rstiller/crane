@@ -124,13 +124,27 @@ module Dockmaster
             
             def buildRunCommand(project, environment, serviceName, serviceConfig, imageName, imageVersion)
                 
-                runConfig = Models::RunConfig.new :service => serviceName,
+                runConfig = Models::RunConfig.where :service => serviceName,
                     :environment => environment,
-                    :workingCopy => name,
-                    :image => "#{imageName}:#{imageVersion}",
-                    :command => "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
+                    :workingCopy => name
                 
-                project.add_runConfig runConfig
+                if runConfig.nil?
+                    
+                    runConfig = Models::RunConfig.new :service => serviceName,
+                        :environment => environment,
+                        :workingCopy => name,
+                        :image => "#{imageName}:#{imageVersion}",
+                        :command => "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
+                    
+                    project.add_runConfig runConfig
+                    
+                else
+                    
+                    runConfig.image = "#{imageName}:#{imageVersion}"
+                    runConfig.command = "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
+                    runConfig.save
+                    
+                end
                 
             end
             
