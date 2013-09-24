@@ -10,6 +10,7 @@ Vagrant::configure("2") do |config|
         cfg.vm.provision :puppet do |puppet|
             puppet.module_path = [ "manifests" ]
         end
+        cfg.vm.network "private_network", ip: "192.168.1.2"
     end
     
     config.vm.define :docker_client do |cfg|
@@ -18,6 +19,7 @@ Vagrant::configure("2") do |config|
             puppet.module_path = [ "manifests" ]
             puppet.manifest_file = "docker_client.pp"
         end
+        cfg.vm.network "private_network", ip: "192.168.1.3"
     end
     
     config.vm.provider :virtualbox do |v, override|
