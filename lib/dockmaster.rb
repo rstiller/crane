@@ -18,6 +18,7 @@ module Dockmaster
     require "dockmaster/models/account"
     require "dockmaster/models/client"
     require "dockmaster/models/clientGroup"
+    require "dockmaster/util/docker"
     require "dockmaster/util/scheduler"
     
     class App
@@ -55,6 +56,14 @@ module Dockmaster
             end
             
         end
+        
+        client = Dockmaster::Models::Client.new :address => "192.168.1.3", :dockerPort => 4243
+        
+        client.run "images", proc { |output, error, returnCode|
+            puts "output #{output}"
+            puts "error #{error}"
+            puts "returnCode #{returnCode}"
+        }
         
 #        rubyPackage = Dockmaster::Models::Package.new :name => "ruby1.9.1"
 #        

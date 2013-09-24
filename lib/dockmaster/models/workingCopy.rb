@@ -14,7 +14,6 @@ module Dockmaster
         require "dockmaster/models/runConfig"
         require "dockmaster/models/service"
         require "dockmaster/util/buildProgressMonitor"
-        require "dockmaster/util/docker"
         
         Sequel::Model.db.create_table? "working_copies" do
             
@@ -162,7 +161,9 @@ module Dockmaster
                 
                 buildRunCommand project, environment, serviceName, service, imageName, imageVersion
                 
-                input, output, error, waiter = Dockmaster::Docker.build dockerfile, imageName, imageVersion
+                dockerfileFolder = File.dirname dockerfile
+                
+                input, output, error, waiter = Open3.popen3 "docker build -t #{imageName}:#{imageVersion} .", :chdir => dockerfileFolder
                 
                 serviceMonitor input, output, error, waiter, lineCount - 1
                 
