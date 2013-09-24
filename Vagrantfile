@@ -7,11 +7,17 @@ Vagrant::configure("2") do |config|
     
     config.vm.define :dockmaster do |cfg|
         cfg.vm.network :forwarded_port, guest: 4567, host: 8080, auto_correct: true
+        cfg.vm.provision :puppet do |puppet|
+            puppet.module_path = [ "manifests" ]
+        end
     end
     
-    config.vm.provision :puppet do |puppet|
-        puppet.module_path = [ "manifests" ]
-        #puppet.options = "--verbose --debug"
+    config.vm.define :docker_client do |cfg|
+        cfg.vm.network :forwarded_port, guest: 4243, host: 4243, auto_correct: true
+        cfg.vm.provision :puppet do |puppet|
+            puppet.module_path = [ "manifests" ]
+            puppet.manifest_file = "docker_client.pp"
+        end
     end
     
     config.vm.provider :virtualbox do |v, override|
