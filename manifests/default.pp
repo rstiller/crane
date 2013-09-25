@@ -15,6 +15,10 @@ package { [
     'lxc',
     'cgroup-lite',
     'redir',
+    'build-essential',
+    'python-dev',
+    'libevent-dev',
+    'python-pip'
     ]:
     ensure => latest,
 } ->
@@ -37,32 +41,42 @@ exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/
     creates => '/usr/bin/docker',
 } ->
 
-file { '/etc/init/docker.conf':
-    source => "puppet:///modules/dockmaster/docker.upstart",
+file { '/etc/init/docker-daemon.conf':
+    source => "puppet:///modules/dockmaster/docker_daemon.upstart",
     owner  => root,
     group  => root,
     mode   => 0755,
 } ->
 
-service { 'docker':
+service { 'docker-daemon':
     ensure => running,
 } ->
 
-exec { 'docker pull samalba/docker-registry':
+exec { 'git clone https://github.com/dotcloud/docker-registry.git /var/dockmaster/registry':
     user    => root,
-    path    => [ '/usr/bin/', ],
-    timeout => 0,
+    path    => [ '/usr/bin/', '/bin' ],
+    creates => "/var/dockmaster/registry",
 } ->
 
-file { '/var/dockmaster/registry.yml':
+file { '/etc/init/docker-registry.conf':
+    source => "puppet:///modules/dockmaster/docker_registry.upstart",
+    owner  => root,
+    group  => root,
+    mode   => 0755,
+} ->
+
+file { '/var/dockmaster/registry/config.yml':
     source => "puppet:///modules/dockmaster/registry.yml",
     owner  => root,
     group  => root,
 } ->
 
-exec { 'docker run -d samalba/docker-registry && touch /var/lock/docker-registry.lock':
-    environment => [ 'SETTINGS_FLAVOR=prod', 'DOCKER_REGISTRY_CONFIG=/var/dockmaster/registry.yml', ],
+exec { 'pip install -r requirements.txt':
     user    => root,
     path    => [ '/usr/bin/', '/bin' ],
-    creates => "/var/lock/docker-registry.lock",
+    creates => "/var/dockmaster/registry/wsgi.pyc",
+} ->
+
+service { 'docker-registry':
+    ensure => running,
 }

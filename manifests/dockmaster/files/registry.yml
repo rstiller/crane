@@ -1,8 +1,8 @@
 common:
     loglevel: info
-
-prod:
-    loglevel: warn
     storage: local
     storage_path: /srv/docker/
     smtp_host: localhost
+
+prod:
+    loglevel: warn
