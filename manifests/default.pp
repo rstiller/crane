@@ -72,6 +72,7 @@ file { '/var/dockmaster/registry/config.yml':
 } ->
 
 exec { 'pip install -r requirements.txt':
+    cwd     => "/var/dockmaster/registry/",
     user    => root,
     path    => [ '/usr/bin/', '/bin' ],
     creates => "/var/dockmaster/registry/wsgi.pyc",
