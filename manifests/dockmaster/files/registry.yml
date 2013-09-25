@@ -2,7 +2,7 @@ common:
     secret_key: R61kpFEPbIJc25PUBdbOhl1tP5MFhJarL2mIg2k7fubadpFWPwhKTBxuzZkrCNKX
     loglevel: info
     storage: local
-    storage_path: /srv/docker/
+    storage_path: /srv/docker
     smtp_host: localhost
 
 prod:
