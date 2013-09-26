@@ -7,12 +7,10 @@ module Dockmaster
         
         Sequel::Model.db.create_table? "run_configs" do
             
-            primary_key :service, :environment, :workingCopy
+            primary_key :imageName, :imageVersion
             foreign_key :project_id
-            String :service
-            String :environment
-            String :workingCopy
-            String :image
+            String :imageName
+            String :imageVersion
             String :command
             
         end

@@ -9,6 +9,9 @@ db:
 schedule:
     check: 10s
 
+registry:
+    port: 5000
+
 logging:
     level: DEBUG
     file: /var/log/dockmaster.log

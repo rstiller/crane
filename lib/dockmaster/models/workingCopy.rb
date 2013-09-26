@@ -3,11 +3,15 @@ require "digest/md5"
 require "sequel"
 require "fileutils"
 require "configliere"
+require "rubygems"
+require "json"
 
 module Dockmaster
     
     module Models
         
+        require "config"
+        require "ipAddresses"
         require "dockmaster/models/buildHistory"
         require "dockmaster/models/buildOutput"
         require "dockmaster/models/infrastructure"
@@ -101,45 +105,90 @@ module Dockmaster
                 
             end
             
-            def serviceMonitor(input, output, error, waiter, lineCount)
+            def imageRef(imageName, imageVersion)
+                
+                ref = ""
+                
+                Open3.popen3 "docker inspect #{imageName}:#{imageVersion}" do |input, output, error, waiter|
+                    
+                    info = JSON.parse output.read
+                    ref = info[0]["ref"]
+                    
+                end
+                
+                ref
+                
+            end
+            
+            def tagImage(ref, imageName, imageVersion)
+                
+                addresses = Dockmaster::getEthernetAddresses
+                
+                addresses.each do |address|
+                    
+                    Open3.popen3 "docker tag #{ref} #{address}:#{Settings['registry.port']}/#{imageName}:#{imageVersion}" do |input, output, error, waiter|
+                    end
+                    
+                end
+                
+            end
+            
+            def publishImage(imageName, imageVersion)
+                
+                addresses = Dockmaster::getEthernetAddresses
+                
+                addresses.each do |address|
+                    
+                    Open3.popen3 "docker push #{address}:#{Settings['registry.port']}/#{imageName} #{imageVersion}" do |input, output, error, waiter|
+                    end
+                    
+                end
+                
+            end
+            
+            def serviceMonitor(imageName, imageVersion, input, output, error, waiter, lineCount)
                 
                 out = ""
                 monitor = Dockmaster::BuildProgressMonitor.new out, input, output, error, waiter, lineCount
                 monitor.errorCallback = proc {
+                    
                     buildOutput.output = out
                     buildHistory.successful = Dockmaster::Models::BuildHistory::BUILD_BROKEN
                     buildHistory.save
                     buildOutput.save
+                    
                 }
                 monitor.finishCallback = proc {
+                    
                     buildOutput.output = out
                     buildHistory.save
                     buildOutput.save
+                    
+                    ref = imageRef imageName, imageVersion
+                    tagImage ref, imageName, imageVersion
+                    publishImage imageName, imageVersion
+                    
                 }
                 
                 monitor
                 
             end
             
-            def buildRunCommand(project, environment, serviceName, serviceConfig, imageName, imageVersion)
+            def buildRunCommand(project, serviceConfig, imageName, imageVersion)
                 
-                runConfig = Models::RunConfig.where :service => serviceName,
-                    :environment => environment,
-                    :workingCopy => name
+                runConfig = Models::RunConfig.where :imageName => imageName, :imageVersion => imageVersion
+                runConfig = runConfig.first
                 
                 if runConfig.nil?
                     
-                    runConfig = Models::RunConfig.new :service => serviceName,
-                        :environment => environment,
-                        :workingCopy => name,
-                        :image => "#{imageName}:#{imageVersion}",
+                    runConfig = Models::RunConfig.new :imageName => imageName,
+                        :imageVersion => imageVersion,
                         :command => "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
                     
                     project.add_runConfig runConfig
                     
                 else
                     
-                    runConfig.image = "#{imageName}:#{imageVersion}"
                     runConfig.command = "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
                     runConfig.save
                     
@@ -159,13 +208,13 @@ module Dockmaster
                 imageVersion = "#{environment}-#{name}"
                 lineCount = File.open(dockerfile).readlines.length
                 
-                buildRunCommand project, environment, serviceName, service, imageName, imageVersion
+                buildRunCommand project, service, imageName, imageVersion
                 
                 dockerfileFolder = File.dirname dockerfile
                 
                 input, output, error, waiter = Open3.popen3 "docker build -t #{imageName}:#{imageVersion} .", :chdir => dockerfileFolder
                 
-                serviceMonitor input, output, error, waiter, lineCount - 1
+                serviceMonitor imageName, imageVersion, input, output, error, waiter, lineCount - 1
                 
             end
             

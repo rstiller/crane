@@ -11,6 +11,7 @@ module Dockmaster
     require "config"
     require "log"
     require "database"
+    require "ipAddresses"
     require "dockmaster/util/hashToObject"
     
     require "dockmaster/models/baseImage"
@@ -18,7 +19,6 @@ module Dockmaster
     require "dockmaster/models/account"
     require "dockmaster/models/client"
     require "dockmaster/models/clientGroup"
-    require "dockmaster/util/docker"
     require "dockmaster/util/scheduler"
     
     class App
@@ -42,7 +42,7 @@ module Dockmaster
             Dockmaster::log.info "#{project.name} (#{project.url})"
             
             project.runConfig_dataset.each do |runConfig|
-                Dockmaster::log.info "    - #{runConfig.service} #{runConfig.environment} #{runConfig.workingCopy} #{runConfig.image} #{runConfig.command}"
+                Dockmaster::log.info "    - #{runConfig.imageName} #{runConfig.imageVersion} #{runConfig.command}"
             end
             
             project.workingCopy_dataset.each do |workingCopy|
@@ -57,13 +57,13 @@ module Dockmaster
             
         end
         
-        client = Dockmaster::Models::Client.new :address => "192.168.1.3", :dockerPort => 4243
-        
-        client.run "images", proc { |output, error, returnCode|
-            puts "output #{output}"
-            puts "error #{error}"
-            puts "returnCode #{returnCode}"
-        }
+#        client = Dockmaster::Models::Client.new :address => "192.168.1.3", :dockerPort => 4243
+#        
+#        client.run "images", proc { |output, error, returnCode|
+#            puts "output #{output}"
+#            puts "error #{error}"
+#            puts "returnCode #{returnCode}"
+#        }
         
 #        rubyPackage = Dockmaster::Models::Package.new :name => "ruby1.9.1"
 #        
