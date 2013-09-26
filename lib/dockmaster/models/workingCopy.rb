@@ -152,18 +152,24 @@ module Dockmaster
                 
                 addresses = Dockmaster::getEthernetAddresses
                 
-                Dockmaster::loginRegistry
-                
-                addresses.each do |address|
+                Dockmaster::loginRegistry proc { |output, error, returnCode|
                     
-                    Open3.popen3 "docker push #{address}:#{Settings['registry.port']}/#{imageName} #{imageVersion}" do |input, output, error, waiter|
-                        content = "publish image for repository #{imageName} - tag #{imageVersion} - address #{address}"
-                        content.concat output.read
-                        content.concat error.read
-                        out.concat content
+                    if returnCode.exited?
+                        
+                        addresses.each do |address|
+                            
+                            Open3.popen3 "docker push #{address}:#{Settings['registry.port']}/#{imageName} #{imageVersion}" do |input, output, error, waiter|
+                                content = "publish image for repository #{imageName} - tag #{imageVersion} - address #{address}"
+                                content.concat output.read
+                                content.concat error.read
+                                out.concat content
+                            end
+                            
+                        end
+                        
                     end
                     
-                end
+                }
                 
             end
             
