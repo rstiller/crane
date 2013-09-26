@@ -12,6 +12,7 @@ module Dockmaster
     require "log"
     require "database"
     require "ipAddresses"
+    require "loginRegistry"
     require "dockmaster/util/hashToObject"
     
     require "dockmaster/models/baseImage"
@@ -57,13 +58,19 @@ module Dockmaster
             
         end
         
-#        client = Dockmaster::Models::Client.new :address => "192.168.1.3", :dockerPort => 4243
-#        
-#        client.run "images", proc { |output, error, returnCode|
+#        Dockmaster::loginRegistry proc { |output, error, returnCode|
 #            puts "output #{output}"
 #            puts "error #{error}"
 #            puts "returnCode #{returnCode}"
 #        }
+        
+        client = Dockmaster::Models::Client.new :address => "192.168.1.3", :dockerPort => 4243
+        
+        client.login "192.168.1.2", proc { |output, error, returnCode|
+            puts "output #{output}"
+            puts "error #{error}"
+            puts "returnCode #{returnCode}"
+        }
         
 #        rubyPackage = Dockmaster::Models::Package.new :name => "ruby1.9.1"
 #        

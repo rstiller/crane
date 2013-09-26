@@ -11,6 +11,9 @@ schedule:
 
 registry:
     port: 5000
+    user: dockmaster
+    password: dockmaster
+    email: no-reply@dockmaster.io
 
 logging:
     level: DEBUG

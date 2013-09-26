@@ -3,16 +3,16 @@ module Dockmaster
     
     class BuildProgressMonitor
         
-        def initialize(channel, input, output, error, waiter, stepCount)
+        def initialize(channel, input, output, error, waiter, stepCount, updateCallback, finishCallback, errorCallback)
             
             @step = 0
             @stepCount = stepCount
             @channel = channel
             @output = output
             @error = error
-            @updateCallback = nil
-            @finishCallback = nil
-            @errorCallback = nil
+            @updateCallback = updateCallback
+            @finishCallback = finishCallback
+            @errorCallback = errorCallback
             
             Thread.new {
                 
@@ -28,11 +28,11 @@ module Dockmaster
                     
                 end
                 
-                finish waiter
-                
                 [input, output, error].each do |stream|
                     stream.close
                 end
+                
+                finish waiter
                 
             }
             
@@ -40,22 +40,26 @@ module Dockmaster
         
         def finish(waiter)
             
-            if waiter.value != 0
-                
-                if !@errorCallback.nil?
+            begin
+                if waiter.value.exited?
                     
-                    @errorCallback.call
+                    if !@finishCallback.nil?
+                        
+                        @finishCallback.call
+                        
+                    end
+                    
+                else
+                    
+                    if !@errorCallback.nil?
+                        
+                        @errorCallback.call
+                        
+                    end
                     
                 end
-                
-            elsif
-                
-                if !@finishCallback.nil?
-                    
-                    @finishCallback.call
-                    
-                end
-                
+            rescue => exception
+                puts exception
             end
             
         end
@@ -102,18 +106,6 @@ module Dockmaster
         
         def progress
             ((@step * 1.0) / (@stepCount * 1.0)) * 100.0
-        end
-        
-        def updateCallback= (clb)
-            @updateCallback = clb
-        end
-        
-        def errorCallback= (clb)
-            @errorCallback = clb
-        end
-        
-        def finishCallback= (clb)
-            @finishCallback = clb
         end
         
     end

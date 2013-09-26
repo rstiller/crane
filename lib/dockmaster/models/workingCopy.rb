@@ -10,7 +10,7 @@ module Dockmaster
     
     module Models
         
-        require "config"
+        require "loginRegistry"
         require "ipAddresses"
         require "dockmaster/models/buildHistory"
         require "dockmaster/models/buildOutput"
@@ -105,14 +105,25 @@ module Dockmaster
                 
             end
             
-            def imageRef(imageName, imageVersion)
+            def imageRef(out, imageName, imageVersion)
                 
                 ref = ""
                 
                 Open3.popen3 "docker inspect #{imageName}:#{imageVersion}" do |input, output, error, waiter|
                     
-                    info = JSON.parse output.read
-                    ref = info[0]["ref"]
+                    jsonContent = output.read
+                    
+                    content = "inspect image for repository #{imageName} - tag #{imageVersion}"
+                    content.concat jsonContent
+                    content.concat error.read
+                    out.concat content
+                    
+                    if waiter.value.exited?
+                        
+                        info = JSON.parse jsonContent
+                        ref = info[0]["id"]
+                        
+                    end
                     
                 end
                 
@@ -120,37 +131,46 @@ module Dockmaster
                 
             end
             
-            def tagImage(ref, imageName, imageVersion)
+            def tagImage(out, ref, imageName, imageVersion)
                 
                 addresses = Dockmaster::getEthernetAddresses
                 
                 addresses.each do |address|
                     
-                    Open3.popen3 "docker tag #{ref} #{address}:#{Settings['registry.port']}/#{imageName}:#{imageVersion}" do |input, output, error, waiter|
+                    Open3.popen3 "docker tag #{ref} #{address}:#{Settings['registry.port']}/#{imageName} #{imageVersion}" do |input, output, error, waiter|
+                        content = "tag image for repository #{imageName} - tag #{imageVersion} - address #{address}"
+                        content.concat output.read
+                        content.concat error.read
+                        out.concat content
                     end
                     
                 end
                 
             end
             
-            def publishImage(imageName, imageVersion)
+            def publishImage(out, imageName, imageVersion)
                 
                 addresses = Dockmaster::getEthernetAddresses
+                
+                Dockmaster::loginRegistry
                 
                 addresses.each do |address|
                     
                     Open3.popen3 "docker push #{address}:#{Settings['registry.port']}/#{imageName} #{imageVersion}" do |input, output, error, waiter|
+                        content = "publish image for repository #{imageName} - tag #{imageVersion} - address #{address}"
+                        content.concat output.read
+                        content.concat error.read
+                        out.concat content
                     end
                     
                 end
                 
             end
             
-            def serviceMonitor(imageName, imageVersion, input, output, error, waiter, lineCount)
+            def serviceMonitor(buildOutput, buildHistory, imageName, imageVersion, input, output, error, waiter, lineCount)
                 
                 out = ""
-                monitor = Dockmaster::BuildProgressMonitor.new out, input, output, error, waiter, lineCount
-                monitor.errorCallback = proc {
+                errorCallback = proc {
                     
                     buildOutput.output = out
                     buildHistory.successful = Dockmaster::Models::BuildHistory::BUILD_BROKEN
@@ -158,19 +178,19 @@ module Dockmaster
                     buildOutput.save
                     
                 }
-                monitor.finishCallback = proc {
+                finishCallback = proc {
+                    
+                    ref = imageRef out, imageName, imageVersion
+                    tagImage out, ref, imageName, imageVersion
+                    publishImage out, imageName, imageVersion
                     
                     buildOutput.output = out
                     buildHistory.save
                     buildOutput.save
                     
-                    ref = imageRef imageName, imageVersion
-                    tagImage ref, imageName, imageVersion
-                    publishImage imageName, imageVersion
-                    
                 }
                 
-                monitor
+                Dockmaster::BuildProgressMonitor.new out, input, output, error, waiter, lineCount, nil, finishCallback, errorCallback
                 
             end
             
@@ -214,7 +234,7 @@ module Dockmaster
                 
                 input, output, error, waiter = Open3.popen3 "docker build -t #{imageName}:#{imageVersion} .", :chdir => dockerfileFolder
                 
-                serviceMonitor imageName, imageVersion, input, output, error, waiter, lineCount - 1
+                serviceMonitor buildOutput, buildHistory, imageName, imageVersion, input, output, error, waiter, lineCount - 1
                 
             end
             
