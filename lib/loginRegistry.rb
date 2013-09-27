@@ -4,6 +4,8 @@ require "configliere"
 
 module Dockmaster
     
+    require "dockmaster/util/subprocess"
+    
     def self.loginRegistry(
         callback,
         host = "localhost",
@@ -13,32 +15,7 @@ module Dockmaster
         password = Settings['registry.password'],
         port = Settings['registry.port'])
         
-        input, output, error, waiter = Open3.popen3 "docker -H #{socket} login -e='#{email}' -u='#{user}' -p='#{password}' #{host}:#{port}"
-        
-        Thread.new {
-            
-            consoleOutput = ""
-            consoleError = ""
-            
-            while !output.eof?
-                
-                consoleOutput = consoleOutput + output.gets
-                
-            end
-            
-            while !error.eof?
-                
-                consoleError = consoleError + error.gets
-                
-            end
-            
-            [input, output, error].each do |stream|
-                stream.close
-            end
-            
-            callback.call consoleOutput, consoleError, waiter.value
-            
-        }
+        Dockmaster::subprocess "docker -H #{socket} login -e='#{email}' -u='#{user}' -p='#{password}' #{host}:#{port}", ".", callback
         
     end
     

@@ -9,6 +9,7 @@ module Dockmaster
         
         require "loginRegistry"
         require "dockmaster/models/clientGroup"
+        require "dockmaster/util/subprocess"
         
         Sequel::Model.db.create_table? "clients" do
             
@@ -37,32 +38,7 @@ module Dockmaster
             
             def run(command, callback)
                 
-                input, output, error, waiter = Open3.popen3 "docker -H #{address}:#{dockerPort} #{command}"
-                
-                Thread.new {
-                    
-                    consoleOutput = ""
-                    consoleError = ""
-                    
-                    while !output.eof?
-                        
-                        consoleOutput = consoleOutput + output.gets
-                        
-                    end
-                    
-                    while !error.eof?
-                        
-                        consoleError = consoleError + error.gets
-                        
-                    end
-                    
-                    [input, output, error].each do |stream|
-                        stream.close
-                    end
-                    
-                    callback.call consoleOutput, consoleError, waiter.value
-                    
-                }
+                Dockmaster::subprocess "docker -H #{address}:#{dockerPort} #{command}", ".", callback
                 
             end
             
