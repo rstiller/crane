@@ -8,11 +8,11 @@ module Dockmaster
         
         class Api < Sinatra::Base
             
+            require "dockmaster/controller/api/compatibility"
             require "dockmaster/controller/api/v1/version"
             require "dockmaster/controller/api/v2/version"
             
-            helpers Controller::V1::Compatibility,
-                Controller::V2::Compatibility
+            helpers Controller::Compatibility
             
             register Sinatra::AdvancedRoutes
             register Controller::V1::Version
@@ -24,8 +24,8 @@ module Dockmaster
                     request.env["CONTENT_TYPE"] = "application/vnd.dockmaster.v1-0-0+json"
                 end
                 
-                unless request.media_type.match /^application\/vnd\.dockmaster\.v1-0-0\+(json|xml)/ or
-                    request.media_type.match /^application\/vnd\.dockmaster\.v2-0-0\+(json|xml)/
+                unless request.media_type.match Controller::V1::Version::REGEXP or
+                    request.media_type.match Controller::V2::Version::REGEXP
                     
                     halt 415, "Unsupported API Version"
                     

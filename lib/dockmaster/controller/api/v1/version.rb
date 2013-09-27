@@ -7,29 +7,16 @@ module Dockmaster
         
         module V1
             
-            module Compatibility
-                
-                def compatible_v1_0_0
-                    
-                    unless request.media_type.match /^application\/vnd\.dockmaster\.v1-0-0\+(json|xml)/
-                        
-                        pass
-                        
-                    end
-                    
-                end
-                
-            end
-            
             module Version
                 
+                REGEXP = /^application\/vnd\.dockmaster\.v1-0-0\+(json|xml)/
                 VERSION = "1.0.0"
                 
                 def self.registered(app)           
                     
                     app.get "/version" do
                         
-                        compatible_v1_0_0
+                        compatible Version::REGEXP
                         
                         content_type "text/plain"
                         body VERSION
