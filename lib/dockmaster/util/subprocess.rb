@@ -1,6 +1,22 @@
 
 module Dockmaster
     
+    def self.readLines(out, stream, update)
+        
+        while !stream.eof?
+            
+            line = stream.gets
+            
+            if !update.nil?
+                update.call line
+            end
+            
+            out = out + line
+            
+        end
+        
+    end
+    
     def self.subprocess(cmd, folder = ".", finish = nil, update = nil)
         
         input, output, error, waiter = Open3.popen3 cmd, :chdir => folder
@@ -10,29 +26,8 @@ module Dockmaster
             consoleOutput = ""
             consoleError = ""
             
-            while !output.eof?
-                
-                line = output.gets
-                
-                if !update.nil?
-                    update.call line
-                end
-                
-                consoleOutput = consoleOutput + line
-                
-            end
-            
-            while !error.eof?
-                
-                line = error.gets
-                
-                if !update.nil?
-                    update.call line
-                end
-                
-                consoleError = consoleError + line
-                
-            end
+            Dockmaster::readLines consoleOutput, output, update
+            Dockmaster::readLines consoleError, error, update
             
             [input, output, error].each do |stream|
                 stream.close
