@@ -131,6 +131,13 @@ module Dockmaster
                 
             end
             
+            def logAction(out, heading, output, error)
+                content = heading
+                content.concat output.read
+                content.concat error.read
+                out.concat content
+            end
+            
             def tagImage(out, ref, imageName, imageVersion)
                 
                 addresses = Dockmaster::getEthernetAddresses
@@ -138,10 +145,7 @@ module Dockmaster
                 addresses.each do |address|
                     
                     Open3.popen3 "docker tag #{ref} #{address}:#{Settings['registry.port']}/#{imageName} #{imageVersion}" do |input, output, error, waiter|
-                        content = "tag image for repository #{imageName} - tag #{imageVersion} - address #{address}"
-                        content.concat output.read
-                        content.concat error.read
-                        out.concat content
+                        logAction out, "tag image for repository #{imageName} - tag #{imageVersion} - address #{address}", output, error
                     end
                     
                 end
@@ -159,10 +163,7 @@ module Dockmaster
                         addresses.each do |address|
                             
                             Open3.popen3 "docker push #{address}:#{Settings['registry.port']}/#{imageName} #{imageVersion}" do |input, output, error, waiter|
-                                content = "publish image for repository #{imageName} - tag #{imageVersion} - address #{address}"
-                                content.concat output.read
-                                content.concat error.read
-                                out.concat content
+                                logAction out, "publish image for repository #{imageName} - tag #{imageVersion} - address #{address}", output, error
                             end
                             
                         end

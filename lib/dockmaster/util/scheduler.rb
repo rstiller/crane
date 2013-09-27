@@ -124,6 +124,25 @@ module Dockmaster
             
         end
         
+        def checkBranch(project, branch, remoteBranches, procs)
+            
+            if !remoteBranches.has_key? branch.name
+                
+                branch.delete
+                
+                Dockmaster::log.info "checkBranches - branch '#{branch.name}' not any longer in project '#{project.name}' (#{project.url}) - deleting branch"
+                
+            elsif remoteBranches[branch.name] != branch.ref
+                
+                procs.push buildImageProc(project, branch, remoteBranches[branch.name])
+                
+                Dockmaster::log.info "checkBranches - branch '#{branch.name}' changed (from '#{branch.ref}' to '#{remoteBranches[branch.name]}') " +
+                    "for project '#{project.name}' (#{project.url}) - triggering (re)build"
+                
+            end
+            
+        end
+        
         def checkBranches(project, remoteBranches)
             
             procs = []
@@ -134,20 +153,7 @@ module Dockmaster
             
             branches.each do |branch|
                 
-                if !remoteBranches.has_key? branch.name
-                    
-                    branch.delete
-                    
-                    Dockmaster::log.info "checkBranches - branch '#{branch.name}' not any longer in project '#{project.name}' (#{project.url}) - deleting branch"
-                    
-                elsif remoteBranches[branch.name] != branch.ref
-                    
-                    procs.push buildImageProc(project, branch, remoteBranches[branch.name])
-                    
-                    Dockmaster::log.info "checkBranches - branch '#{branch.name}' changed (from '#{branch.ref}' to '#{remoteBranches[branch.name]}') " +
-                        "for project '#{project.name}' (#{project.url}) - triggering (re)build"
-                    
-                end
+                checkBranch project, branch, remoteBranches, procs
                 
             end
             
@@ -159,21 +165,34 @@ module Dockmaster
             
         end
         
+        def newTag(project, name, ref)
+            
+            tag = Models::WorkingCopy.new :ref => ref, :name => name, :type => "tag"
+            project.add_workingCopy tag
+            
+            Dockmaster::log.info "newTag - tag '#{name}' added to project '#{project.name}' (#{project.url})"
+            
+            tag
+            
+        end
+        
+        def newRemoteTags(project, remoteTags)
+            
+            oldTags = Dockmaster::Models::WorkingCopy.where(:project_id => project.id, :type => "tag").map(:name)
+            remoteTags.select { |key| !oldTags.include? key }
+            
+        end
+        
         def checkTags(project, remoteTags)
             
             procs = []
-            
-            oldTags = Dockmaster::Models::WorkingCopy.where(:project_id => project.id, :type => "tag").map(:name)
-            newTags = remoteTags.select { |key| !oldTags.include? key }
+            newTags = newRemoteTags project, remoteTags
             
             Dockmaster::log.info "checkTags - tags to check for project #{project.name} (#{project.url}): #{newTags}"
             
             newTags.each do |name, ref|
                 
-                tag = Models::WorkingCopy.new :ref => ref, :name => name, :type => "tag"
-                project.add_workingCopy tag
-                
-                Dockmaster::log.info "checkTags - tag '#{name}' added to project '#{project.name}' (#{project.url})"
+                tag = newTag project, name, ref
                 
                 procs.push buildImageProc(project, tag, ref)
                 
