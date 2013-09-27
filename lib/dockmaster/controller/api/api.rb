@@ -24,12 +24,21 @@ module Dockmaster
                     request.env["CONTENT_TYPE"] = "application/vnd.dockmaster.v1-0-0+json"
                 end
                 
-                unless request.media_type.match Controller::V1::Version::REGEXP or
-                    request.media_type.match Controller::V2::Version::REGEXP
+                if request.media_type.match Controller::V1::Version::REGEXP
+                    
+                    @version = Controller::V1::Version
+                    
+                elsif request.media_type.match Controller::V2::Version::REGEXP
+                    
+                    @version = Controller::V2::Version
+                    
+                else
                     
                     halt 415, "Unsupported API Version"
                     
                 end
+                
+                compatible @version
                 
             end
             

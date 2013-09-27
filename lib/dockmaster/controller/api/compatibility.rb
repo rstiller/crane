@@ -7,9 +7,9 @@ module Dockmaster
         
         module Compatibility
             
-            def compatible(exp)
+            def compatible(version)
                 
-                unless request.media_type.match exp
+                unless request.media_type.match version::REGEXP
                     
                     pass
                     

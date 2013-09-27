@@ -9,21 +9,13 @@ module Dockmaster
             
             module Version
                 
-                REGEXP = /^application\/vnd\.dockmaster\.(v1-0-0|v2-0-0)\+(json|xml)/
-                VERSION = "2.0.0"
+                include Controller::V1::Version
                 
-                def self.registered(app)           
-                    
-                    app.get "/version" do
-                        
-                        compatible Version::REGEXP
-                        
-                        content_type "text/plain"
-                        body VERSION
-                        
-                    end
-                    
-                end
+                REGEXP = /^application\/vnd\.dockmaster\.(v1-0-0|v2-0-0)\+(json|xml)/
+                CONTENT_TYPE_JSON = "application/vnd.dockmaster.v2-0-0+json"
+                CONTENT_TYPE_XML = "application/vnd.dockmaster.v2-0-0+xml"
+                CONTENT_TYPE_TEXT = "application/vnd.dockmaster.v2-0-0+text"
+                VERSION = "2.0.0"
                 
             end
             
