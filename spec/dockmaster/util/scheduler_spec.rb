@@ -3,7 +3,7 @@ require "sequel"
 
 describe "Scheduler" do
     
-    require "config"    
+    require "config"
     
     Settings["db.path"] = ":memory:"
     Settings["logging.level"] = "ERROR"

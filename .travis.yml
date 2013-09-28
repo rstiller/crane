@@ -4,4 +4,4 @@ rvm:
 script: rspec --format nested
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq g++ make git sqlite3 libsqlite3-ruby1.9.1 libsqlite3-dev cgroup-lite redir
+    - sudo apt-get install -qq g++ make git sqlite3 libsqlite3-ruby1.9.1 libsqlite3-dev cgroup-lite redir libxslt1-dev libxml2-dev

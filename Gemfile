@@ -9,3 +9,5 @@ gem "sqlite3", :platform => [:ruby]
 gem "system-getifaddrs"
 gem "json"
 gem "nokogiri"
+gem "test-unit"
+gem "rack-test"
