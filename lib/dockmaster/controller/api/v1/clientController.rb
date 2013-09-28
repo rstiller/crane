@@ -14,7 +14,7 @@ module Dockmaster
                 require "dockmaster/controller/api/common/links"
                 require "dockmaster/models/client"
                 
-                def self.registered(app)
+                def self.registerNewClient(app)
                     
                     app.post "/clients" do
                         
@@ -31,10 +31,13 @@ module Dockmaster
                         Controller::Link.new links, "#{request.path}/#{client[:id]}", "self"
                         Controller::Link.new links, request.path, "all"
                         
-                        status 201
-                        render client
+                        render client, 201
                         
                     end
+                    
+                end
+                
+                def self.registerGetClients(app)
                     
                     app.get "/clients" do
                         
@@ -57,6 +60,10 @@ module Dockmaster
                         render list
                         
                     end
+                    
+                end
+                
+                def self.registerGetClient(app)
                     
                     app.get "/clients/:id" do
                         
@@ -81,6 +88,10 @@ module Dockmaster
                         
                     end
                     
+                end
+                
+                def self.registerUpdateClient(app)
+
                     app.put "/clients/:id" do
                         
                         clients = Dockmaster::Models::Client.where :id => params[:id]
@@ -119,6 +130,10 @@ module Dockmaster
                         
                     end
                     
+                end
+                
+                def self.registerDeleteClient(app)
+
                     app.delete "/clients/:id" do
                         
                         clients = Dockmaster::Models::Client.where :id => params[:id]
@@ -137,6 +152,16 @@ module Dockmaster
                         body ""
                         
                     end
+                    
+                end
+                
+                def self.registered(app)
+                    
+                    registerNewClient app
+                    registerGetClients app
+                    registerGetClient app
+                    registerUpdateClient app
+                    registerDeleteClient app
                     
                 end
                 
