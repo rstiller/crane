@@ -49,6 +49,12 @@ module Dockmaster
                 
             end
             
+            def self.from_hash(hash)
+                
+                Client.new :address => hash["address"], :dockerVersion => hash["dockerVersion"], :dockerPort => hash["dockerPort"]
+                
+            end
+            
         end
         
     end

@@ -21,6 +21,7 @@ package { [
     'python-pip',
     'libxslt1-dev',
     'libxml2-dev',
+    'curl',
     ]:
     ensure => latest,
 } ->

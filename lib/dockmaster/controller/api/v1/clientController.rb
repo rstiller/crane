@@ -20,17 +20,28 @@ module Dockmaster
                         
                         payload = parsePayload
                         
-                        # TODO
-                        puts payload
+                        client = Dockmaster::Models::Client.from_hash payload
+                        client.save
+                        client = client.to_hash["values"]
                         
-                        status 204
-                        ""
+                        links = Controller::Links.new client
+                        
+                        Controller::Link.new links, "#{request.path}/#{client[:id]}", "delete", "delete"
+                        Controller::Link.new links, "#{request.path}/#{client[:id]}", "update", "put"
+                        Controller::Link.new links, "#{request.path}/#{client[:id]}", "self"
+                        Controller::Link.new links, request.path, "all"
+                        
+                        status 201
+                        render client
                         
                     end
                     
                     app.get "/clients" do
                         
-                        clients = Dockmaster::Models::Client.all
+                        clients = []
+                        Dockmaster::Models::Client.all.each do |client|
+                            clients.push client.to_hash["values"]
+                        end
                         
                         list = Controller::List.new clients
                         links = Controller::Links.new list
@@ -58,13 +69,13 @@ module Dockmaster
                             
                         end
                         
-                        client = client.to_hash
+                        client = client.to_hash["values"]
                         
                         links = Controller::Links.new client
                         
                         Controller::Link.new links, request.path, "self"
-                        Controller::Link.new links, request.path, "delete", "delete", true
-                        Controller::Link.new links, request.path, "update", "put", true
+                        Controller::Link.new links, request.path, "delete", "delete"
+                        Controller::Link.new links, request.path, "update", "put"
                         
                         render client
                         
@@ -72,13 +83,58 @@ module Dockmaster
                     
                     app.put "/clients/:id" do
                         
-                        # TODO
+                        clients = Dockmaster::Models::Client.where :id => params[:id]
+                        client = clients.first
+                        
+                        if client.nil?
+                            
+                            halt 404
+                            
+                        end
+                        
+                        payload = parsePayload
+                        
+                        unless payload["address"].nil?
+                            client.address = payload["address"]
+                        end
+                        
+                        unless payload["dockerVersion"].nil?
+                            client.dockerVersion = payload["dockerVersion"]
+                        end
+                        
+                        unless payload["dockerPort"].nil?
+                            client.dockerPort = payload["dockerPort"]
+                        end
+                        
+                        client.save
+                        client = client.to_hash["values"]
+                        
+                        links = Controller::Links.new client
+                        
+                        Controller::Link.new links, request.path, "self"
+                        Controller::Link.new links, request.path, "delete", "delete"
+                        Controller::Link.new links, request.path, "update", "put"
+                        
+                        render client
                         
                     end
                     
                     app.delete "/clients/:id" do
                         
-                        # TODO
+                        clients = Dockmaster::Models::Client.where :id => params[:id]
+                        client = clients.first
+                        
+                        if client.nil?
+                            
+                            halt 404
+                            
+                        end
+                        
+                        client.delete
+                        
+                        status 204
+                        headers "Content-Length" => "0"
+                        body ""
                         
                     end
                     
