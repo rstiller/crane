@@ -8,3 +8,4 @@ gem "rspec"
 gem "sqlite3", :platform => [:ruby]
 gem "system-getifaddrs"
 gem "json"
+gem "nokogiri"

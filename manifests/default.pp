@@ -18,7 +18,9 @@ package { [
     'build-essential',
     'python-dev',
     'libevent-dev',
-    'python-pip'
+    'python-pip',
+    'libxslt1-dev',
+    'libxml2-dev',
     ]:
     ensure => latest,
 } ->

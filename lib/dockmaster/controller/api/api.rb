@@ -9,19 +9,23 @@ module Dockmaster
         class Api < Sinatra::Base
             
             require "dockmaster/controller/api/compatibility"
+            require "dockmaster/controller/api/parser"
+            require "dockmaster/controller/api/renderer"
+            require "dockmaster/controller/api/v1/clientController"
             require "dockmaster/controller/api/v1/version"
             require "dockmaster/controller/api/v2/version"
             
-            helpers Controller::Compatibility
+            helpers Controller::Compatibility, Controller::Parser, Controller::Renderer
             
             register Sinatra::AdvancedRoutes
+            register Controller::V1::ClientController
             register Controller::V1::Version
             register Controller::V2::Version
             
             before do
                 
                 if request.media_type.to_s.strip.length == 0
-                    request.env["CONTENT_TYPE"] = "application/vnd.dockmaster.v1-0-0+json"
+                    request.env["CONTENT_TYPE"] = Controller::V1::Version::CONTENT_TYPE_JSON
                 end
                 
                 if request.media_type.match Controller::V1::Version::REGEXP
@@ -38,7 +42,7 @@ module Dockmaster
                     
                 end
                 
-                compatible @version
+                compatible @version::REGEXP
                 
             end
             

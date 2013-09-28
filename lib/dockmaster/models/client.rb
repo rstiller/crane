@@ -9,6 +9,7 @@ module Dockmaster
         
         require "loginRegistry"
         require "dockmaster/models/clientGroup"
+        require "dockmaster/util/objectToHash"
         require "dockmaster/util/subprocess"
         
         Sequel::Model.db.create_table? "clients" do
@@ -39,6 +40,12 @@ module Dockmaster
             def run(command, callback)
                 
                 Dockmaster::subprocess "docker -H #{address}:#{dockerPort} #{command}", ".", callback
+                
+            end
+            
+            def to_hash
+                
+                Dockmaster::objectToHash self
                 
             end
             
