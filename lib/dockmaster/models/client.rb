@@ -21,9 +21,17 @@ module Dockmaster
             
         end
         
+        Sequel::Model.db.create_table? "client_groups_clients" do
+            
+            primary_key :id
+            foreign_key :client_group_id, :client_groups
+            foreign_key :client_id, :clients
+            
+        end
+        
         class Client < Sequel::Model
             
-            many_to_many :clientGroup
+            many_to_many :clientGroups
             
             def login(host, callback)
                 

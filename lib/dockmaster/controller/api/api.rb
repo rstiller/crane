@@ -9,6 +9,7 @@ module Dockmaster
         class Api < Sinatra::Base
             
             require "dockmaster/controller/api/compatibility"
+            require "dockmaster/controller/api/linkify"
             require "dockmaster/controller/api/parser"
             require "dockmaster/controller/api/renderer"
             require "dockmaster/controller/api/v1/clientController"
@@ -16,7 +17,7 @@ module Dockmaster
             require "dockmaster/controller/api/v1/version"
             require "dockmaster/controller/api/v2/version"
             
-            helpers Controller::Compatibility, Controller::Parser, Controller::Renderer
+            helpers Controller::Compatibility, Controller::Linker, Controller::Parser, Controller::Renderer
             
             register Sinatra::AdvancedRoutes
             register Controller::V1::ClientController

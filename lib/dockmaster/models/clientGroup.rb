@@ -19,6 +19,18 @@ module Dockmaster
             
             many_to_many :clients
             
+            def to_hash
+                
+                Dockmaster::objectToHash self
+                
+            end
+            
+            def self.from_hash(hash)
+                
+                ClientGroup.new :name => hash["name"], :description => hash["description"]
+                
+            end
+            
         end
         
     end

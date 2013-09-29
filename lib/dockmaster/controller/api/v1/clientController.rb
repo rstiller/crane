@@ -24,12 +24,11 @@ module Dockmaster
                         client.save
                         client = client.to_hash["values"]
                         
-                        links = Controller::Links.new client
-                        
-                        Controller::Link.new links, "#{request.path}/#{client[:id]}", "delete", "delete"
-                        Controller::Link.new links, "#{request.path}/#{client[:id]}", "update", "put"
-                        Controller::Link.new links, "#{request.path}/#{client[:id]}", "self"
-                        Controller::Link.new links, request.path, "all"
+                        linkify client,
+                            {"path" => request.path, "rel" => "all"},
+                            {"path" => "#{request.path}/#{client[:id]}", "rel" => "self"},
+                            {"path" => "#{request.path}/#{client[:id]}", "rel" => "delete", "method" => "delete"},
+                            {"path" => "#{request.path}/#{client[:id]}", "rel" => "update", "method" => "put"}
                         
                         render client, 201
                         
@@ -47,15 +46,13 @@ module Dockmaster
                         end
                         
                         list = Controller::List.new clients
-                        links = Controller::Links.new list
                         
-                        # Web Linking: http://tools.ietf.org/html/rfc5988
-                        # URI Templates: http://tools.ietf.org/html/rfc6570
-                        Controller::Link.new links, request.path, "self"
-                        Controller::Link.new links, request.path, "new", "post"
-                        Controller::Link.new links, request.path + "/{id}", "delete", "delete", true
-                        Controller::Link.new links, request.path + "/{id}", "update", "put", true
-                        Controller::Link.new links, request.path + "/{id}", "single", "get", true
+                        linkify list,
+                            {"path" => request.path, "rel" => "self"},
+                            {"path" => request.path, "rel" => "new", "method" => "post"},
+                            {"path" => request.path + "/{id}", "rel" => "delete", "method" => "delete", "templated" => true},
+                            {"path" => request.path + "/{id}", "rel" => "update", "method" => "put", "templated" => true},
+                            {"path" => request.path + "/{id}", "rel" => "single", "method" => "get", "templated" => true}
                         
                         render list
                         
@@ -78,11 +75,10 @@ module Dockmaster
                         
                         client = client.to_hash["values"]
                         
-                        links = Controller::Links.new client
-                        
-                        Controller::Link.new links, request.path, "self"
-                        Controller::Link.new links, request.path, "delete", "delete"
-                        Controller::Link.new links, request.path, "update", "put"
+                        linkify client,
+                            {"path" => request.path, "rel" => "self"},
+                            {"path" => request.path, "rel" => "delete", "method" => "delete"},
+                            {"path" => request.path, "rel" => "update", "method" => "put"}
                         
                         render client
                         
@@ -120,11 +116,10 @@ module Dockmaster
                         client.save
                         client = client.to_hash["values"]
                         
-                        links = Controller::Links.new client
-                        
-                        Controller::Link.new links, request.path, "self"
-                        Controller::Link.new links, request.path, "delete", "delete"
-                        Controller::Link.new links, request.path, "update", "put"
+                        linkify client,
+                            {"path" => request.path, "rel" => "self"},
+                            {"path" => request.path, "rel" => "delete", "method" => "delete"},
+                            {"path" => request.path, "rel" => "update", "method" => "put"}
                         
                         render client
                         
