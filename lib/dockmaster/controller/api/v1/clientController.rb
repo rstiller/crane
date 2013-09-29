@@ -24,11 +24,7 @@ module Dockmaster
                         client.save
                         client = client.to_hash["values"]
                         
-                        linkify client,
-                            {"path" => request.path, "rel" => "all"},
-                            {"path" => "#{request.path}/#{client[:id]}", "rel" => "self"},
-                            {"path" => "#{request.path}/#{client[:id]}", "rel" => "delete", "method" => "delete"},
-                            {"path" => "#{request.path}/#{client[:id]}", "rel" => "update", "method" => "put"}
+                        linkifyNew client, request.path
                         
                         render client, 201
                         
@@ -47,12 +43,7 @@ module Dockmaster
                         
                         list = Controller::List.new clients
                         
-                        linkify list,
-                            {"path" => request.path, "rel" => "self"},
-                            {"path" => request.path, "rel" => "new", "method" => "post"},
-                            {"path" => request.path + "/{id}", "rel" => "delete", "method" => "delete", "templated" => true},
-                            {"path" => request.path + "/{id}", "rel" => "update", "method" => "put", "templated" => true},
-                            {"path" => request.path + "/{id}", "rel" => "single", "method" => "get", "templated" => true}
+                        linkifyGetAll list, request.path
                         
                         render list
                         
@@ -75,10 +66,7 @@ module Dockmaster
                         
                         client = client.to_hash["values"]
                         
-                        linkify client,
-                            {"path" => request.path, "rel" => "self"},
-                            {"path" => request.path, "rel" => "delete", "method" => "delete"},
-                            {"path" => request.path, "rel" => "update", "method" => "put"}
+                        linkifyGet client, request.path
                         
                         render client
                         
@@ -116,10 +104,7 @@ module Dockmaster
                         client.save
                         client = client.to_hash["values"]
                         
-                        linkify client,
-                            {"path" => request.path, "rel" => "self"},
-                            {"path" => request.path, "rel" => "delete", "method" => "delete"},
-                            {"path" => request.path, "rel" => "update", "method" => "put"}
+                        linkifyGet client, request.path
                         
                         render client
                         

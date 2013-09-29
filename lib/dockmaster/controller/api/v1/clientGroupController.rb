@@ -32,11 +32,7 @@ module Dockmaster
                         
                         group = group.to_hash["values"]
                         
-                        linkify group,
-                            {"path" => request.path, "rel" => "all"},
-                            {"path" => "#{request.path}/#{group[:id]}", "rel" => "self"},
-                            {"path" => "#{request.path}/#{group[:id]}", "rel" => "delete", "method" => "delete"},
-                            {"path" => "#{request.path}/#{group[:id]}", "rel" => "update", "method" => "put"}
+                        linkifyNew group, request.path
                         
                         render group, 201
                         
@@ -60,10 +56,7 @@ module Dockmaster
                                 
                                 clientHash = client.to_hash["values"]
                                 path = request.path.gsub("/clientGroups", "/clients")
-                                linkify client,
-                                    {"path" => path, "rel" => "self"},
-                                    {"path" => path, "rel" => "delete", "method" => "delete"},
-                                    {"path" => path, "rel" => "update", "method" => "put"}
+                                linkifyGet clientHash, path
                                 
                                 groupHash["clients"].push clientHash
                                 
@@ -75,12 +68,7 @@ module Dockmaster
                         
                         list = Controller::List.new groups
                         
-                        linkify list,
-                            {"path" => request.path, "rel" => "self"},
-                            {"path" => request.path, "rel" => "new", "method" => "post"},
-                            {"path" => request.path + "/{id}", "rel" => "delete", "method" => "delete", "templated" => true},
-                            {"path" => request.path + "/{id}", "rel" => "update", "method" => "put", "templated" => true},
-                            {"path" => request.path + "/{id}", "rel" => "single", "method" => "get", "templated" => true}
+                        linkifyGetAll list, request.path
                         
                         render list
                         
@@ -110,19 +98,13 @@ module Dockmaster
                             
                             clientHash = client.to_hash["values"]
                             path = request.path.gsub("/clientGroups", "/clients")
-                            linkify client,
-                                {"path" => path, "rel" => "self"},
-                                {"path" => path, "rel" => "delete", "method" => "delete"},
-                                {"path" => path, "rel" => "update", "method" => "put"}
+                            linkifyGet clientHash, path
                             
                             groupHash["clients"].push clientHash
                             
                         end
                         
-                        linkify groupHash,
-                            {"path" => request.path, "rel" => "self"},
-                            {"path" => request.path, "rel" => "delete", "method" => "delete"},
-                            {"path" => request.path, "rel" => "update", "method" => "put"}
+                        linkifyGet groupHash, request.path
                         
                         render groupHash
                         
@@ -161,19 +143,13 @@ module Dockmaster
                             
                             clientHash = client.to_hash["values"]
                             path = request.path.gsub("/clientGroups", "/clients")
-                            linkify client,
-                                {"path" => path, "rel" => "self"},
-                                {"path" => path, "rel" => "delete", "method" => "delete"},
-                                {"path" => path, "rel" => "update", "method" => "put"}
+                            linkifyGet clientHash, path
                             
                             groupHash["clients"].push clientHash
                             
                         end
                         
-                        linkify groupHash,
-                            {"path" => request.path, "rel" => "self"},
-                            {"path" => request.path, "rel" => "delete", "method" => "delete"},
-                            {"path" => request.path, "rel" => "update", "method" => "put"}
+                        linkifyGet groupHash, request.path
                         
                         render groupHash
                         
