@@ -7,6 +7,10 @@ module Dockmaster
         
         module Linker
             
+            require "dockmaster/controller/api/common/link"
+            require "dockmaster/controller/api/common/links"
+            require "dockmaster/controller/api/common/list"
+            
             # Web Linking: http://tools.ietf.org/html/rfc5988
             # URI Templates: http://tools.ietf.org/html/rfc6570
             def linkify(hash, *links)

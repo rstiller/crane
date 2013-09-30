@@ -9,139 +9,26 @@ module Dockmaster
             
             module ClientController
                 
-                require "dockmaster/controller/api/common/list"
-                require "dockmaster/controller/api/common/link"
-                require "dockmaster/controller/api/common/links"
+                require "dockmaster/controller/api/common/deleteEndpoint"
+                require "dockmaster/controller/api/common/getAllEndpoint"
+                require "dockmaster/controller/api/common/getEndpoint"
+                require "dockmaster/controller/api/common/newEndpoint"
+                require "dockmaster/controller/api/common/updateEndpoint"
                 require "dockmaster/models/client"
                 
-                def self.registerNewClient(app)
-                    
-                    app.post "/clients" do
-                        
-                        payload = parsePayload
-                        
-                        client = Dockmaster::Models::Client.from_hash payload
-                        client.save
-                        client = client.to_hash["values"]
-                        
-                        linkifyNew client, request.path
-                        
-                        render client, 201
-                        
-                    end
-                    
-                end
-                
-                def self.registerGetClients(app)
-                    
-                    app.get "/clients" do
-                        
-                        clients = []
-                        Dockmaster::Models::Client.all.each do |client|
-                            clients.push client.to_hash["values"]
-                        end
-                        
-                        list = Controller::List.new clients
-                        
-                        linkifyGetAll list, request.path
-                        
-                        render list
-                        
-                    end
-                    
-                end
-                
-                def self.registerGetClient(app)
-                    
-                    app.get "/clients/:id" do
-                        
-                        clients = Dockmaster::Models::Client.where :id => params[:id]
-                        client = clients.first
-                        
-                        if client.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        client = client.to_hash["values"]
-                        
-                        linkifyGet client, request.path
-                        
-                        render client
-                        
-                    end
-                    
-                end
-                
-                def self.registerUpdateClient(app)
-
-                    app.put "/clients/:id" do
-                        
-                        clients = Dockmaster::Models::Client.where :id => params[:id]
-                        client = clients.first
-                        
-                        if client.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        payload = parsePayload
-                        
-                        unless payload["address"].nil?
-                            client.address = payload["address"]
-                        end
-                        
-                        unless payload["dockerVersion"].nil?
-                            client.dockerVersion = payload["dockerVersion"]
-                        end
-                        
-                        unless payload["dockerPort"].nil?
-                            client.dockerPort = payload["dockerPort"]
-                        end
-                        
-                        client.save
-                        client = client.to_hash["values"]
-                        
-                        linkifyGet client, request.path
-                        
-                        render client
-                        
-                    end
-                    
-                end
-                
-                def self.registerDeleteClient(app)
-
-                    app.delete "/clients/:id" do
-                        
-                        clients = Dockmaster::Models::Client.where :id => params[:id]
-                        client = clients.first
-                        
-                        if client.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        client.delete
-                        
-                        status 204
-                        headers "Content-Length" => "0"
-                        body ""
-                        
-                    end
-                    
-                end
+                extend Controller::DeleteEndpoint
+                extend Controller::GetAllEndpoint
+                extend Controller::GetEndpoint
+                extend Controller::NewEndpoint
+                extend Controller::UpdateEndpoint
                 
                 def self.registered(app)
                     
-                    registerNewClient app
-                    registerGetClients app
-                    registerGetClient app
-                    registerUpdateClient app
-                    registerDeleteClient app
+                    newEndpoint app, "/clients", Dockmaster::Models::Client
+                    getAllEndpoint app, "/clients", Dockmaster::Models::Client
+                    getEndpoint app, "/clients/:id", Dockmaster::Models::Client
+                    deleteEndpoint app, "/clients/:id", Dockmaster::Models::Client
+                    updateEndpoint app, "/clients/:id", Dockmaster::Models::Client, [ "address", "dockerVersion", "dockerPort" ]
                     
                 end
                 

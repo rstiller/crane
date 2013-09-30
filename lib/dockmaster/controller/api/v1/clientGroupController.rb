@@ -9,85 +9,27 @@ module Dockmaster
             
             module ClientGroupController
                 
-                require "dockmaster/controller/api/common/list"
-                require "dockmaster/controller/api/common/link"
-                require "dockmaster/controller/api/common/links"
+                require "dockmaster/controller/api/common/addRelationEndpoint"
+                require "dockmaster/controller/api/common/deleteEndpoint"
+                require "dockmaster/controller/api/common/deleteRelationEndpoint"
+                require "dockmaster/controller/api/common/getAllEndpoint"
+                require "dockmaster/controller/api/common/getEndpoint"
+                require "dockmaster/controller/api/common/newEndpoint"
+                require "dockmaster/controller/api/common/updateEndpoint"
                 require "dockmaster/models/client"
                 require "dockmaster/models/clientGroup"
                 
-                def self.registerNewGroup(app)
-                    
-                    app.post "/clientGroups" do
-                        
-                        payload = parsePayload
-                        
-                        group = Dockmaster::Models::ClientGroup.from_hash payload
-                        group.save
-                        
-                        unless payload["clients"].nil?
-                            payload["clients"].each do |clientId|
-                                group.add_client Dockmaster::Models::Client[clientId]
-                            end
-                        end
-                        
-                        group = group.to_hash["values"]
-                        
-                        linkifyNew group, request.path
-                        
-                        render group, 201
-                        
-                    end
-                    
-                end
+                extend Controller::AddRelationEndpoint
+                extend Controller::DeleteEndpoint
+                extend Controller::DeleteRelationEndpoint
+                extend Controller::GetAllEndpoint
+                extend Controller::GetEndpoint
+                extend Controller::NewEndpoint
+                extend Controller::UpdateEndpoint
                 
-                def self.registerGetGroups(app)
+                module Helper
                     
-                    app.get "/clientGroups" do
-                        
-                        groups = []
-                        Dockmaster::Models::ClientGroup.all.each do |group|
-                            
-                            clients = group.clients
-                            
-                            groupHash = group.to_hash["values"]
-                            groupHash["clients"] = []
-                            
-                            clients.each do |client|
-                                
-                                clientHash = client.to_hash["values"]
-                                path = request.path.gsub("/clientGroups", "/clients")
-                                linkifyGet clientHash, path
-                                
-                                groupHash["clients"].push clientHash
-                                
-                            end
-                            
-                            groups.push groupHash
-                            
-                        end
-                        
-                        list = Controller::List.new groups
-                        
-                        linkifyGetAll list, request.path
-                        
-                        render list
-                        
-                    end
-                    
-                end
-                
-                def self.registerGetGroup(app)
-                    
-                    app.get "/clientGroups/:groupId" do
-                        
-                        groups = Dockmaster::Models::ClientGroup.where :id => params[:groupId]
-                        group = groups.first
-                        
-                        if group.nil?
-                            
-                            halt 404
-                            
-                        end
+                    def renderGroup(group)
                         
                         clients = group.clients
                         
@@ -104,141 +46,7 @@ module Dockmaster
                             
                         end
                         
-                        linkifyGet groupHash, request.path
-                        
-                        render groupHash
-                        
-                    end
-                    
-                end
-                
-                def self.registerUpdateGroup(app)
-                    
-                    app.put "/clientGroups/:groupId" do
-                        
-                        groups = Dockmaster::Models::ClientGroup.where :id => params[:groupId]
-                        group = groups.first
-                        
-                        if group.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        payload = parsePayload
-                        
-                        unless payload["name"].nil?
-                            group.name = payload["name"]
-                        end
-                        
-                        unless payload["description"].nil?
-                            group.description = payload["description"]
-                        end
-                        
-                        group.save
-                        groupHash = group.to_hash["values"]
-                        groupHash["clients"] = []
-                        
-                        clients.each do |client|
-                            
-                            clientHash = client.to_hash["values"]
-                            path = request.path.gsub("/clientGroups", "/clients")
-                            linkifyGet clientHash, path
-                            
-                            groupHash["clients"].push clientHash
-                            
-                        end
-                        
-                        linkifyGet groupHash, request.path
-                        
-                        render groupHash
-                        
-                    end
-                    
-                end
-                
-                def self.registerDeleteGroup(app)
-                    
-                    app.delete "/clientGroups/:groupId" do
-                        
-                        groups = Dockmaster::Models::ClientGroup.where :id => params[:groupId]
-                        group = groups.first
-                        
-                        if group.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        group.delete
-                        
-                        status 204
-                        headers "Content-Length" => "0"
-                        body ""
-                        
-                    end
-                    
-                end
-                
-                def self.registerAddClient(app)
-                    
-                    app.post "/clientGroups/:groupId/clients/:clientId" do
-                        
-                        groups = Dockmaster::Models::ClientGroup.where :id => params[:groupId]
-                        group = groups.first
-                        
-                        if group.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        clients = Dockmaster::Models::Client.where :id => params[:clientId]
-                        client = clients.first
-                        
-                        if client.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        group.add_client client
-                        
-                        status 201
-                        headers "Content-Length" => "0"
-                        body ""
-                        
-                    end
-                    
-                end
-                
-                def self.registerRemoveClient(app)
-                    
-                    app.delete "/clientGroups/:groupId/clients/:clientId" do
-                        
-                        groups = Dockmaster::Models::ClientGroup.where :id => params[:groupId]
-                        group = groups.first
-                        
-                        if group.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        clients = Dockmaster::Models::Client.where :id => params[:clientId]
-                        client = clients.first
-                        
-                        if client.nil?
-                            
-                            halt 404
-                            
-                        end
-                        
-                        group.remove_client client
-                        
-                        status 200
-                        headers "Content-Length" => "0"
-                        body ""
+                        groupHash
                         
                     end
                     
@@ -246,13 +54,40 @@ module Dockmaster
                 
                 def self.registered(app)
                     
-                    registerNewGroup app
-                    registerGetGroups app
-                    registerGetGroup app
-                    registerUpdateGroup app
-                    registerDeleteGroup app
-                    registerAddClient app
-                    registerRemoveClient app
+                    newEndpoint app, "/clientGroups", Dockmaster::Models::ClientGroup do |group, payload|
+                        
+                        unless payload["clients"].nil?
+                            payload["clients"].each do |clientId|
+                                group.add_client Dockmaster::Models::Client[clientId]
+                            end
+                        end
+                        
+                        group.to_hash["values"]
+                        
+                    end
+                    
+                    getAllEndpoint app, "/clientGroups", Dockmaster::Models::ClientGroup do |group|
+                        
+                        renderGroup group
+                        
+                    end
+                    
+                    getEndpoint app, "/clientGroups/:id", Dockmaster::Models::ClientGroup do |group|
+                        
+                        renderGroup group
+                        
+                    end
+                    
+                    deleteEndpoint app, "/clientGroups/:id", Dockmaster::Models::ClientGroup
+                    
+                    updateEndpoint app, "/clientGroups/:id", Dockmaster::Models::ClientGroup, [ "name", "description" ] do |group|
+                        
+                        renderGroup group
+                        
+                    end
+                    
+                    addRelationEndpoint app, "/clientGroups/:parentId/clients/:childId", Dockmaster::Models::ClientGroup, Dockmaster::Models::Client, "client"
+                    deleteRelationEndpoint app, "/clientGroups/:parentId/clients/:childId", Dockmaster::Models::ClientGroup, Dockmaster::Models::Client, "client"
                     
                 end
                 
