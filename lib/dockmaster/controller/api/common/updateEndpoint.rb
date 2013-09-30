@@ -20,11 +20,15 @@ module Dockmaster
                     
                     payload = parsePayload
                     
-                    fields.each do |field|
+                    unless fields.nil?
                         
-                        unless payload[field].nil?
+                        fields.each do |field|
                             
-                            object.instance_variable_set "@#{field}", payload[field]
+                            unless payload[field].nil?
+                                
+                                object[field] = payload[field]
+                                
+                            end
                             
                         end
                         
