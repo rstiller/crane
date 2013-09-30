@@ -44,21 +44,26 @@ module Dockmaster
                     
                 end
                 
+                def self.updatePackages(image, packages)
+                    
+                    unless packages.nil?
+                        
+                        packages.each do |pkg|
+                            
+                            package = Dockmaster::Models::Package.from_hash pkg
+                            image.add_package package
+                            
+                        end
+                        
+                    end
+                    
+                end
+                
                 def self.registered(app)
                     
                     newEndpoint app, "/baseImages", Dockmaster::Models::BaseImage do |image, payload|
                         
-                        unless payload["packages"].nil?
-                            
-                            payload["packages"].each do |pkg|
-                                
-                                package = Dockmaster::Models::Package.from_hash pkg
-                                image.add_package package
-                                
-                            end
-                            
-                        end
-                        
+                        updatePackages image, payload["packages"]
                         renderBaseImage image
                         
                     end
@@ -80,18 +85,7 @@ module Dockmaster
                     updateEndpoint app, "/baseImages/:id", Dockmaster::Models::BaseImage, [ "name", "version", "baseImage", "provision", "provisionVersion" ] do |image, payload|
                         
                         image.remove_all_package
-                        
-                        unless payload["packages"].nil?
-                            
-                            payload["packages"].each do |pkg|
-                                
-                                package = Dockmaster::Models::Package.from_hash pkg
-                                image.add_package package
-                                
-                            end
-                            
-                        end
-                        
+                        updatePackages image, payload["packages"]
                         renderBaseImage image
                         
                     end
