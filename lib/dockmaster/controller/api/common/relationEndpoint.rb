@@ -3,9 +3,9 @@ module Dockmaster
     
     module Controller
         
-        module AddRelationEndpoint
+        module RelationEndpoint
             
-            def addRelationEndpoint(app, route, parentModel, childModel, childModelName)
+            def relationEndpoint(app, route, parentModel, childModel, childModelName, add)
                 
                 app.post route do
                     
@@ -27,9 +27,18 @@ module Dockmaster
                         
                     end
                     
-                    parent.send :"add_#{childModelName}", child
+                    if add == true
+                        
+                        parent.send :"add_#{childModelName}", child
+                        status 201
+                        
+                    else
+                        
+                        parent.send :"remove_#{childModelName}", child
+                        status 204
+                        
+                    end
                     
-                    status 201
                     headers "Content-Length" => "0"
                     body ""
                     

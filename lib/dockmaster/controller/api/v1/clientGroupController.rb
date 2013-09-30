@@ -9,22 +9,20 @@ module Dockmaster
             
             module ClientGroupController
                 
-                require "dockmaster/controller/api/common/addRelationEndpoint"
                 require "dockmaster/controller/api/common/deleteEndpoint"
-                require "dockmaster/controller/api/common/deleteRelationEndpoint"
                 require "dockmaster/controller/api/common/getAllEndpoint"
                 require "dockmaster/controller/api/common/getEndpoint"
                 require "dockmaster/controller/api/common/newEndpoint"
+                require "dockmaster/controller/api/common/relationEndpoint"
                 require "dockmaster/controller/api/common/updateEndpoint"
                 require "dockmaster/models/client"
                 require "dockmaster/models/clientGroup"
                 
-                extend Controller::AddRelationEndpoint
                 extend Controller::DeleteEndpoint
-                extend Controller::DeleteRelationEndpoint
                 extend Controller::GetAllEndpoint
                 extend Controller::GetEndpoint
                 extend Controller::NewEndpoint
+                extend Controller::RelationEndpoint
                 extend Controller::UpdateEndpoint
                 
                 module Helper
@@ -86,8 +84,8 @@ module Dockmaster
                         
                     end
                     
-                    addRelationEndpoint app, "/clientGroups/:parentId/clients/:childId", Dockmaster::Models::ClientGroup, Dockmaster::Models::Client, "client"
-                    deleteRelationEndpoint app, "/clientGroups/:parentId/clients/:childId", Dockmaster::Models::ClientGroup, Dockmaster::Models::Client, "client"
+                    relationEndpoint app, "/clientGroups/:parentId/clients/:childId", Dockmaster::Models::ClientGroup, Dockmaster::Models::Client, "client", true
+                    relationEndpoint app, "/clientGroups/:parentId/clients/:childId", Dockmaster::Models::ClientGroup, Dockmaster::Models::Client, "client", false
                     
                 end
                 

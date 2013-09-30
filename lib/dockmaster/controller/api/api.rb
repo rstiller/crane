@@ -8,13 +8,6 @@ module Dockmaster
         
         class Api < Sinatra::Base
             
-            require "dockmaster/controller/api/common/addRelationEndpoint"
-            require "dockmaster/controller/api/common/deleteEndpoint"
-            require "dockmaster/controller/api/common/deleteRelationEndpoint"
-            require "dockmaster/controller/api/common/getAllEndpoint"
-            require "dockmaster/controller/api/common/getEndpoint"
-            require "dockmaster/controller/api/common/newEndpoint"
-            require "dockmaster/controller/api/common/updateEndpoint"
             require "dockmaster/controller/api/compatibility"
             require "dockmaster/controller/api/linkify"
             require "dockmaster/controller/api/parser"
