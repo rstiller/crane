@@ -12,6 +12,7 @@ module Dockmaster
             require "dockmaster/controller/api/linkify"
             require "dockmaster/controller/api/parser"
             require "dockmaster/controller/api/renderer"
+            require "dockmaster/controller/api/v1/baseImageController"
             require "dockmaster/controller/api/v1/clientController"
             require "dockmaster/controller/api/v1/clientGroupController"
             require "dockmaster/controller/api/v1/version"
@@ -21,9 +22,11 @@ module Dockmaster
                 Controller::Linker,
                 Controller::Parser,
                 Controller::Renderer,
+                Controller::V1::BaseImageController::Helper,
                 Controller::V1::ClientGroupController::Helper
             
             register Sinatra::AdvancedRoutes
+            register Controller::V1::BaseImageController
             register Controller::V1::ClientController
             register Controller::V1::ClientGroupController
             register Controller::V1::Version

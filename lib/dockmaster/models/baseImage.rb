@@ -27,6 +27,22 @@ module Dockmaster
             
             one_to_many :package
             
+            def to_hash
+                
+                Dockmaster::objectToHash self
+                
+            end
+            
+            def self.from_hash(hash)
+                
+                BaseImage.new :name => hash["name"],
+                    :version => hash["version"],
+                    :baseImage => hash["baseImage"],
+                    :provision => hash["provision"],
+                    :provisionVersion => hash["provisionVersion"]
+                
+            end
+            
             def getPackageName(package, version)
                 
                 packageName = package

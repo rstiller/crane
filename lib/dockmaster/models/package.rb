@@ -18,6 +18,19 @@ module Dockmaster
             
             many_to_one :baseImage
             
+            def to_hash
+                
+                Dockmaster::objectToHash self
+                
+            end
+            
+            def self.from_hash(hash)
+                
+                Package.new :name => hash["name"],
+                    :version => hash["version"]
+                
+            end
+            
         end
         
     end
