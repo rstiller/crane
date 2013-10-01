@@ -5,7 +5,6 @@ module Dockmaster
     
     module Models
         
-        require "dockmaster/models/runConfig"
         require "dockmaster/models/workingCopy"
         
         Sequel::Model.db.create_table? "projects" do
@@ -23,7 +22,20 @@ module Dockmaster
             BUILD_TAGS = 1
             
             one_to_many :workingCopy
-            one_to_many :runConfig
+            
+            def to_hash
+                
+                Dockmaster::objectToHash self
+                
+            end
+            
+            def self.from_hash(hash)
+                
+                Project.new :name => hash["name"],
+                    :url => hash["url"],
+                    :buildTags => hash["buildTags"]
+                
+            end
             
             def buildsTags?
                 buildTags == BUILD_TAGS

@@ -31,8 +31,34 @@ module Dockmaster
         
         class WorkingCopy < Sequel::Model
             
+            BRANCH = "branch"
+            TAG = "tag"
+            
             many_to_one :project
             one_to_many :buildHistory
+            one_to_many :runConfig
+            
+            def branch?
+                type == BRANCH
+            end
+            
+            def tag?
+                type == TAG
+            end
+            
+            def to_hash
+                
+                Dockmaster::objectToHash self
+                
+            end
+            
+            def self.from_hash(hash)
+                
+                WorkingCopy.new :name => hash["name"],
+                    :ref => hash["ref"],
+                    :type => hash["type"]
+                
+            end
             
             def clone(url)
                 
@@ -223,6 +249,14 @@ module Dockmaster
                 
             end
             
+            def getImageName(serviceName)
+                "#{project.name}-#{serviceName}"
+            end
+            
+            def getImageVersion(environment)
+                "#{environment}-#{name}"
+            end
+            
             def buildServiceImage(project, infra, environment, variables, serviceName, serviceConfig, buildHistory)
                 
                 service = Service.new infra, serviceName, serviceConfig
@@ -231,8 +265,8 @@ module Dockmaster
                 buildHistory.add_buildOutput buildOutput
                 
                 dockerfile = service.generateDockerfile self, environment, variables
-                imageName = "#{project.name}-#{serviceName}"
-                imageVersion = "#{environment}-#{name}"
+                imageName = getImageName serviceName
+                imageVersion = getImageVersion environment
                 lineCount = File.open(dockerfile).readlines.length
                 
                 buildRunCommand project, service, imageName, imageVersion

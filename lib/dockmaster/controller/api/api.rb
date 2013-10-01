@@ -15,22 +15,33 @@ module Dockmaster
             require "dockmaster/controller/api/v1/baseImageController"
             require "dockmaster/controller/api/v1/clientController"
             require "dockmaster/controller/api/v1/clientGroupController"
+            require "dockmaster/controller/api/v1/projectController"
             require "dockmaster/controller/api/v1/version"
             require "dockmaster/controller/api/v2/version"
             
-            helpers Controller::Compatibility,
-                Controller::Linker,
-                Controller::Parser,
-                Controller::Renderer,
-                Controller::V1::BaseImageController::Helper,
-                Controller::V1::ClientGroupController::Helper
+            def self.helper
+                
+                helpers Controller::Compatibility,
+                    Controller::Linker,
+                    Controller::Parser,
+                    Controller::Renderer,
+                    Controller::V1::BaseImageController::Helper,
+                    Controller::V1::ClientGroupController::Helper,
+                    Controller::V1::ProjectController::Helper
+                
+            end
             
-            register Sinatra::AdvancedRoutes
-            register Controller::V1::BaseImageController
-            register Controller::V1::ClientController
-            register Controller::V1::ClientGroupController
-            register Controller::V1::Version
-            register Controller::V2::Version
+            def self.controller
+                
+                register Sinatra::AdvancedRoutes
+                register Controller::V1::BaseImageController
+                register Controller::V1::ClientController
+                register Controller::V1::ClientGroupController
+                register Controller::V1::ProjectController
+                register Controller::V1::Version
+                register Controller::V2::Version
+                
+            end
             
             before do
                 
@@ -55,6 +66,9 @@ module Dockmaster
                 compatible @version::REGEXP
                 
             end
+            
+            helper
+            controller
             
             self.each_route do |route|
                 Dockmaster::log.info "%6s #{route.path} #{route.file} (line #{route.line})" %[route.verb]
