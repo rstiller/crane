@@ -38,6 +38,8 @@ module Dockmaster
                             
                         end
                         
+                        linkifyGet imageHash, "#{request.path}/#{image.id}"
+                        
                         imageHash
                         
                     end

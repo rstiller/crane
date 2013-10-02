@@ -64,6 +64,46 @@ describe 'BaseImageControllerTest' do
             expect(response["elements"][0]["date"]).to eq(nil)
             expect(response["elements"][0]["provision"]).to eq(nil)
             expect(response["elements"][0]["provisionVersion"]).to eq(nil)
+            expect(response["elements"][0]["_links"]["self"]["href"]).to eq("/baseImages/1")
+            expect(response["elements"][0]["_links"]["delete"]["href"]).to eq("/baseImages/1")
+            expect(response["elements"][0]["_links"]["delete"]["method"]).to eq("delete")
+            expect(response["elements"][0]["_links"]["update"]["href"]).to eq("/baseImages/1")
+            expect(response["elements"][0]["_links"]["update"]["method"]).to eq("put")
+            expect(response["size"]).to eq(1)
+            expect(response["_links"]["self"]["href"]).to eq("/baseImages")
+            expect(response["_links"]["new"]["href"]).to eq("/baseImages")
+            expect(response["_links"]["new"]["method"]).to eq("post")
+            expect(response["_links"]["update"]["href"]).to eq("/baseImages/{id}")
+            expect(response["_links"]["update"]["method"]).to eq("put")
+            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/{id}")
+            expect(response["_links"]["delete"]["method"]).to eq("delete")
+            expect(response["_links"]["single"]["href"]).to eq("/baseImages/{id}")
+            
+        end
+        
+        it "one baseImage with packages available" do
+            
+            Dockmaster::Models::BaseImage.where.delete
+            baseImage = Dockmaster::Models::BaseImage.new :name => "ubuntu", :version => "1.0.0", :baseImage => "base"
+            baseImage.save
+            
+            package = Dockmaster::Models::Package.new :name => "ruby", :version => "1.9.3"
+            baseImage.add_package package
+            
+            get "/baseImages"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            expect(response["elements"].length).to eq(1)
+            expect(response["elements"][0]["name"]).to eq("ubuntu")
+            expect(response["elements"][0]["baseImage"]).to eq("base")
+            expect(response["elements"][0]["version"]).to eq("1.0.0")
+            expect(response["elements"][0]["date"]).to eq(nil)
+            expect(response["elements"][0]["provision"]).to eq(nil)
+            expect(response["elements"][0]["provisionVersion"]).to eq(nil)
+            expect(response["elements"][0]["packages"][0]["name"]).to eq("ruby")
+            expect(response["elements"][0]["packages"][0]["version"]).to eq("1.9.3")
             expect(response["size"]).to eq(1)
             expect(response["_links"]["self"]["href"]).to eq("/baseImages")
             expect(response["_links"]["new"]["href"]).to eq("/baseImages")
@@ -154,10 +194,10 @@ describe 'BaseImageControllerTest' do
             expect(response["date"]).to eq(nil)
             expect(response["provision"]).to eq("shell")
             expect(response["provisionVersion"]).to eq("1")
-            expect(response["_links"]["self"]["href"]).to eq("/baseImages/3")
-            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/3")
+            expect(response["_links"]["self"]["href"]).to eq("/baseImages/4")
+            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/4")
             expect(response["_links"]["delete"]["method"]).to eq("delete")
-            expect(response["_links"]["update"]["href"]).to eq("/baseImages/3")
+            expect(response["_links"]["update"]["href"]).to eq("/baseImages/4")
             expect(response["_links"]["update"]["method"]).to eq("put")
             expect(response["_links"]["all"]["href"]).to eq("/baseImages")
             
@@ -203,10 +243,10 @@ describe 'BaseImageControllerTest' do
             expect(response["date"]).to eq(nil)
             expect(response["provision"]).to eq(nil)
             expect(response["provisionVersion"]).to eq(nil)
-            expect(response["_links"]["self"]["href"]).to eq("/baseImages/4")
-            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/4")
+            expect(response["_links"]["self"]["href"]).to eq("/baseImages/5")
+            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/5")
             expect(response["_links"]["delete"]["method"]).to eq("delete")
-            expect(response["_links"]["update"]["href"]).to eq("/baseImages/4")
+            expect(response["_links"]["update"]["href"]).to eq("/baseImages/5")
             expect(response["_links"]["update"]["method"]).to eq("put")
             expect(response["_links"]["all"]["href"]).to eq("/baseImages")
             
@@ -223,6 +263,63 @@ describe 'BaseImageControllerTest' do
             expect(response["elements"][0]["date"]).to eq(nil)
             expect(response["elements"][0]["provision"]).to eq(nil)
             expect(response["elements"][0]["provisionVersion"]).to eq(nil)
+            expect(response["size"]).to eq(1)
+            
+        end
+        
+        it "new baseImage with packages" do
+            
+            Dockmaster::Models::BaseImage.where.delete
+            
+            get "/baseImages"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["elements"].length).to eq(0)
+            expect(response["size"]).to eq(0)
+            
+            header "Content-Type", "application/vnd.dockmaster.v1-0-0+json"
+            post "/baseImages", '{"name":"ubuntu", "version":"1.0.0", "baseImage":"base","packages":[{"name":"ruby","version":"1.9.3"},{"name":"htop","version":"1.0.1"}]}'
+            
+            expect(last_response.status).to eq(201)
+            
+            response = JSON.parse last_response.body
+            expect(response["name"]).to eq("ubuntu")
+            expect(response["baseImage"]).to eq("base")
+            expect(response["version"]).to eq("1.0.0")
+            expect(response["date"]).to eq(nil)
+            expect(response["provision"]).to eq(nil)
+            expect(response["provisionVersion"]).to eq(nil)
+            expect(response["packages"][0]["name"]).to eq("ruby")
+            expect(response["packages"][0]["version"]).to eq("1.9.3")
+            expect(response["packages"][1]["name"]).to eq("htop")
+            expect(response["packages"][1]["version"]).to eq("1.0.1")
+            expect(response["_links"]["self"]["href"]).to eq("/baseImages/6")
+            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/6")
+            expect(response["_links"]["delete"]["method"]).to eq("delete")
+            expect(response["_links"]["update"]["href"]).to eq("/baseImages/6")
+            expect(response["_links"]["update"]["method"]).to eq("put")
+            expect(response["_links"]["all"]["href"]).to eq("/baseImages")
+            
+            get "/baseImages"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["elements"].length).to eq(1)
+            expect(response["elements"][0]["name"]).to eq("ubuntu")
+            expect(response["elements"][0]["baseImage"]).to eq("base")
+            expect(response["elements"][0]["version"]).to eq("1.0.0")
+            expect(response["elements"][0]["date"]).to eq(nil)
+            expect(response["elements"][0]["provision"]).to eq(nil)
+            expect(response["elements"][0]["provisionVersion"]).to eq(nil)
+            expect(response["elements"][0]["packages"][0]["name"]).to eq("ruby")
+            expect(response["elements"][0]["packages"][0]["version"]).to eq("1.9.3")
+            expect(response["elements"][0]["packages"][1]["name"]).to eq("htop")
+            expect(response["elements"][0]["packages"][1]["version"]).to eq("1.0.1")
             expect(response["size"]).to eq(1)
             
         end
@@ -329,10 +426,69 @@ describe 'BaseImageControllerTest' do
             expect(response["date"]).to eq(nil)
             expect(response["provision"]).to eq("shell")
             expect(response["provisionVersion"]).to eq(nil)
-            expect(response["_links"]["self"]["href"]).to eq("/baseImages/6")
-            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/6")
+            expect(response["_links"]["self"]["href"]).to eq("/baseImages/8")
+            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/8")
             expect(response["_links"]["delete"]["method"]).to eq("delete")
-            expect(response["_links"]["update"]["href"]).to eq("/baseImages/6")
+            expect(response["_links"]["update"]["href"]).to eq("/baseImages/8")
+            expect(response["_links"]["update"]["method"]).to eq("put")
+            
+        end
+        
+        it "update existing baseImage" do
+            
+            Dockmaster::Models::BaseImage.where.delete
+            baseImage = Dockmaster::Models::BaseImage.new :name => "ubuntu", :version => "1.0.0", :baseImage => "base"
+            baseImage.save
+            
+            package = Dockmaster::Models::Package.new :name => "ruby", :version => "1.9.3"
+            baseImage.add_package package
+            
+            package = Dockmaster::Models::Package.new :name => "htop", :version => "1.0.1"
+            baseImage.add_package package
+            
+            get "/baseImages"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            expect(response["elements"].length).to eq(1)
+            expect(response["elements"][0]["name"]).to eq("ubuntu")
+            expect(response["elements"][0]["baseImage"]).to eq("base")
+            expect(response["elements"][0]["version"]).to eq("1.0.0")
+            expect(response["elements"][0]["date"]).to eq(nil)
+            expect(response["elements"][0]["provision"]).to eq(nil)
+            expect(response["elements"][0]["provisionVersion"]).to eq(nil)
+            expect(response["elements"][0]["packages"].length).to eq(2)
+            expect(response["elements"][0]["packages"][0]["name"]).to eq("ruby")
+            expect(response["elements"][0]["packages"][0]["version"]).to eq("1.9.3")
+            expect(response["elements"][0]["packages"][1]["name"]).to eq("htop")
+            expect(response["elements"][0]["packages"][1]["version"]).to eq("1.0.1")
+            expect(response["elements"][0]["_links"]["self"]["href"]).to eq("/baseImages/9")
+            expect(response["elements"][0]["_links"]["delete"]["href"]).to eq("/baseImages/9")
+            expect(response["elements"][0]["_links"]["delete"]["method"]).to eq("delete")
+            expect(response["elements"][0]["_links"]["update"]["href"]).to eq("/baseImages/9")
+            expect(response["elements"][0]["_links"]["update"]["method"]).to eq("put")
+            
+            id = response["elements"][0]["id"]
+            header "Content-Type", "application/vnd.dockmaster.v1-0-0+json"
+            put "/baseImages/#{id}", '{"provision":"shell","packages":[{"name":"vim","version":"2.1.3"}]}'
+            
+            expect(last_response.status).to eq(200)
+            
+            response = JSON.parse last_response.body
+            expect(response["name"]).to eq("ubuntu")
+            expect(response["baseImage"]).to eq("base")
+            expect(response["version"]).to eq("1.0.0")
+            expect(response["date"]).to eq(nil)
+            expect(response["provision"]).to eq("shell")
+            expect(response["provisionVersion"]).to eq(nil)
+            expect(response["packages"].length).to eq(1)
+            expect(response["packages"][0]["name"]).to eq("vim")
+            expect(response["packages"][0]["version"]).to eq("2.1.3")
+            expect(response["_links"]["self"]["href"]).to eq("/baseImages/9")
+            expect(response["_links"]["delete"]["href"]).to eq("/baseImages/9")
+            expect(response["_links"]["delete"]["method"]).to eq("delete")
+            expect(response["_links"]["update"]["href"]).to eq("/baseImages/9")
             expect(response["_links"]["update"]["method"]).to eq("put")
             
         end
