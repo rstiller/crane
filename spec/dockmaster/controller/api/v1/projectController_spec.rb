@@ -652,4 +652,93 @@ describe 'ProjectControllerTest' do
         
     end
     
+    context "project build histories" do
+        
+        it "no build histories" do
+            
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["buildHistories"].length).to eq(0)
+            
+        end
+        
+        it "one build history" do
+            
+            Dockmaster::Models::BuildHistory.where.delete
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            projectId = project.id
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            workingCopyId = workingCopy.id
+            
+            buildHistory = Dockmaster::Models::BuildHistory.new :date => Time.now, :ref => "ref", :successful => Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL
+            workingCopy.add_buildHistory buildHistory
+            buildHistoryId = buildHistory.id
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["buildHistories"].length).to eq(1)
+            expect(response["branches"][0]["buildHistories"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["buildHistories"][0]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            
+            get "/projects/#{projectId}/trees/#{workingCopyId}/histories"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["elements"].length).to eq(1)
+            expect(response["elements"][0]["ref"]).to eq("ref")
+            expect(response["elements"][0]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["size"]).to eq(1)
+            
+            get "/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["ref"]).to eq("ref")
+            expect(response["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            
+        end
+        
+    end
+    
 end

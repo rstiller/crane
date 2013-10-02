@@ -261,7 +261,7 @@ module Dockmaster
                 
                 service = Service.new infra, serviceName, serviceConfig
                 
-                buildOutput = Dockmaster::Models::BuildOutput.new :name => "#{environment}-#{serviceName}"
+                buildOutput = Dockmaster::Models::BuildOutput.new :environment => environment, :serviceName => serviceName
                 buildHistory.add_buildOutput buildOutput
                 
                 dockerfile = service.generateDockerfile self, environment, variables

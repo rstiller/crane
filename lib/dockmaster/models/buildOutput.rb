@@ -9,7 +9,9 @@ module Dockmaster
             
             primary_key :id
             foreign_key :build_history_id, :on_delete => :cascade
-            String :name
+            unique [:serviceName, :environment, :build_history_id]
+            String :serviceName
+            String :environment
             String :output, :text => true
             
         end
@@ -26,7 +28,8 @@ module Dockmaster
             
             def self.from_hash(hash)
                 
-                BuildHistory.new :name => hash["name"],
+                BuildHistory.new :serviceName => hash["serviceName"],
+                    :environment => hash["environment"],
                     :output => hash["output"]
                 
             end
