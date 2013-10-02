@@ -43,6 +43,14 @@ module Dockmaster
                 
             end
             
+            not_found do
+                ""
+            end
+            
+            error do
+                Dockmaster::log.error "#{env['sinatra.error'].name}: #{env['sinatra.error'].message}"
+            end
+            
             before do
                 
                 if request.media_type.to_s.strip.length == 0

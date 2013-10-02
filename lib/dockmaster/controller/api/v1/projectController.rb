@@ -51,7 +51,7 @@ module Dockmaster
                         
                         workingCopies = project.workingCopy
                         
-                        projectHash = image.to_hash["values"]
+                        projectHash = project.to_hash["values"]
                         projectHash["branches"] = []
                         projectHash["tags"] = []
                         
@@ -69,36 +69,42 @@ module Dockmaster
                             
                         end
                         
+                        linkifyGet projectHash, "#{request.path}/#{project.id}"
+                        
                         projectHash
                         
                     end
                     
-                end
-                
-                def self.updateBranches(project, workingCopies)
-                    
-                    project.workingCopy.each do |workingCopy|
+                    def updateBranches(project, workingCopies)
                         
-                        if workingCopy.branch?
+                        project.workingCopy.each do |workingCopy|
                             
-                            if workingCopies.include? workingCopy.name
+                            if workingCopy.branch?
                                 
-                                workingCopies.delete_at workingCopies.index(workingCopy.name)
-                                
-                            else
-                                
-                                project.remove_workingCopy workingCopy
+                                if workingCopies.include? workingCopy.name
+                                    
+                                    workingCopies.delete_at workingCopies.index(workingCopy.name)
+                                    
+                                else
+                                    
+                                    project.remove_workingCopy workingCopy
+                                    
+                                end
                                 
                             end
                             
                         end
                         
-                    end
-                    
-                    workingCopies.each do |workingCopy|
-                        
-                        workingCopyObject = Dockmaster::Models::WorkingCopy.new :name => workingCopy, :type => Dockmaster::Models::WorkingCopy::BRANCH
-                        project.add_workingCopy workingCopyObject
+                        unless workingCopies.nil?
+                            
+                            workingCopies.each do |workingCopy|
+                                
+                                workingCopyObject = Dockmaster::Models::WorkingCopy.new :name => workingCopy, :type => Dockmaster::Models::WorkingCopy::BRANCH
+                                project.add_workingCopy workingCopyObject
+                                
+                            end
+                            
+                        end
                         
                     end
                     
