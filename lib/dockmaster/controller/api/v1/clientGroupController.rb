@@ -44,6 +44,8 @@ module Dockmaster
                             
                         end
                         
+                        linkifyGet groupHash, "#{request.path}/#{group.id}"
+                        
                         groupHash
                         
                     end

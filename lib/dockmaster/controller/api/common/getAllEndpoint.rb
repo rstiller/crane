@@ -18,7 +18,9 @@ module Dockmaster
                             
                         else
                             
-                            objects.push object.to_hash["values"]
+                            objectHash = object.to_hash["values"]
+                            linkifyGet objectHash, "#{request.path}/#{object.id}"
+                            objects.push objectHash
                             
                         end
                         
