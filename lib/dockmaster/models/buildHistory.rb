@@ -8,7 +8,7 @@ module Dockmaster
         Sequel::Model.db.create_table? "build_histories" do
             
             primary_key :id
-            foreign_key :working_copy_id
+            foreign_key :working_copy_id, :on_delete => :cascade
             DateTime :date
             String :ref
             Integer :successful

@@ -37,7 +37,7 @@ module Dockmaster
                         clients.each do |client|
                             
                             clientHash = client.to_hash["values"]
-                            path = request.path.gsub("/clientGroups", "/clients")
+                            path = request.path.sub /\/clientGroups.*/, "/clients/#{clientHash[:id]}"
                             linkifyGet clientHash, path
                             
                             groupHash["clients"].push clientHash
@@ -56,11 +56,12 @@ module Dockmaster
                         
                         unless payload["clients"].nil?
                             payload["clients"].each do |clientId|
-                                group.add_client Dockmaster::Models::Client[clientId]
+                                client = Dockmaster::Models::Client[clientId]
+                                group.add_client client unless client.nil?
                             end
                         end
                         
-                        group.to_hash["values"]
+                        renderGroup group
                         
                     end
                     

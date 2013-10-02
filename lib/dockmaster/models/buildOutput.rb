@@ -8,7 +8,7 @@ module Dockmaster
         Sequel::Model.db.create_table? "build_outputs" do
             
             primary_key :id
-            foreign_key :build_history_id
+            foreign_key :build_history_id, :on_delete => :cascade
             String :name
             String :output, :text => true
             

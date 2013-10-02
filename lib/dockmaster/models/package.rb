@@ -8,7 +8,7 @@ module Dockmaster
         Sequel::Model.db.create_table? "packages" do
             
             primary_key :id
-            foreign_key :base_image_id
+            foreign_key :base_image_id, :on_delete => :cascade
             String :name
             String :version
             

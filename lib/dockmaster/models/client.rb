@@ -24,8 +24,8 @@ module Dockmaster
         Sequel::Model.db.create_table? "client_groups_clients" do
             
             primary_key :id
-            foreign_key :client_group_id, :client_groups
-            foreign_key :client_id, :clients
+            foreign_key :client_group_id, :client_groups, :on_delete => :cascade
+            foreign_key :client_id, :clients, :on_delete => :cascade
             
         end
         

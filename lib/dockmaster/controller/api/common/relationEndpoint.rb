@@ -7,7 +7,7 @@ module Dockmaster
             
             def relationEndpoint(app, route, parentModel, childModel, childModelName, add)
                 
-                app.post route do
+                func = proc {
                     
                     parents = parentModel.where :id => params[:parentId]
                     parent = parents.first
@@ -42,6 +42,12 @@ module Dockmaster
                     headers "Content-Length" => "0"
                     body ""
                     
+                }
+                
+                if add == true
+                    app.post route, &func
+                else
+                    app.delete route, &func
                 end
                 
             end

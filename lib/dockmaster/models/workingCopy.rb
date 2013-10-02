@@ -22,7 +22,7 @@ module Dockmaster
         Sequel::Model.db.create_table? "working_copies" do
             
             primary_key :id
-            foreign_key :project_id
+            foreign_key :project_id, :on_delete => :cascade
             String :name
             String :ref
             String :type
