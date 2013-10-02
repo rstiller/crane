@@ -26,6 +26,7 @@ module Dockmaster
                     Controller::Parser,
                     Controller::Renderer,
                     Controller::V1::BaseImageController::Helper,
+                    Controller::V1::BuildHistoryEndpoint::Helper,
                     Controller::V1::ClientGroupController::Helper,
                     Controller::V1::ProjectController::Helper
                 

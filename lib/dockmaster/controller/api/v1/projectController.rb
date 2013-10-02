@@ -37,7 +37,7 @@ module Dockmaster
                         
                         workingCopy.buildHistory.each do |buildHistory|
                             
-                            workingCopyHash["buildHistories"].push buildHistory.to_hash["values"]
+                            workingCopyHash["buildHistories"].push renderBuildHistory(buildHistory)
                             
                         end
                         

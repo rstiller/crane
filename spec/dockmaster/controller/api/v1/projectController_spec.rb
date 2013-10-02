@@ -700,6 +700,9 @@ describe 'ProjectControllerTest' do
             workingCopy.add_buildHistory buildHistory
             buildHistoryId = buildHistory.id
             
+            buildOutput = Dockmaster::Models::BuildOutput.new :serviceName => "my_app", :environment => "test", :output => "build log"
+            buildHistory.add_buildOutput buildOutput
+            
             get "/projects/#{project.id}"
             
             expect(last_response).to be_ok
@@ -716,6 +719,7 @@ describe 'ProjectControllerTest' do
             expect(response["branches"][0]["buildHistories"].length).to eq(1)
             expect(response["branches"][0]["buildHistories"][0]["ref"]).to eq("ref")
             expect(response["branches"][0]["buildHistories"][0]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["branches"][0]["buildHistories"][0]["output"]["test"]["my_app"]["output"]).to eq("build log")
             
             get "/projects/#{projectId}/trees/#{workingCopyId}/histories"
             
@@ -726,6 +730,7 @@ describe 'ProjectControllerTest' do
             expect(response["elements"].length).to eq(1)
             expect(response["elements"][0]["ref"]).to eq("ref")
             expect(response["elements"][0]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["elements"][0]["output"]["test"]["my_app"]["output"]).to eq("build log")
             expect(response["size"]).to eq(1)
             
             get "/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId}"
@@ -736,6 +741,94 @@ describe 'ProjectControllerTest' do
             
             expect(response["ref"]).to eq("ref")
             expect(response["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["output"]["test"]["my_app"]["output"]).to eq("build log")
+            
+        end
+        
+        it "multiple build histories" do
+            
+            Dockmaster::Models::BuildHistory.where.delete
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            projectId = project.id
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            workingCopyId = workingCopy.id
+            
+            buildHistory = Dockmaster::Models::BuildHistory.new :date => Time.now, :ref => "ref1", :successful => Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL
+            workingCopy.add_buildHistory buildHistory
+            buildHistoryId1 = buildHistory.id
+            
+            buildOutput = Dockmaster::Models::BuildOutput.new :serviceName => "my_app", :environment => "test", :output => "build log my_app 1"
+            buildHistory.add_buildOutput buildOutput
+            
+            buildOutput = Dockmaster::Models::BuildOutput.new :serviceName => "mongodb", :environment => "test", :output => "build log mongodb 1"
+            buildHistory.add_buildOutput buildOutput
+            
+            buildHistory = Dockmaster::Models::BuildHistory.new :date => Time.now, :ref => "ref2", :successful => Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL
+            workingCopy.add_buildHistory buildHistory
+            buildHistoryId2 = buildHistory.id
+            
+            buildOutput = Dockmaster::Models::BuildOutput.new :serviceName => "my_app", :environment => "test", :output => "build log my_app 2"
+            buildHistory.add_buildOutput buildOutput
+            
+            buildOutput = Dockmaster::Models::BuildOutput.new :serviceName => "mongodb", :environment => "test", :output => "build log mongodb 2"
+            buildHistory.add_buildOutput buildOutput
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["buildHistories"].length).to eq(2)
+            expect(response["branches"][0]["buildHistories"][0]["ref"]).to eq("ref1")
+            expect(response["branches"][0]["buildHistories"][0]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["branches"][0]["buildHistories"][0]["output"]["test"]["my_app"]["output"]).to eq("build log my_app 1")
+            expect(response["branches"][0]["buildHistories"][0]["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 1")
+            expect(response["branches"][0]["buildHistories"][1]["ref"]).to eq("ref2")
+            expect(response["branches"][0]["buildHistories"][1]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["branches"][0]["buildHistories"][1]["output"]["test"]["my_app"]["output"]).to eq("build log my_app 2")
+            expect(response["branches"][0]["buildHistories"][1]["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 2")
+            
+            get "/projects/#{projectId}/trees/#{workingCopyId}/histories"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["elements"].length).to eq(2)
+            expect(response["elements"][0]["ref"]).to eq("ref1")
+            expect(response["elements"][0]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["elements"][0]["output"]["test"]["my_app"]["output"]).to eq("build log my_app 1")
+            expect(response["elements"][0]["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 1")
+            expect(response["elements"][1]["ref"]).to eq("ref2")
+            expect(response["elements"][1]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["elements"][1]["output"]["test"]["my_app"]["output"]).to eq("build log my_app 2")
+            expect(response["elements"][1]["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 2")
+            expect(response["size"]).to eq(2)
+            
+            get "/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId1}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["ref"]).to eq("ref1")
+            expect(response["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
+            expect(response["output"]["test"]["my_app"]["output"]).to eq("build log my_app 1")
+            expect(response["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 1")
             
         end
         

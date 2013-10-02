@@ -7,6 +7,26 @@ module Dockmaster
             
             module BuildHistoryEndpoint
                 
+                module Helper
+                    
+                    def renderBuildHistory(history)
+                        
+                        historyHash = history.to_hash["values"]
+                        historyHash["output"] = {}
+                        
+                        history.buildOutput.each do |buildOutput|
+                            
+                            historyHash["output"][buildOutput.environment] = historyHash["output"][buildOutput.environment] || {}
+                            historyHash["output"][buildOutput.environment][buildOutput.serviceName] = { "output" => buildOutput.output }
+                            
+                        end
+                        
+                        historyHash
+                        
+                    end
+                    
+                end
+                
                 def getBuildHistories(app, route)
                     
                     app.get route do
@@ -27,7 +47,7 @@ module Dockmaster
                                 
                             else
                                 
-                                objects.push object.to_hash["values"]
+                                objects.push renderBuildHistory(object)
                                 
                             end
                             
@@ -67,7 +87,7 @@ module Dockmaster
                             
                         else
                             
-                            history = history.to_hash["values"]
+                            history = renderBuildHistory history
                             
                         end
                         
