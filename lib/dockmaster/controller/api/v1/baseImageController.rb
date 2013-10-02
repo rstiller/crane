@@ -42,16 +42,16 @@ module Dockmaster
                         
                     end
                     
-                end
-                
-                def self.updatePackages(image, packages)
-                    
-                    unless packages.nil?
+                    def updatePackages(image, packages)
                         
-                        packages.each do |pkg|
+                        unless packages.nil?
                             
-                            package = Dockmaster::Models::Package.from_hash pkg
-                            image.add_package package
+                            packages.each do |pkg|
+                                
+                                package = Dockmaster::Models::Package.from_hash pkg
+                                image.add_package package
+                                
+                            end
                             
                         end
                         
