@@ -323,4 +323,333 @@ describe 'ProjectControllerTest' do
         
     end
     
+    context "project run configs" do
+        
+        it "no working copy" do
+            
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(0)
+            expect(response["tags"].length).to eq(0)
+            
+        end
+        
+        it "with working copy" do
+            
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(0)
+            
+        end
+        
+        it "working copy with run config" do
+            
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            
+            runConfig = Dockmaster::Models::RunConfig.new :serviceName => "my_app", :environment => "test", :command => "docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service"
+            workingCopy.add_runConfig runConfig
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(1)
+            expect(response["branches"][0]["runConfigs"][0]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][0]["environment"]).to eq("test")
+            expect(response["branches"][0]["runConfigs"][0]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service")
+            
+        end
+        
+        it "add a run config" do
+            
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            projectId = project.id
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            workingCopyId = workingCopy.id
+            
+            runConfig = Dockmaster::Models::RunConfig.new :serviceName => "my_app", :environment => "test", :command => "docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service"
+            workingCopy.add_runConfig runConfig
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(1)
+            expect(response["branches"][0]["runConfigs"][0]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][0]["environment"]).to eq("test")
+            expect(response["branches"][0]["runConfigs"][0]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service")
+            
+            header "Content-Type", "application/vnd.dockmaster.v1-0-0+json"
+            post "/projects/#{projectId}/trees/#{workingCopyId}/configs",
+                '{"serviceName":"my_app", "environment":"production", "command":"docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service --profile=production"}'
+            
+            expect(last_response.status).to be(201)
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(2)
+            expect(response["branches"][0]["runConfigs"][0]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][0]["environment"]).to eq("test")
+            expect(response["branches"][0]["runConfigs"][0]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service")
+            expect(response["branches"][0]["runConfigs"][1]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][1]["environment"]).to eq("production")
+            expect(response["branches"][0]["runConfigs"][1]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service --profile=production")
+            
+        end
+        
+        it "add a run config again" do
+            
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            projectId = project.id
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            workingCopyId = workingCopy.id
+            
+            header "Content-Type", "application/vnd.dockmaster.v1-0-0+json"
+            post "/projects/#{projectId}/trees/#{workingCopyId}/configs",
+                '{"serviceName":"my_app", "environment":"production", "command":"docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service --profile=production"}'
+            
+            expect(last_response.status).to be(201)
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(1)
+            expect(response["branches"][0]["runConfigs"][0]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][0]["environment"]).to eq("production")
+            expect(response["branches"][0]["runConfigs"][0]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service --profile=production")
+            
+            header "Content-Type", "application/vnd.dockmaster.v1-0-0+json"
+            post "/projects/#{projectId}/trees/#{workingCopyId}/configs",
+                '{"serviceName":"my_app", "environment":"production", "command":"docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service --profile=production"}'
+            
+            expect(last_response.status).to be(409)
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(1)
+            expect(response["branches"][0]["runConfigs"][0]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][0]["environment"]).to eq("production")
+            expect(response["branches"][0]["runConfigs"][0]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service --profile=production")
+            
+        end
+        
+        it "delete not existing run config" do
+            
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            projectId = project.id
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            workingCopyId = workingCopy.id
+            
+            runConfig = Dockmaster::Models::RunConfig.new :serviceName => "my_app", :environment => "test", :command => "docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service"
+            workingCopy.add_runConfig runConfig
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(1)
+            expect(response["branches"][0]["runConfigs"][0]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][0]["environment"]).to eq("test")
+            expect(response["branches"][0]["runConfigs"][0]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service")
+            
+            header "Content-Type", "application/vnd.dockmaster.v1-0-0+json"
+            delete "/projects/#{projectId}/trees/#{workingCopyId}/configs/production/my_app"
+            
+            expect(last_response.status).to be(404)
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(1)
+            expect(response["branches"][0]["runConfigs"][0]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][0]["environment"]).to eq("test")
+            expect(response["branches"][0]["runConfigs"][0]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service")
+            
+        end
+        
+        it "delete run config" do
+            
+            Dockmaster::Models::WorkingCopy.where.delete
+            Dockmaster::Models::Project.where.delete
+            
+            project = Dockmaster::Models::Project.new :name => "project1", :url => "https://github.com/user/repo", :buildTags => Dockmaster::Models::Project::BUILD_TAGS
+            project.save
+            projectId = project.id
+            
+            workingCopy = Dockmaster::Models::WorkingCopy.new :name => "master", :ref => "ref", :type => Dockmaster::Models::WorkingCopy::BRANCH
+            project.add_workingCopy workingCopy
+            workingCopyId = workingCopy.id
+            
+            runConfig = Dockmaster::Models::RunConfig.new :serviceName => "my_app", :environment => "test", :command => "docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service"
+            workingCopy.add_runConfig runConfig
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(1)
+            expect(response["branches"][0]["runConfigs"][0]["serviceName"]).to eq("my_app")
+            expect(response["branches"][0]["runConfigs"][0]["environment"]).to eq("test")
+            expect(response["branches"][0]["runConfigs"][0]["command"]).to eq("docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service")
+            
+            header "Content-Type", "application/vnd.dockmaster.v1-0-0+json"
+            delete "/projects/#{projectId}/trees/#{workingCopyId}/configs/test/my_app"
+            
+            expect(last_response.status).to be(204)
+            
+            get "/projects/#{project.id}"
+            
+            expect(last_response).to be_ok
+            
+            response = JSON.parse last_response.body
+            
+            expect(response["name"]).to eq("project1")
+            expect(response["url"]).to eq("https://github.com/user/repo")
+            expect(response["buildTags"]).to eq(Dockmaster::Models::Project::BUILD_TAGS)
+            expect(response["branches"].length).to eq(1)
+            expect(response["branches"][0]["name"]).to eq("master")
+            expect(response["branches"][0]["ref"]).to eq("ref")
+            expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["runConfigs"].length).to eq(0)
+            
+        end
+        
+    end
+    
 end

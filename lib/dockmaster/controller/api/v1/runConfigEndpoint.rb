@@ -1,4 +1,6 @@
 
+require "sequel"
+
 module Dockmaster
     
     module Controller
@@ -11,7 +13,14 @@ module Dockmaster
                     
                     app.post route do
                         
-                        workingCopies = Dockmaster::Models::WorkingCopy::where :id => params[:workingCopyId]
+                        projects = Dockmaster::Models::Project::where :id => params[:projectId]
+                        project = projects.first
+                        
+                        if project.nil?
+                            halt 404
+                        end
+                        
+                        workingCopies = project.workingCopy_dataset::where :id => params[:workingCopyId]
                         workingCopy = workingCopies.first
                         
                         if workingCopy.nil?
@@ -21,9 +30,21 @@ module Dockmaster
                         payload = parsePayload
                         runConfig = Dockmaster::Models::RunConfig.from_hash payload
                         
-                        workingCopy.add_runConfig runConfig
+                        begin 
+                            
+                            workingCopy.add_runConfig runConfig
+                            status 201
+                            
+                        rescue Sequel::DatabaseError => exception
+                            
+                            status 409
+                            
+                            unless exception.message.match /^SQLite3::ConstraintException.*/
+                                status 500
+                            end
+                            
+                        end
                         
-                        status 201
                         headers "Content-Length" => "0"
                         body ""
                         
@@ -35,21 +56,28 @@ module Dockmaster
                     
                     app.delete route do
                         
-                        workingCopies = Dockmaster::Models::WorkingCopy::where :id => params[:workingCopyId]
+                        projects = Dockmaster::Models::Project::where :id => params[:projectId]
+                        project = projects.first
+                        
+                        if project.nil?
+                            halt 404
+                        end
+                        
+                        workingCopies = project.workingCopy_dataset::where :id => params[:workingCopyId]
                         workingCopy = workingCopies.first
                         
                         if workingCopy.nil?
                             halt 404
                         end
                         
-                        runConfigs = Dockmaster::Models::RunConfig::where :id => params[:runConfigId]
+                        runConfigs = workingCopy.runConfig_dataset.where :environment => params[:environment], :serviceName => params[:serviceName]
                         runConfig = runConfigs.first
                         
                         if runConfig.nil?
                             halt 404
                         end
                         
-                        workingCopy.remove_runConfig runConfig
+                        workingCopy.runConfig_dataset.where(:environment => params[:environment], :serviceName => params[:serviceName]).delete
                         
                         status 204
                         headers "Content-Length" => "0"

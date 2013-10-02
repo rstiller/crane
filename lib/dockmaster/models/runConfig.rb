@@ -9,6 +9,7 @@ module Dockmaster
             
             primary_key :serviceName, :environment, :working_copy_id
             foreign_key :working_copy_id, :on_delete => :cascade
+            unique [:serviceName, :environment, :working_copy_id]
             String :serviceName
             String :environment
             String :command

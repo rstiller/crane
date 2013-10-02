@@ -36,13 +36,17 @@ module Dockmaster
                         workingCopyHash["buildHistories"] = []
                         
                         workingCopy.buildHistory.each do |buildHistory|
-                            # TODO
+                            
+                            workingCopyHash["buildHistories"].push buildHistory.to_hash["values"]
+                            
                         end
                         
                         workingCopy.runConfig.each do |runConfig|
-                            # TODO
-                        end
                             
+                            workingCopyHash["runConfigs"].push runConfig.to_hash["values"]
+                            
+                        end
+                        
                         workingCopyHash
                         
                     end
@@ -140,11 +144,11 @@ module Dockmaster
                         
                     end
                     
-                    addRunConfig app, "/projects/trees/:workingCopyId/configs"
-                    removeRunConfig app, "/projects/trees/:workingCopyId/configs/:runConfigId"
+                    addRunConfig app, "/projects/:projectId/trees/:workingCopyId/configs"
+                    removeRunConfig app, "/projects/:projectId/trees/:workingCopyId/configs/:environment/:serviceName"
                     
-                    getBuildHistories app, "/projects/trees/:workingCopyId/histories"
-                    getBuildHistory app, "/projects/trees/:workingCopyId/histories/:historyId"
+                    getBuildHistories app, "/projects/:projectId/trees/:workingCopyId/histories"
+                    getBuildHistory app, "/projects/:projectId/trees/:workingCopyId/histories/:historyId"
                     
                 end
                 
