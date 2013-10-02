@@ -16,10 +16,10 @@ describe "Scheduler" do
         
         it "new scheduler" do
             
-            rufus = Rufus::Scheduler.start_new
+            rufus = Rufus::Scheduler.new
             Settings["schedule.check"] = 60
             
-            expect(Rufus::Scheduler).to receive(:start_new).and_return(rufus)
+            expect(Rufus::Scheduler).to receive(:new).and_return(rufus)
             expect(Dockmaster::ThreadPool).to receive(:new).with(2)
             expect(Dockmaster::ThreadPool).to receive(:new).with(4)
             expect(rufus).to receive(:every).with(60)

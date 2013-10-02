@@ -14,7 +14,7 @@ module Dockmaster
         
         def initialize(checkoutWorker = 4, buildWorker = 16)
             
-            @scheduler = Rufus::Scheduler.start_new
+            @scheduler = Rufus::Scheduler.new
             @checkoutThreadpool = ThreadPool.new checkoutWorker
             @workerThreadpool = ThreadPool.new buildWorker
             
