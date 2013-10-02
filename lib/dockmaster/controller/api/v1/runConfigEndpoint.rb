@@ -11,7 +11,7 @@ module Dockmaster
                     
                     app.post route do
                         
-                        workingCopies = Controller::Models::WorkingCopy::where :id => params[:workingCopyId]
+                        workingCopies = Dockmaster::Models::WorkingCopy::where :id => params[:workingCopyId]
                         workingCopy = workingCopies.first
                         
                         if workingCopy.nil?
@@ -19,9 +19,13 @@ module Dockmaster
                         end
                         
                         payload = parsePayload
-                        runConfig = Controller::Models::RunConfig.from_hash payload
+                        runConfig = Dockmaster::Models::RunConfig.from_hash payload
                         
                         workingCopy.add_runConfig runConfig
+                        
+                        status 201
+                        headers "Content-Length" => "0"
+                        body ""
                         
                     end
                     
@@ -31,14 +35,14 @@ module Dockmaster
                     
                     app.delete route do
                         
-                        workingCopies = Controller::Models::WorkingCopy::where :id => params[:workingCopyId]
+                        workingCopies = Dockmaster::Models::WorkingCopy::where :id => params[:workingCopyId]
                         workingCopy = workingCopies.first
                         
                         if workingCopy.nil?
                             halt 404
                         end
                         
-                        runConfigs = Controller::Models::RunConfig::where :id => params[:runConfigId]
+                        runConfigs = Dockmaster::Models::RunConfig::where :id => params[:runConfigId]
                         runConfig = runConfigs.first
                         
                         if runConfig.nil?
@@ -46,6 +50,10 @@ module Dockmaster
                         end
                         
                         workingCopy.remove_runConfig runConfig
+                        
+                        status 204
+                        headers "Content-Length" => "0"
+                        body ""
                         
                     end
                     

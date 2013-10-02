@@ -18,6 +18,19 @@ module Dockmaster
             
             many_to_one :buildHistory
             
+            def to_hash
+                
+                Dockmaster::objectToHash self
+                
+            end
+            
+            def self.from_hash(hash)
+                
+                BuildHistory.new :name => hash["name"],
+                    :output => hash["output"]
+                
+            end
+            
         end
         
     end

@@ -14,6 +14,7 @@ module Dockmaster
                 require "dockmaster/controller/api/common/getEndpoint"
                 require "dockmaster/controller/api/common/newEndpoint"
                 require "dockmaster/controller/api/common/updateEndpoint"
+                require "dockmaster/controller/api/v1/buildHistoryEndpoint"
                 require "dockmaster/controller/api/v1/runConfigEndpoint"
                 require "dockmaster/models/project"
                 require "dockmaster/models/workingCopy"
@@ -23,9 +24,28 @@ module Dockmaster
                 extend Controller::GetEndpoint
                 extend Controller::NewEndpoint
                 extend Controller::UpdateEndpoint
+                extend V1::BuildHistoryEndpoint
                 extend V1::RunConfigEndpoint
                 
                 module Helper
+                    
+                    def renderWorkingCopy(workingCopy)
+                        
+                        workingCopyHash = workingCopy.to_hash["values"]
+                        workingCopyHash["runConfigs"] = []
+                        workingCopyHash["buildHistories"] = []
+                        
+                        workingCopy.buildHistory.each do |buildHistory|
+                            # TODO
+                        end
+                        
+                        workingCopy.runConfig.each do |runConfig|
+                            # TODO
+                        end
+                            
+                        workingCopyHash
+                        
+                    end
                     
                     def renderProject(project)
                         
@@ -39,11 +59,11 @@ module Dockmaster
                             
                             if workingCopy.branch?
                                 
-                                projectHash["branches"].push workingCopy.to_hash["values"]
+                                projectHash["branches"].push renderWorkingCopy(workingCopy)
                                 
                             else
                                 
-                                projectHash["tags"].push workingCopy.to_hash["values"]
+                                projectHash["tags"].push renderWorkingCopy(workingCopy)
                                 
                             end
                             
@@ -114,8 +134,11 @@ module Dockmaster
                         
                     end
                     
-                    addRunConfig app, "/projects/config/:workingCopyId"
-                    removeRunConfig app, "/projects/config/:workingCopyId/:runConfigId"
+                    addRunConfig app, "/projects/trees/:workingCopyId/configs"
+                    removeRunConfig app, "/projects/trees/:workingCopyId/configs/:runConfigId"
+                    
+                    getBuildHistories app, "/projects/trees/:workingCopyId/histories"
+                    getBuildHistory app, "/projects/trees/:workingCopyId/histories/:historyId"
                     
                 end
                 

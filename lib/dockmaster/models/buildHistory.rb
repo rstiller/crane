@@ -23,6 +23,20 @@ module Dockmaster
             one_to_many :buildOutput
             many_to_one :workingCopy
             
+            def to_hash
+                
+                Dockmaster::objectToHash self
+                
+            end
+            
+            def self.from_hash(hash)
+                
+                BuildHistory.new :ref => hash["ref"],
+                    :successful => hash["successful"],
+                    :date => hash["date"]
+                
+            end
+            
         end
         
     end
