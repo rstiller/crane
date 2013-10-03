@@ -29,7 +29,17 @@ module Dockmaster
                 
                 module Helper
                     
-                    def renderWorkingCopy(workingCopy)
+                    def linkifyWorkingCopy(workingCopyHash, path)
+                        
+                        linkify workingCopyHash,
+                            {"path" => "#{path}/configs", "rel" => "addConfig", "method" => "post"},
+                            {"path" => "#{path}/configs/{environment}/{serviceName}", "rel" => "removeConfig", "method" => "delete", "templated" => true},
+                            {"path" => "#{path}/histories", "rel" => "histories"},
+                            {"path" => "#{path}/histories/{history}", "rel" => "history", "templated" => true}
+                        
+                    end
+                    
+                    def renderWorkingCopy(project, workingCopy)
                         
                         workingCopyHash = workingCopy.to_hash["values"]
                         workingCopyHash["runConfigs"] = []
@@ -37,7 +47,7 @@ module Dockmaster
                         
                         workingCopy.buildHistory.each do |buildHistory|
                             
-                            workingCopyHash["buildHistories"].push renderBuildHistory(buildHistory)
+                            workingCopyHash["buildHistories"].push renderBuildHistory(workingCopy, buildHistory, "#{request.path}/trees/#{workingCopy.id}/histories")
                             
                         end
                         
@@ -46,6 +56,8 @@ module Dockmaster
                             workingCopyHash["runConfigs"].push runConfig.to_hash["values"]
                             
                         end
+                        
+                        linkifyWorkingCopy workingCopyHash, "#{request.path}/trees/#{workingCopy.id}"
                         
                         workingCopyHash
                         
@@ -63,11 +75,11 @@ module Dockmaster
                             
                             if workingCopy.branch?
                                 
-                                projectHash["branches"].push renderWorkingCopy(workingCopy)
+                                projectHash["branches"].push renderWorkingCopy(project, workingCopy)
                                 
                             else
                                 
-                                projectHash["tags"].push renderWorkingCopy(workingCopy)
+                                projectHash["tags"].push renderWorkingCopy(project, workingCopy)
                                 
                             end
                             

@@ -9,7 +9,15 @@ module Dockmaster
                 
                 module Helper
                     
-                    def renderBuildHistory(history)
+                    def linkifyBuildHistory(historyHash, path)
+                        
+                        linkify historyHash,
+                            {"path" => path, "rel" => "all"},
+                            {"path" => "#{path}/#{historyHash[:id]}", "rel" => "self"}
+                        
+                    end
+                    
+                    def renderBuildHistory(workingCopy, history, basePath = "")
                         
                         historyHash = history.to_hash["values"]
                         historyHash["output"] = {}
@@ -20,6 +28,12 @@ module Dockmaster
                             historyHash["output"][buildOutput.environment][buildOutput.serviceName] = { "output" => buildOutput.output }
                             
                         end
+                        
+                        if basePath.strip.length == 0
+                            basePath = "#{request.path}/trees/#{workingCopy.id}/histories"
+                        end
+                        
+                        linkifyBuildHistory historyHash, "#{basePath}"
                         
                         historyHash
                         
@@ -47,15 +61,14 @@ module Dockmaster
                                 
                             else
                                 
-                                objects.push renderBuildHistory(object)
+                                historyHash = renderBuildHistory(workingCopy, object, request.path)
+                                objects.push historyHash
                                 
                             end
                             
                         end
                         
                         list = Controller::List.new objects
-                        
-                        linkifyGetAll list, request.path
                         
                         render list
                         
@@ -87,11 +100,11 @@ module Dockmaster
                             
                         else
                             
-                            history = renderBuildHistory history
+                            path = request.path
+                            path = path.slice 0, path.rindex("/#{history.id}")
+                            history = renderBuildHistory workingCopy, history, path
                             
                         end
-                        
-                        linkifyGet history, request.path
                         
                         render history
                         

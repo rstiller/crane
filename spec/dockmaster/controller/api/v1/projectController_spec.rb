@@ -792,15 +792,27 @@ describe 'ProjectControllerTest' do
             expect(response["branches"][0]["name"]).to eq("master")
             expect(response["branches"][0]["ref"]).to eq("ref")
             expect(response["branches"][0]["type"]).to eq("branch")
+            expect(response["branches"][0]["_links"]["addConfig"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/configs")
+            expect(response["branches"][0]["_links"]["addConfig"]["method"]).to eq("post")
+            expect(response["branches"][0]["_links"]["removeConfig"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/configs/{environment}/{serviceName}")
+            expect(response["branches"][0]["_links"]["removeConfig"]["method"]).to eq("delete")
+            expect(response["branches"][0]["_links"]["removeConfig"]["templated"]).to eq(true)
+            expect(response["branches"][0]["_links"]["histories"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories")
+            expect(response["branches"][0]["_links"]["history"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories/{history}")
+            expect(response["branches"][0]["_links"]["history"]["templated"]).to eq(true)
             expect(response["branches"][0]["buildHistories"].length).to eq(2)
             expect(response["branches"][0]["buildHistories"][0]["ref"]).to eq("ref1")
             expect(response["branches"][0]["buildHistories"][0]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
             expect(response["branches"][0]["buildHistories"][0]["output"]["test"]["my_app"]["output"]).to eq("build log my_app 1")
             expect(response["branches"][0]["buildHistories"][0]["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 1")
+            expect(response["branches"][0]["buildHistories"][0]["_links"]["self"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId1}")
+            expect(response["branches"][0]["buildHistories"][0]["_links"]["all"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories")
             expect(response["branches"][0]["buildHistories"][1]["ref"]).to eq("ref2")
             expect(response["branches"][0]["buildHistories"][1]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
             expect(response["branches"][0]["buildHistories"][1]["output"]["test"]["my_app"]["output"]).to eq("build log my_app 2")
             expect(response["branches"][0]["buildHistories"][1]["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 2")
+            expect(response["branches"][0]["buildHistories"][1]["_links"]["self"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId2}")
+            expect(response["branches"][0]["buildHistories"][1]["_links"]["all"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories")
             
             get "/projects/#{projectId}/trees/#{workingCopyId}/histories"
             
@@ -813,10 +825,14 @@ describe 'ProjectControllerTest' do
             expect(response["elements"][0]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
             expect(response["elements"][0]["output"]["test"]["my_app"]["output"]).to eq("build log my_app 1")
             expect(response["elements"][0]["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 1")
+            expect(response["elements"][0]["_links"]["self"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId1}")
+            expect(response["elements"][0]["_links"]["all"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories")
             expect(response["elements"][1]["ref"]).to eq("ref2")
             expect(response["elements"][1]["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
             expect(response["elements"][1]["output"]["test"]["my_app"]["output"]).to eq("build log my_app 2")
             expect(response["elements"][1]["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 2")
+            expect(response["elements"][1]["_links"]["self"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId2}")
+            expect(response["elements"][1]["_links"]["all"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories")
             expect(response["size"]).to eq(2)
             
             get "/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId1}"
@@ -829,6 +845,8 @@ describe 'ProjectControllerTest' do
             expect(response["successful"]).to eq(Dockmaster::Models::BuildHistory::BUILD_SUCCESSFUL)
             expect(response["output"]["test"]["my_app"]["output"]).to eq("build log my_app 1")
             expect(response["output"]["test"]["mongodb"]["output"]).to eq("build log mongodb 1")
+            expect(response["_links"]["self"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories/#{buildHistoryId1}")
+            expect(response["_links"]["all"]["href"]).to eq("/projects/#{projectId}/trees/#{workingCopyId}/histories")
             
         end
         
