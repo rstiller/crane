@@ -14,6 +14,7 @@ module Dockmaster
                 require "dockmaster/controller/api/common/getEndpoint"
                 require "dockmaster/controller/api/common/newEndpoint"
                 require "dockmaster/controller/api/common/updateEndpoint"
+                require "dockmaster/controller/api/v1/buildEndpoint"
                 require "dockmaster/controller/api/v1/buildHistoryEndpoint"
                 require "dockmaster/controller/api/v1/runConfigEndpoint"
                 require "dockmaster/models/project"
@@ -24,6 +25,7 @@ module Dockmaster
                 extend Controller::GetEndpoint
                 extend Controller::NewEndpoint
                 extend Controller::UpdateEndpoint
+                extend V1::BuildEndpoint
                 extend V1::BuildHistoryEndpoint
                 extend V1::RunConfigEndpoint
                 
@@ -161,6 +163,8 @@ module Dockmaster
                     
                     getBuildHistories app, "/projects/:projectId/trees/:workingCopyId/histories"
                     getBuildHistory app, "/projects/:projectId/trees/:workingCopyId/histories/:historyId"
+                    
+                    triggerBuild app, "/projects/:projectId/trees/:workingCopyId/build"
                     
                 end
                 

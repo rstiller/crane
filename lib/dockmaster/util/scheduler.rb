@@ -63,9 +63,10 @@ module Dockmaster
             
         end
         
-        def buildImage(project, localWorkingCopy, remoteWorkingCopyRef)
+        def self.buildImage(project, localWorkingCopy, remoteWorkingCopyRef)
             
             buildHistory = nil
+            monitors = nil
             
             Dockmaster::tx do
                 
@@ -80,7 +81,6 @@ module Dockmaster
             
             begin
                 
-                # TODO: make monitors available
                 monitors = localWorkingCopy.buildImages project, buildHistory
                 
                 Dockmaster::tx do
@@ -103,6 +103,8 @@ module Dockmaster
                 buildHistory.save
                 
             end
+            
+            monitors
             
         end
         

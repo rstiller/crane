@@ -129,7 +129,7 @@ describe "Scheduler" do
             expect(buildHistory).to receive(:save)
             
             scheduler = Dockmaster::Scheduler.new 1, 1
-            scheduler.buildImage project, localWorkingCopy, remoteWorkingCopyRef
+            Dockmaster::Scheduler.buildImage project, localWorkingCopy, remoteWorkingCopyRef
             
         end
         
