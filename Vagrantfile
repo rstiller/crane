@@ -5,7 +5,7 @@ Vagrant::configure("2") do |config|
     
     config.ssh.forward_agent
     
-    config.vm.define :dockmaster do |cfg|
+    config.vm.define :crane do |cfg|
         cfg.vm.network :forwarded_port, guest: 4567, host: 8080, auto_correct: true
         cfg.vm.provision :puppet do |puppet|
             puppet.module_path = [ "manifests" ]

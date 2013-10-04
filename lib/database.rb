@@ -2,7 +2,7 @@
 require "sequel"
 require "config"
 
-module Dockmaster
+module Crane
     
     unless File.directory? File.dirname(Settings["db.path"])
         
@@ -20,7 +20,7 @@ module Dockmaster
             
         rescue => exception
             
-            Dockmaster::log.error exception
+            Crane::log.error exception
             
             raise Sequel::Rollback
             

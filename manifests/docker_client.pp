@@ -7,7 +7,7 @@ exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/
 } ->
 
 file { '/etc/init/docker.conf':
-    source => "puppet:///modules/dockmaster/docker_client.upstart",
+    source => "puppet:///modules/crane/docker_client.upstart",
     owner  => root,
     group  => root,
     mode   => 0755,

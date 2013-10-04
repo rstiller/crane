@@ -1,7 +1,7 @@
 
 require "system/getifaddrs"
 
-module Dockmaster
+module Crane
     
     def self.getEthernetAddresses
         

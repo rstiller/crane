@@ -1,9 +1,9 @@
 require "rubygems"
-require "./lib/dockmaster"
-require "./lib/dockmaster/controller/api/api"
+require "./lib/crane"
+require "./lib/crane/controller/api/api"
 
-use Dockmaster::App
+use Crane::App
 
 map "/api" do
-    run Dockmaster::Controller::Api
+    run Crane::Controller::Api
 end

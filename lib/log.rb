@@ -2,7 +2,7 @@
 require "logger"
 require "config"
 
-module Dockmaster
+module Crane
     
     @logger = Logger.new(STDOUT)
     #@logger = Logger.new(Settings["logging.file"], Settings["logging.period"])

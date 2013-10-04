@@ -1,21 +1,21 @@
 paths:
-    baseImages: /var/dockmaster/baseImages
-    images: /var/dockmaster/images
-    repositories: /var/dockmaster/repositories
+    baseImages: /var/crane/baseImages
+    images: /var/crane/images
+    repositories: /var/crane/repositories
 
 db:
-    path: /var/dockmaster/data.db
+    path: /var/crane/data.db
 
 schedule:
     check: 10s
 
 registry:
     port: 5000
-    user: dockmaster
-    password: dockmaster
-    email: no-reply@dockmaster.io
+    user: crane
+    password: crane
+    email: no-reply@crane.io
 
 logging:
     level: DEBUG
-    file: /var/log/dockmaster.log
+    file: /var/log/crane.log
     period: daily

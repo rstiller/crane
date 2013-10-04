@@ -1,0 +1,11 @@
+# docker
+
+description "docker"
+
+start on runlevel [234]
+stop on starting rc RUNLEVEL=[0156]
+
+chdir /var/crane/registry
+
+exec gunicorn -k gevent --max-requests 100 --graceful-timeout 3600 -t 3600 -b 0.0.0.0:5000 -w 8 wsgi:application
+respawn

@@ -1,5 +1,5 @@
 
-module Dockmaster
+module Crane
     
     VERSION = "0.0.1"
     

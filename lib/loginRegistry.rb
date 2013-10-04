@@ -2,9 +2,9 @@
 require "open3"
 require "configliere"
 
-module Dockmaster
+module Crane
     
-    require "dockmaster/util/subprocess"
+    require "crane/util/subprocess"
     
     def self.loginRegistry(
         callback,
@@ -15,7 +15,7 @@ module Dockmaster
         password = Settings['registry.password'],
         port = Settings['registry.port'])
         
-        Dockmaster::subprocess "docker -H #{socket} login -e='#{email}' -u='#{user}' -p='#{password}' #{host}:#{port}", ".", callback
+        Crane::subprocess "docker -H #{socket} login -e='#{email}' -u='#{user}' -p='#{password}' #{host}:#{port}", ".", callback
         
     end
     

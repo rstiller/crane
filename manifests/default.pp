@@ -45,7 +45,7 @@ exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/
 } ->
 
 file { '/etc/init/docker-daemon.conf':
-    source => "puppet:///modules/dockmaster/docker_daemon.upstart",
+    source => "puppet:///modules/crane/docker_daemon.upstart",
     owner  => root,
     group  => root,
     mode   => 0755,
@@ -55,30 +55,30 @@ service { 'docker-daemon':
     ensure => running,
 } ->
 
-exec { 'git clone https://github.com/dotcloud/docker-registry.git /var/dockmaster/registry':
+exec { 'git clone https://github.com/dotcloud/docker-registry.git /var/crane/registry':
     user    => root,
     path    => [ '/usr/bin/', '/bin' ],
-    creates => "/var/dockmaster/registry",
+    creates => "/var/crane/registry",
 } ->
 
 file { '/etc/init/docker-registry.conf':
-    source => "puppet:///modules/dockmaster/docker_registry.upstart",
+    source => "puppet:///modules/crane/docker_registry.upstart",
     owner  => root,
     group  => root,
     mode   => 0755,
 } ->
 
-file { '/var/dockmaster/registry/config.yml':
-    source => "puppet:///modules/dockmaster/registry.yml",
+file { '/var/crane/registry/config.yml':
+    source => "puppet:///modules/crane/registry.yml",
     owner  => root,
     group  => root,
 } ->
 
 exec { 'pip install -r requirements.txt':
-    cwd     => "/var/dockmaster/registry/",
+    cwd     => "/var/crane/registry/",
     user    => root,
     path    => [ '/usr/bin/', '/bin' ],
-    creates => "/var/dockmaster/registry/wsgi.pyc",
+    creates => "/var/crane/registry/wsgi.pyc",
 } ->
 
 service { 'docker-registry':
