@@ -1,0 +1,7 @@
+{
+    "name": "crane",
+    "dependencies": {
+        "pure": "*",
+        "angular": "*"
+    }
+}

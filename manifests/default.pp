@@ -1,7 +1,10 @@
 
+Exec {
+    path => [ '/usr/bin/', '/bin', '/usr/local/bin/', ],
+}
+
 exec { 'apt-get update':
     user => root,
-    path => [ '/usr/bin/' ],
 } ->
 
 package { [
@@ -17,6 +20,7 @@ package { [
     'redir',
     'build-essential',
     'python-dev',
+    'python-software-properties',
     'libevent-dev',
     'python-pip',
     'libxslt1-dev',
@@ -34,13 +38,11 @@ package { ['bundler']:
 exec { 'bundle install':
     cwd     => '/vagrant',
     user    => root,
-    path    => [ '/usr/bin/', '/bin', '/usr/local/bin/', ],
 } ->
 
 exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/docker-latest && chmod +x /usr/bin/docker':
     cwd     => '/usr/bin',
     user    => root,
-    path    => [ '/usr/bin/', '/bin' ],
     creates => '/usr/bin/docker',
 } ->
 
@@ -57,7 +59,6 @@ service { 'docker-daemon':
 
 exec { 'git clone https://github.com/dotcloud/docker-registry.git /var/crane/registry':
     user    => root,
-    path    => [ '/usr/bin/', '/bin' ],
     creates => "/var/crane/registry",
 } ->
 
@@ -77,10 +78,28 @@ file { '/var/crane/registry/config.yml':
 exec { 'pip install -r requirements.txt':
     cwd     => "/var/crane/registry/",
     user    => root,
-    path    => [ '/usr/bin/', '/bin' ],
     creates => "/var/crane/registry/wsgi.pyc",
 } ->
 
 service { 'docker-registry':
     ensure => running,
+}
+
+exec { 'apt-add-repository ppa:chris-lea/node.js && apt-get update':
+    user    => root,
+    creates => '/etc/apt/sources.list.d/chris-lea-node_js-precise.list',
+    require => Package['python-software-properties'],
+} ->
+
+package { ['nodejs']:
+} ->
+
+exec { 'npm install -g grunt-cli bower':
+    user    => root,
+    creates => '/usr/bin/grunt',
+} ->
+
+exec { 'npm install --no-bin-links':
+    cwd     => '/vagrant',
+    creates => '/vagrant/node_modules',
 }

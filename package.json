@@ -1,0 +1,29 @@
+{
+    "name": "crane",
+    "version": "1.0.0",
+    "description": "",
+    "homepage": "https://github.com/rstiller/crane",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:rstiller/crane.git"
+    },
+    "devDependencies": {
+        "lodash": "*",
+        "grunt": "*",
+        "grunt-contrib-copy": "*",
+        "grunt-contrib-clean": "*",
+        "grunt-contrib-watch": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-replace": "*",
+        "grunt-rename": "*",
+        "matchdep": "*",
+        "mocha": "git://github.com/visionmedia/mocha.git",
+        "sinon": "*"
+    },
+    "licenses": [
+        {
+            "type": "Apache License, Version 2.0",
+            "url": "https://github.com/rstiller/crane/blob/master/LICENSE"
+        }
+    ]
+}
