@@ -14,7 +14,7 @@
         "grunt-contrib-clean": "*",
         "grunt-contrib-watch": "*",
         "grunt-contrib-uglify": "*",
-        "grunt-contrib-cssmin": "*",
+        "grunt-contrib-less": "*",
         "grunt-replace": "*",
         "grunt-rename": "*",
         "matchdep": "*",

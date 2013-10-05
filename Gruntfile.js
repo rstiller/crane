@@ -44,10 +44,13 @@ module.exports = function (grunt) {
                 }
             }
         },
-        cssmin: {
+        less: {
+            options: {
+                yuicompress: true
+            },
             prod: {
                 files: {
-                    './public/style.css': [  './app/libs/pure/pure.css', './app/styles/**/*.css' ]
+                    './public/style.css': './app/styles/main.less'
                 }
             }
         },
@@ -101,7 +104,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build-dev', [
         'clean',
         'uglify:dev',
-        'cssmin',
+        'less',
         'replace',
         'copy',
         'rename'
@@ -110,7 +113,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean',
         'uglify:prod',
-        'cssmin',
+        'less',
         'replace',
         'copy',
         'rename'
