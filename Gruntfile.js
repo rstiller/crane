@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     
     grunt.initConfig({
         clean: {
-            dist: './public'
+            dist: './public/**/*.*'
         },
         copy: {
             dist: {
