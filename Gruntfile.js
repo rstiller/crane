@@ -42,14 +42,12 @@ module.exports = function (grunt) {
                 files: {
                     './public/script.js': [ './app/scripts/**/*.js', './app/libs/angular/angular.js' ]
                 }
-            },
-            css: {
-                options: {
-                    mangle: false,
-                    compress: false
-                },
+            }
+        },
+        cssmin: {
+            prod: {
                 files: {
-                    './public/style.css': [ './app/styles/**/*.css' ]
+                    './public/style.css': [  './app/libs/pure/pure.css', './app/styles/**/*.css' ]
                 }
             }
         },
@@ -103,7 +101,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build-dev', [
         'clean',
         'uglify:dev',
-        'uglify:css',
+        'cssmin',
         'replace',
         'copy',
         'rename'
@@ -112,7 +110,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean',
         'uglify:prod',
-        'uglify:css',
+        'cssmin',
         'replace',
         'copy',
         'rename'
