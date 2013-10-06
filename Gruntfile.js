@@ -23,6 +23,12 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        html2js: {
+            main: {
+                src: ['src/app/**/*.tpl.html', 'src/components/**/*.tpl.html'],
+                dest: './.tmp/templates.js'
+            },
+        },
         uglify: {
             dev: {
                 options: {
@@ -33,6 +39,8 @@ module.exports = function (grunt) {
                 files: {
                     './public/script.js': [
                         './src/vendor/angular/angular.js',
+                        './src/vendor/angular-ui-router/release/angular-ui-router.js',
+                        './.tmp/templates.js',
                         './src/components/**/*.js',
                         './src/app/**/*.js'
                     ]
@@ -46,6 +54,8 @@ module.exports = function (grunt) {
                 files: {
                     './public/script.js': [
                         './src/vendor/angular/angular.js',
+                        './src/vendor/angular-ui-router/release/angular-ui-router.js',
+                        './.tmp/templates.js',
                         './src/components/**/*.js',
                         './src/app/**/*.js'
                     ]
@@ -88,7 +98,7 @@ module.exports = function (grunt) {
         },
         watch: {
             resources: {
-                'files': ['./src/app/**/*.*', './src/assets/**/*.*', './src/components/**/*.*'],
+                'files': ['./src/index.html', './src/app/**/*.*', './src/assets/**/*.*', './src/components/**/*.*'],
                 'tasks': ['build-dev'],
                 'options': {
                     'nospawn': true,
@@ -111,6 +121,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build-dev', [
         'clean',
+        'html2js',
         'uglify:dev',
         'less',
         'replace',
@@ -120,6 +131,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean',
+        'html2js',
         'uglify:prod',
         'less',
         'replace',

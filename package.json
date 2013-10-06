@@ -17,6 +17,7 @@
         "grunt-contrib-less": "*",
         "grunt-replace": "*",
         "grunt-rename": "*",
+        "grunt-html2js": "*",
         "matchdep": "*",
         "mocha": "git://github.com/visionmedia/mocha.git",
         "sinon": "*"
