@@ -1,24 +1,30 @@
 
 /* http://www.colourlovers.com/palette/871636/A_Dream_in_Color */
+/*
 @color1: #1B676B;
 @color2: #519548;
 @color3: #88C425;
 @color4: #BEF202;
 @color5: #EAFDE6;
+*/
 
 /* http://www.colourlovers.com/palette/1274446/magic_dream */
+/*
 @color1: #F64E15;
 @color2: #E0E8C8;
 @color3: #B3E810;
 @color4: #3F8C52;
 @color5: #1E676D;
+*/
 
 /* http://www.colourlovers.com/palette/46688/fresh_cut_day */
+/*
 @color1: #00A8C6;
 @color2: #40C0CB;
 @color3: #F9F2E7;
 @color4: #AEE239;
 @color5: #8FBE00;
+*/
 
 /* http://www.colourlovers.com/palette/848743/%28%E2%97%95_%E2%80%9D_%E2%97%95%29 */
 @color1: #490A3D;
@@ -67,22 +73,26 @@
 @background_dark: #252A3A;
 @background_light: #fff;
 
-.color-theme-projects {
-    color: @color2;
+@import (less) "../vendor/pure/pure.css";
+
+.color1-bg {
+    background: @color1;
 }
 
-.color-theme-machines {
-    color: @color3;
+.color2-bg {
+    background: @color2;
 }
 
-.color-theme-images {
-    color: @color4;
+.color3-bg {
+    background: @color3;
 }
 
-.color-theme-statistics {
-    color: @color5;
+.color4-bg {
+    background: @color4;
 }
 
-@import (less) "../libs/pure/pure.css";
-@import "./common.less";
-@import "./menu.less";
+.color5-bg {
+    background: @color5;
+}
+
+@import "./menu/menu.less";

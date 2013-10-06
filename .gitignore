@@ -5,3 +5,4 @@ Gemfile.lock
 public/
 node_modules/
 app/libs/
+src/vendor/

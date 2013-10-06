@@ -15,11 +15,10 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     dot: true,
-                    cwd: './app',
+                    cwd: './src/assets',
                     dest: './public',
                     src: [
-                        'font/*.*',
-                        'images/*.*'
+                        '**/*.*'
                     ]
                 }]
             }
@@ -28,10 +27,15 @@ module.exports = function (grunt) {
             dev: {
                 options: {
                     mangle: false,
-                    compress: false
+                    compress: false,
+                    beautify: true
                 },
                 files: {
-                    './public/script.js': [ './app/scripts/**/*.js', './app/libs/angular/angular.js' ]
+                    './public/script.js': [
+                        './src/vendor/angular/angular.js',
+                        './src/components/**/*.js',
+                        './src/app/**/*.js'
+                    ]
                 }
             },
             prod: {
@@ -40,7 +44,11 @@ module.exports = function (grunt) {
                     compress: true
                 },
                 files: {
-                    './public/script.js': [ './app/scripts/**/*.js', './app/libs/angular/angular.js' ]
+                    './public/script.js': [
+                        './src/vendor/angular/angular.js',
+                        './src/components/**/*.js',
+                        './src/app/**/*.js'
+                    ]
                 }
             }
         },
@@ -50,7 +58,7 @@ module.exports = function (grunt) {
             },
             prod: {
                 files: {
-                    './public/style.css': './app/styles/main.less'
+                    './public/style.css': './src/app/dashboard.less'
                 }
             }
         },
@@ -74,13 +82,13 @@ module.exports = function (grunt) {
                     'prefix': '@@'
                 },
                 files: [
-                    { 'expand': true, 'cwd': './app', 'src': 'index.html', 'dest': './public' }
+                    { 'expand': true, 'cwd': './src', 'src': 'index.html', 'dest': './public' }
                 ]
             }
         },
         watch: {
             resources: {
-                'files': ['./app/index.html', './app/font/*.*', './app/scripts/*.*', './app/styles/*.*'],
+                'files': ['./src/app/**/*.*', './src/assets/**/*.*', './src/components/**/*.*'],
                 'tasks': ['build-dev'],
                 'options': {
                     'nospawn': true,
