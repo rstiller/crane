@@ -70,10 +70,27 @@
 
 @color_dark: #252A3A;
 @color_light: #fff;
+
 @background_dark: #252A3A;
+@background_dark_02d: lighten(@background_dark, 2%);
+@background_dark_05d: lighten(@background_dark, 5%);
+@background_dark_10d: lighten(@background_dark, 10%);
+@background_dark_15d: lighten(@background_dark, 15%);
+
 @background_light: #fff;
+@background_light_02d: darken(@background_light, 2%);
+@background_light_05d: darken(@background_light, 5%);
+@background_light_10d: darken(@background_light, 10%);
+@background_light_15d: darken(@background_light, 15%);
 
 @import (less) "../vendor/pure/pure.css";
+@import "../vendor/font-awesome/less/font-awesome.less";
+
+html,body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 
 .color1-bg {
     background: @color1;
@@ -93,6 +110,139 @@
 
 .color5-bg {
     background: @color5;
+}
+
+.full-height {
+    height: 100%;
+    min-height: 100%;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.menu-container {
+    left: -1px;
+    margin-left: 16.6667%;
+    position: fixed;
+    border-right: 1px solid @background_light_10d;
+}
+
+.content-container {
+    left: 0;
+    margin-left: 33.3332%;
+    position: fixed;
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+.pure-button-xsmall {
+    font-size: 70%;
+}
+
+.pure-button-small {
+    font-size: 85%;
+}
+
+.pure-button-large {
+    font-size: 110%;
+}
+
+.pure-button-xlarge {
+    font-size: 125%;
+}
+
+.pure-button-success,
+.pure-button-error,
+.pure-button-warning,
+.pure-button-secondary {
+    color: white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.pure-button-success {
+    background: rgb(28, 184, 65);
+}
+
+.pure-button-error {
+    background: rgb(202, 60, 60);
+}
+
+.pure-button-warning {
+    background: rgb(223, 117, 20);
+}
+
+.pure-button-secondary {
+    background: rgb(66, 184, 221);
+}
+
+.pure-menu {
+    font-weight: lighter;
+    padding: 2em 0;
+    text-align: left;
+    bottom: 0;
+    overflow: auto;
+    position: fixed;
+    top: 0;
+}
+
+.pure-menu.pure-menu-open {
+    color: @color_light;
+    background: none repeat scroll 0 0 @background_dark;
+    border: none;
+    width: 16.66667%;
+}
+
+.pure-menu .pure-menu-heading {
+    color: @color_light;
+    border-bottom: 1px solid @background_light;
+    font-weight: bold;
+}
+
+.pure-menu li.color1 a:hover,
+.pure-menu li.color1 a:focus,
+.pure-menu li.color1.active a {
+    color: @color1_15d;
+    background: @color1_15l;
+}
+
+.pure-menu li.color2 a:hover,
+.pure-menu li.color2 a:focus,
+.pure-menu li.color2.active a {
+    color: @color2_15d;
+    background: @color2_15l;
+}
+
+.pure-menu li.color3 a:hover,
+.pure-menu li.color3 a:focus,
+.pure-menu li.color3.active a {
+    color: @color3_15d;
+    background: @color3_15l;
+}
+
+.pure-menu li.color4 a:hover,
+.pure-menu li.color4 a:focus,
+.pure-menu li.color4.active a {
+    color: @color4_15d;
+    background: @color4_15l;
+}
+
+.pure-menu li.color5 a:hover,
+.pure-menu li.color5 a:focus,
+.pure-menu li.color5.active a {
+    color: @color5_15d;
+    background: @color5_15l;
 }
 
 @import "./home/menu.less";

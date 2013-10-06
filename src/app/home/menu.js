@@ -1,4 +1,11 @@
 
 var HomeMenuController = function($scope) {
-    console.log('HomeMenuController');
+    
+    $scope.items = [
+        {
+            name: "Source Code",
+            text: "Text"
+        }
+    ];
+    
 };

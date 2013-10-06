@@ -2,6 +2,7 @@
     "name": "crane",
     "dependencies": {
         "pure": "*",
+        "font-awesome": "*",
         "angular": "*",
         "angular-ui-router": "*"
     }

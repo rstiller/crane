@@ -20,6 +20,14 @@ module.exports = function (grunt) {
                     src: [
                         '**/*.*'
                     ]
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: './src/vendor/font-awesome',
+                    dest: './public',
+                    src: [
+                        'font/**/*.*'
+                    ]
                 }]
             }
         },

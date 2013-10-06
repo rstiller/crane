@@ -11,23 +11,37 @@
     
     <body>
         
-        <div class="pure-g-r content">
+        <div class="pure-g content full-height no-padding no-margin">
             
-            <nav class="pure-u-1-6">
-                <div class="pure-menu pure-menu-open">
-                    <h2 class="pure-menu-heading">Crane - Dashboard</h2>
+            <nav class="pure-u-1-6 full-height">
+                
+                <div class="pure-menu pure-menu-open pure-u-1-6 full-height">
+                    
+                    <a class="pure-menu-heading" href="#" ui-sref="home"><i class="icon-home"></i> Crane - Dashboard</a>
+                    
                     <ul>
-                        <li class="color2" ng-class="{active: $state.includes('projects')}"><a href="#" ui-sref="projects.overview">Projects</a></li>
-                        <li class="color3" ng-class="{active: $state.includes('machines')}"><a href="#" ui-sref="machines.overview">Machines</a></li>
-                        <li class="color4" ng-class="{active: $state.includes('images')}"><a href="#" ui-sref="images.overview">Images</a></li>
-                        <li class="color5" ng-class="{active: $state.includes('statistics')}"><a href="#" ui-sref="statistics.overview">Statistics</a></li>
+                        
+                        <li class="color2" ng-class="{active: $state.includes('projects')}">
+                            <a href="#" ui-sref="projects.overview"><i class="icon-rocket"></i> Projects</a>
+                        </li>
+                        
+                        <li class="color3" ng-class="{active: $state.includes('machines')}">
+                            <a href="#" ui-sref="machines.overview"><i class="icon-sitemap"></i> Machines</a>
+                        </li>
+                        
+                        <li class="color4" ng-class="{active: $state.includes('images')}">
+                            <a href="#" ui-sref="images.overview"><i class="icon-picture"></i> Images</a>
+                        </li>
+                        
                     </ul>
+                    
                 </div>
+                
             </nav>
         
-            <div class="pure-u-1-6" ui-view="menu"></div>
+            <div class="pure-u-1-6 full-height right-bordered menu-container" ui-view="menu"></div>
             
-            <div class="pure-u-2-3" ui-view="content"></div>
+            <div class="pure-u-2-3 content-container" ui-view="content"></div>
             
         </div>
         
