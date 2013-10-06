@@ -15,7 +15,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('home', {
         url: '/',
         views: {
-            menu: { templateUrl: 'app/home/menu.tpl.html', controller: HomeMenuController },
+            menu:    { templateUrl: 'app/home/menu.tpl.html',     controller: HomeMenuController },
             content: { templateUrl: 'app/home/overview.tpl.html', controller: HomeOverviewController }
         }
     });
@@ -24,7 +24,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         abstract: true,
         url: '/projects',
         views: {
-            menu: { templateUrl: 'app/projects/menu.tpl.html', controller: ProjectMenuController },
+            menu:    { templateUrl: 'app/projects/menu.tpl.html',     controller: ProjectMenuController },
             content: { templateUrl: 'app/projects/overview.tpl.html', controller: ProjectOverviewController }
         }
     });

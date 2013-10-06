@@ -1,2 +1,4 @@
 
-var ProjectDetailController = function($scope) {};
+var ProjectDetailController = function($scope) {
+    console.log('ProjectDetailController');
+};

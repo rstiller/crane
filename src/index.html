@@ -17,10 +17,10 @@
                 <div class="pure-menu pure-menu-open">
                     <h2 class="pure-menu-heading">Crane - Dashboard</h2>
                     <ul>
-                        <li class="color2"><a href="#" ui-sref="projects.overview">Projects</a></li>
-                        <li class="color3"><a href="#" ui-sref="machines.overview">Machines</a></li>
-                        <li class="color4"><a href="#" ui-sref="images.overview">Images</a></li>
-                        <li class="color5"><a href="#" ui-sref="statistics.overview">Statistics</a></li>
+                        <li class="color2" ng-class="{active: $state.includes('projects')}"><a href="#" ui-sref="projects.overview">Projects</a></li>
+                        <li class="color3" ng-class="{active: $state.includes('machines')}"><a href="#" ui-sref="machines.overview">Machines</a></li>
+                        <li class="color4" ng-class="{active: $state.includes('images')}"><a href="#" ui-sref="images.overview">Images</a></li>
+                        <li class="color5" ng-class="{active: $state.includes('statistics')}"><a href="#" ui-sref="statistics.overview">Statistics</a></li>
                     </ul>
                 </div>
             </nav>
