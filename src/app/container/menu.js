@@ -1,0 +1,3 @@
+
+var ContainerMenuController = function($scope) {
+};
