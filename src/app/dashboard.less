@@ -245,6 +245,32 @@ html,body {
     background: @color5_15l;
 }
 
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-item-container {
+    padding: 0 10px 0;
+    border: 10px solid transparent;
+}
+
+.menu-item {
+    display: table;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.menu-item:hover {
+    background: @background_light_02d;
+}
+
+.menu-item a {
+    color: @color_dark;
+}
+
 @import "./home/menu.less";
 @import "./home/overview.less";
 
