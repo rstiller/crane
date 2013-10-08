@@ -1,14 +1,21 @@
 
-var dashboard = angular.module('dashboard', ['templates-main', 'ui.router']);
+angular.module('dashboard.services');
+angular.module('dashboard.controllers', ['dashboard.services']);
+angular.module('dashboard', ['templates-main', 'ui.router', 'dashboard.services', 'dashboard.controllers']);
 
-dashboard.run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
+var dashboard = angular.module('dashboard');
+
+dashboard.run(['$rootScope', '$state', '$stateParams', '$http', function ($rootScope, $state, $stateParams, $http) {
     
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
     
+    $http.defaults.headers.common['Content-Type'] = 'application/vnd.crane.v1-0-0+json';
+    $http.defaults.headers.common['Accept'] = 'application/vnd.crane.v1-0-0+json';
+    
 }]);
 
-dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+dashboard.config(['$stateProvider', '$urlRouterProvider', 'ProjectsMenuCtrl', function ($stateProvider, $urlRouterProvider, ProjectsMenuCtrl) {
     
     $urlRouterProvider.otherwise('/');
     
@@ -64,7 +71,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         abstract: true,
         url: '/projects',
         views: {
-            menu:    { templateUrl: 'app/projects/menu.tpl.html',     controller: ProjectMenuController },
+            menu:    { templateUrl: 'app/projects/menu.tpl.html',     controller: ProjectsMenuCtrl },
             content: { templateUrl: 'app/projects/overview.tpl.html', controller: ProjectOverviewController }
         }
     });
