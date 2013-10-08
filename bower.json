@@ -4,6 +4,7 @@
         "pure": "*",
         "font-awesome": "*",
         "angular": "*",
+        "angular-resource": "*",
         "angular-ui-router": "*"
     }
 }

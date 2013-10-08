@@ -1,5 +1,5 @@
 
-angular.module('dashboard.services', []).factory('Projects', ['ngResource', function($resource) {
+angular.module('dashboard.services').factory('Projects', function($resource) {
     
     return $resource('/api/projects/:id', {
         'id': ''
@@ -25,4 +25,4 @@ angular.module('dashboard.services', []).factory('Projects', ['ngResource', func
         }
     });
     
-}]);
+});

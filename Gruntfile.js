@@ -47,9 +47,11 @@ module.exports = function (grunt) {
                 files: {
                     './public/script.js': [
                         './src/vendor/angular/angular.js',
+                        './src/vendor/angular-resource/angular-resource.js',
                         './src/vendor/angular-ui-router/release/angular-ui-router.js',
                         './.tmp/templates.js',
                         './src/components/**/*.js',
+                        './src/app/modules.js',
                         './src/app/**/*.js'
                     ]
                 }
@@ -62,9 +64,11 @@ module.exports = function (grunt) {
                 files: {
                     './public/script.js': [
                         './src/vendor/angular/angular.js',
+                        './src/vendor/angular-resource/angular-resource.js',
                         './src/vendor/angular-ui-router/release/angular-ui-router.js',
                         './.tmp/templates.js',
                         './src/components/**/*.js',
+                        './src/app/modules.js',
                         './src/app/**/*.js'
                     ]
                 }

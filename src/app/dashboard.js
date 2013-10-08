@@ -1,8 +1,4 @@
 
-angular.module('dashboard.services');
-angular.module('dashboard.controllers', ['dashboard.services']);
-angular.module('dashboard', ['templates-main', 'ui.router', 'dashboard.services', 'dashboard.controllers']);
-
 var dashboard = angular.module('dashboard');
 
 dashboard.run(['$rootScope', '$state', '$stateParams', '$http', function ($rootScope, $state, $stateParams, $http) {
@@ -15,7 +11,7 @@ dashboard.run(['$rootScope', '$state', '$stateParams', '$http', function ($rootS
     
 }]);
 
-dashboard.config(['$stateProvider', '$urlRouterProvider', 'ProjectsMenuCtrl', function ($stateProvider, $urlRouterProvider, ProjectsMenuCtrl) {
+dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     
     $urlRouterProvider.otherwise('/');
     
@@ -71,7 +67,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', 'ProjectsMenuCtrl', fu
         abstract: true,
         url: '/projects',
         views: {
-            menu:    { templateUrl: 'app/projects/menu.tpl.html',     controller: ProjectsMenuCtrl },
+            menu:    { templateUrl: 'app/projects/menu.tpl.html',     controller: 'ProjectsMenuCtrl' },
             content: { templateUrl: 'app/projects/overview.tpl.html', controller: ProjectOverviewController }
         }
     });

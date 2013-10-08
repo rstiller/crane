@@ -1,8 +1,7 @@
 
-angular.module('dashboard.controllers', ['dashboard.services']).controller('ProjectsMenuCtrl', ['$scope', 'ProjectsProvider', function($scope, ProjectsProvider) {
+angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope', 'Projects', function($scope, Projects) {
     
-    Projects.query(function(response) {
-        console.log(response);
+    Projects.query(function(projects) {
     });
     
 }]);
