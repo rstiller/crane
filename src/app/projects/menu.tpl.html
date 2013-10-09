@@ -21,9 +21,23 @@
     
 </div>
 
+<form class="pure-form project-name-filter">
+    <fieldset>
+        
+        <legend>
+            <span><i class="icon-search"></i> Projectsearch</span>
+        </legend>
+        
+        <div class="pure-u-1">
+            <input type="text" class="pure-input-rounded pure-input-1" ng-model="projectNameQuery" placeholder="Filter"/>
+        </div>
+        
+    </fieldset>
+</form>
+
 <ul class="menu">
 
-    <li ng-repeat="project in data.projects.elements" class="menu-item">
+    <li ng-repeat="project in data.projects.elements | filter:projectNameQuery" class="menu-item">
         <div class="menu-item-container project-menu-item">
             <div class="project-menu-item-header">
                 <span>{{ project.name }}</span>
