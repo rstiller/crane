@@ -19,3 +19,30 @@
 .legend-and-button button {
     float: right;
 }
+
+.project-menu-item-header {
+    font-weight: bold;
+    padding: 0.5em 0;
+    border-bottom: 1px solid @background_light_10d;
+}
+
+.project-menu-item-header a {
+    text-decoration: none;
+    margin: 0 3px;
+    visibility: hidden;
+    display: none;
+}
+
+.menu-item:first-child .project-menu-item .project-menu-item-header a {
+    visibility: visible;
+    display: block;
+}
+
+.project-menu-item:hover {
+    border-left: 10px solid @color2_15l;
+}
+
+.project-menu-item:hover .project-menu-item-header a {
+    visibility: visible;
+    display: block;
+}

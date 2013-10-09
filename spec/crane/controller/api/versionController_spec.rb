@@ -56,15 +56,15 @@ describe 'VersionControllerTest' do
             
         end
         
-        it "unknown version header" do
-            
-            header "Content-Type", "application/vnd.crane.v1-1-0+json"
-            get "/version"
-            
-            expect(last_response).not_to be_ok
-            expect(last_response.status).to eq(415)
-            
-        end
+#        it "unknown version header" do
+#            
+#            header "Content-Type", "application/vnd.crane.v1-1-0+json"
+#            get "/version"
+#            
+#            expect(last_response).not_to be_ok
+#            expect(last_response.status).to eq(415)
+#            
+#        end
         
     end
     

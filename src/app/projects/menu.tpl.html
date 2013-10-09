@@ -24,9 +24,12 @@
 <ul class="menu">
 
     <li ng-repeat="project in data.projects.elements" class="menu-item">
-        <div class="menu-item-container">
-            <h4>{{ project.name }}</h4>
-            <small>{{ project.url }}</small>
+        <div class="menu-item-container project-menu-item">
+            <div class="project-menu-item-header">
+                <span>{{ project.name }}</span>
+                <a class="float-right" href="" ng-click="remove(project.id)"><i class="icon-remove"></i></a>
+            </div>
+            <small><a href="{{ project.url }}">{{ project.url }}</a></small>
         </div>
     </li>
     

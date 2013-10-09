@@ -7,11 +7,17 @@ module Crane
         
         module Compatibility
             
+            METHODS = ['PATCH', 'POST', 'PUT']
+            
             def compatible(exp)
                 
-                unless request.media_type.match exp
+                if METHODS.include? request.request_method
                     
-                    pass
+                    unless request.media_type.match exp
+                        
+                        pass
+                        
+                    end
                     
                 end
                 

@@ -19,6 +19,8 @@ module Crane
             require "crane/controller/api/v1/version"
             require "crane/controller/api/v2/version"
             
+            METHODS = ['PATCH', 'POST', 'PUT']
+            
             def self.helper
                 
                 helpers Controller::Compatibility,
@@ -61,18 +63,22 @@ module Crane
                 if request.media_type.match Controller::V1::Version::REGEXP
                     
                     @version = Controller::V1::Version
+                    compatible @version::REGEXP
                     
                 elsif request.media_type.match Controller::V2::Version::REGEXP
                     
                     @version = Controller::V2::Version
+                    compatible @version::REGEXP
                     
                 else
                     
-                    halt 415, "Unsupported API Version"
+                    if METHODS.include? request.request_method
+                        
+                        halt 415, "Unsupported API Version"
+                        
+                    end
                     
                 end
-                
-                compatible @version::REGEXP
                 
             end
             
