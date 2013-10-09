@@ -6,8 +6,14 @@ dashboard.run(['$rootScope', '$state', '$stateParams', '$http', function ($rootS
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
     
-    $http.defaults.headers.common['Content-Type'] = 'application/vnd.crane.v1-0-0+json';
     $http.defaults.headers.common['Accept'] = 'application/vnd.crane.v1-0-0+json';
+    $http.defaults.headers.common['Content-Type'] = 'application/vnd.crane.v1-0-0+json;charset=utf-8';
+    
+    $http.defaults.headers.post['Accept'] = 'application/vnd.crane.v1-0-0+json';
+    $http.defaults.headers.post['Content-Type'] = 'application/vnd.crane.v1-0-0+json;charset=utf-8';
+    
+    $http.defaults.headers.put['Accept'] = 'application/vnd.crane.v1-0-0+json';
+    $http.defaults.headers.put['Content-Type'] = 'application/vnd.crane.v1-0-0+json;charset=utf-8';
     
 }]);
 
@@ -18,8 +24,8 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('home', {
         url: '/',
         views: {
-            menu:    { templateUrl: 'app/home/menu.tpl.html',     controller: HomeMenuController },
-            content: { templateUrl: 'app/home/overview.tpl.html', controller: HomeOverviewController }
+            menu:    { templateUrl: 'app/home/menu.tpl.html',     controller: 'HomeMenuCtrl' },
+            content: { templateUrl: 'app/home/overview.tpl.html', controller: 'HomeOverviewCtrl' }
         }
     });
     
@@ -27,8 +33,8 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         abstract: true,
         url: '/container',
         views: {
-            menu:    { templateUrl: 'app/container/menu.tpl.html',     controller: ContainerMenuController },
-            content: { templateUrl: 'app/container/overview.tpl.html', controller: ContainerOverviewController }
+            menu:    { templateUrl: 'app/container/menu.tpl.html',     controller: 'ContainerMenuCtrl' },
+            content: { templateUrl: 'app/container/overview.tpl.html', controller: 'ContainerOverviewCtrl' }
         }
     });
     
@@ -39,7 +45,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('container.detail', {
         url: '/:containerId',
         views: {
-            content: { templateUrl: 'app/container/detail.tpl.html', controller: ContainerDetailController }
+            content: { templateUrl: 'app/container/detail.tpl.html', controller: 'ContainerDetailCtrl' }
         }
     });
     
@@ -47,8 +53,8 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         abstract: true,
         url: '/machines',
         views: {
-            menu:    { templateUrl: 'app/machines/menu.tpl.html',     controller: MachineMenuController },
-            content: { templateUrl: 'app/machines/overview.tpl.html', controller: MachineOverviewController }
+            menu:    { templateUrl: 'app/machines/menu.tpl.html',     controller: 'MachineMenuCtrl' },
+            content: { templateUrl: 'app/machines/overview.tpl.html', controller: 'MachineOverviewCtrl' }
         }
     });
     
@@ -59,7 +65,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('machines.detail', {
         url: '/:machineId',
         views: {
-            content: { templateUrl: 'app/machines/detail.tpl.html', controller: MachineDetailController }
+            content: { templateUrl: 'app/machines/detail.tpl.html', controller: 'MachineDetailCtrl' }
         }
     });
     
@@ -68,7 +74,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         url: '/projects',
         views: {
             menu:    { templateUrl: 'app/projects/menu.tpl.html',     controller: 'ProjectsMenuCtrl' },
-            content: { templateUrl: 'app/projects/overview.tpl.html', controller: ProjectOverviewController }
+            content: { templateUrl: 'app/projects/overview.tpl.html', controller: 'ProjectOverviewCtrl' }
         }
     });
     
@@ -79,7 +85,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('projects.detail', {
         url: '/:projectId',
         views: {
-            content: { templateUrl: 'app/projects/detail.tpl.html', controller: ProjectDetailController }
+            content: { templateUrl: 'app/projects/detail.tpl.html', controller: 'ProjectDetailCtrl' }
         }
     });
     

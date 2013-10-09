@@ -1,4 +1,3 @@
 
-var ProjectDetailController = function($scope) {
-    console.log('ProjectDetailController');
-};
+angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope', function($scope) {
+}]);

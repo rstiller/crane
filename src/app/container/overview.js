@@ -1,4 +1,3 @@
 
-var ContainerOverviewController = function($scope) {
-    console.log('ContainerOverviewController');
-};
+angular.module('dashboard.controllers').controller('ContainerOverviewCtrl', ['$scope', function($scope) {
+}]);

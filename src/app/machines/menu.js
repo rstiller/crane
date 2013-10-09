@@ -1,3 +1,3 @@
 
-var MachineMenuController = function($scope) {
-};
+angular.module('dashboard.controllers').controller('MachineMenuCtrl', ['$scope', function($scope) {
+}]);

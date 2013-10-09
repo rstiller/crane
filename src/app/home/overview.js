@@ -1,4 +1,3 @@
 
-var HomeOverviewController = function($scope) {
-    console.log('HomeOverviewController');
-};
+angular.module('dashboard.controllers').controller('HomeOverviewCtrl', ['$scope', function($scope) {
+}]);

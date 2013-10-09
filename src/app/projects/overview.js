@@ -1,4 +1,3 @@
 
-var ProjectOverviewController = function($scope) {
-    console.log('ProjectOverviewController');
-};
+angular.module('dashboard.controllers').controller('ProjectOverviewCtrl', ['$scope', function($scope) {
+}]);

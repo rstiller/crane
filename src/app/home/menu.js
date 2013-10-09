@@ -1,11 +1,3 @@
 
-var HomeMenuController = function($scope) {
-    
-    $scope.items = [
-        {
-            name: "Source Code",
-            text: "Text"
-        }
-    ];
-    
-};
+angular.module('dashboard.controllers').controller('HomeMenuCtrl', ['$scope', function($scope) {
+}]);

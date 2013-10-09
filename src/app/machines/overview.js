@@ -1,4 +1,3 @@
 
-var MachineOverviewController = function($scope) {
-    console.log('MachineOverviewController');
-};
+angular.module('dashboard.controllers').controller('MachineOverviewCtrl', ['$scope', function($scope) {
+}]);
