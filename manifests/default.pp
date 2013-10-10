@@ -94,7 +94,7 @@ exec { 'apt-add-repository ppa:chris-lea/node.js && apt-get update':
 package { ['nodejs']:
 } ->
 
-exec { 'npm install -g grunt-cli bower':
+exec { 'npm install -g grunt-cli bower karma':
     user    => root,
     creates => '/usr/bin/grunt',
 } ->
