@@ -45,10 +45,14 @@
                 </a>
             </div>
             <div class="project-menu-item-header pure-u-2-3">
-                <a ui-sref="projects.detail({ projectId: project.id })"><span title="{{ project.name }}">{{ project.name }}</span></a>
-                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project.id)" title="Remove {{ project.name }}"><i class="icon-remove"></i></a>
+                <a ui-sref="projects.detail({ projectId: project.id })">
+                    <span title="{{ project.name }}">{{ project.name }}</span>
+                </a>
+                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project.id)" title="Remove {{ project.name }}">
+                    <i class="icon-remove"></i>
+                </a>
             </div>
-            <small><a href="{{ project.url }}">{{ project.url }}</a></small>
+            <small><a target="_blank" href="{{ project.url }}">{{ project.url }}</a></small>
         </div>
     </li>
     

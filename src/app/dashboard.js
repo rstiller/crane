@@ -24,8 +24,8 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('home', {
         url: '/',
         views: {
-            menu:    { templateUrl: 'app/home/menu.tpl.html',     controller: 'HomeMenuCtrl' },
-            content: { templateUrl: 'app/home/overview.tpl.html', controller: 'HomeOverviewCtrl' }
+            'menu@':    { templateUrl: 'app/home/menu.tpl.html',     controller: 'HomeMenuCtrl' },
+            'content@': { templateUrl: 'app/home/overview.tpl.html', controller: 'HomeOverviewCtrl' }
         }
     });
     
@@ -33,8 +33,8 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         abstract: true,
         url: '/container',
         views: {
-            menu:    { templateUrl: 'app/container/menu.tpl.html',     controller: 'ContainerMenuCtrl' },
-            content: { templateUrl: 'app/container/overview.tpl.html', controller: 'ContainerOverviewCtrl' }
+            'menu@':    { templateUrl: 'app/container/menu.tpl.html',     controller: 'ContainerMenuCtrl' },
+            'content@': { templateUrl: 'app/container/overview.tpl.html', controller: 'ContainerOverviewCtrl' }
         }
     });
     
@@ -45,7 +45,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('container.detail', {
         url: '/:containerId',
         views: {
-            content: { templateUrl: 'app/container/detail.tpl.html', controller: 'ContainerDetailCtrl' }
+            'content@': { templateUrl: 'app/container/detail.tpl.html', controller: 'ContainerDetailCtrl' }
         }
     });
     
@@ -53,8 +53,8 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         abstract: true,
         url: '/machines',
         views: {
-            menu:    { templateUrl: 'app/machines/menu.tpl.html',     controller: 'MachineMenuCtrl' },
-            content: { templateUrl: 'app/machines/overview.tpl.html', controller: 'MachineOverviewCtrl' }
+            'menu@':    { templateUrl: 'app/machines/menu.tpl.html',     controller: 'MachineMenuCtrl' },
+            'content@': { templateUrl: 'app/machines/overview.tpl.html', controller: 'MachineOverviewCtrl' }
         }
     });
     
@@ -65,7 +65,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('machines.detail', {
         url: '/:machineId',
         views: {
-            content: { templateUrl: 'app/machines/detail.tpl.html', controller: 'MachineDetailCtrl' }
+            'content@': { templateUrl: 'app/machines/detail.tpl.html', controller: 'MachineDetailCtrl' }
         }
     });
     
@@ -73,8 +73,8 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         abstract: true,
         url: '/projects',
         views: {
-            menu:    { templateUrl: 'app/projects/menu.tpl.html',     controller: 'ProjectsMenuCtrl' },
-            content: { templateUrl: 'app/projects/overview.tpl.html', controller: 'ProjectOverviewCtrl' }
+            'menu@':    { templateUrl: 'app/projects/menu.tpl.html',     controller: 'ProjectsMenuCtrl' },
+            'content@': { templateUrl: 'app/projects/overview.tpl.html', controller: 'ProjectOverviewCtrl' }
         }
     });
     
@@ -85,7 +85,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
     $stateProvider.state('projects.detail', {
         url: '/:projectId',
         views: {
-            content: { templateUrl: 'app/projects/detail.tpl.html', controller: 'ProjectDetailCtrl' }
+            'content@': { templateUrl: 'app/projects/detail.tpl.html', controller: 'ProjectDetailCtrl' }
         }
     });
     
