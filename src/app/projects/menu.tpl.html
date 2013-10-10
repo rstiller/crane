@@ -40,15 +40,16 @@
     <li ng-repeat="project in data.projects.elements | filter:projectNameQuery" class="menu-item">
         <div class="menu-item-container project-menu-item">
             <div class="project-owner-image-container pure-u-1-5">
-                <div class="project-owner-image" title="{{ project.name }}" style="background-image: url('{{ project.imageUrl }}');"></div>
+                <a ui-sref="projects.detail({ projectId: project.id })">
+                    <span class="project-owner-image" title="{{ project.name }}" style="background-image: url('{{ project.imageUrl }}');"></span>
+                </a>
             </div>
             <div class="project-menu-item-header pure-u-2-3">
-                <span title="{{ project.name }}">{{ project.name }}</span>
-                <a class="float-right" href="" ng-click="remove(project.id)" title="Remove {{ project.name }}"><i class="icon-remove"></i></a>
+                <a ui-sref="projects.detail({ projectId: project.id })"><span title="{{ project.name }}">{{ project.name }}</span></a>
+                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project.id)" title="Remove {{ project.name }}"><i class="icon-remove"></i></a>
             </div>
             <small><a href="{{ project.url }}">{{ project.url }}</a></small>
         </div>
     </li>
     
 </ul>
-
