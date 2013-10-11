@@ -18,8 +18,13 @@
         "grunt-replace": "*",
         "grunt-rename": "*",
         "grunt-html2js": "*",
+        "grunt-karma": "git://github.com/karma-runner/grunt-karma.git",
         "matchdep": "*",
         "mocha": "git://github.com/visionmedia/mocha.git",
+        "karma": "*",
+        "karma-mocha": "*",
+        "karma-ng-scenario": "*",
+        "chai": "*",
         "sinon": "*"
     },
     "licenses": [

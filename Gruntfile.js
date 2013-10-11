@@ -121,6 +121,18 @@ module.exports = function (grunt) {
                     'interval': 500
                 }
             }
+        },
+        karma: {
+            unit: {
+                configFile: './karma.unit-test.conf.js',
+                autoWatch: false,
+                singleRun: true
+            },
+            integration: {
+                configFile: './karma.integration.conf.js',
+                autoWatch: false,
+                singleRun: true
+            }
         }
     });
     

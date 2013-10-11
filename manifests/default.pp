@@ -25,6 +25,9 @@ package { [
     'python-pip',
     'libxslt1-dev',
     'libxml2-dev',
+    'libssl-dev',
+    'libfontconfig1-dev',
+    'chrpath',
     'curl',
     ]:
     ensure => latest,
@@ -94,7 +97,7 @@ exec { 'apt-add-repository ppa:chris-lea/node.js && apt-get update':
 package { ['nodejs']:
 } ->
 
-exec { 'npm install -g grunt-cli bower karma':
+exec { 'npm install -g grunt-cli bower karma mocha':
     user    => root,
     creates => '/usr/bin/grunt',
 } ->
@@ -103,3 +106,14 @@ exec { 'npm install --no-bin-links':
     cwd     => '/vagrant',
     creates => '/vagrant/node_modules',
 }
+
+#exec { 'wget -O /usr/local/share/phantomjs-1.9.0-linux-x86_64.tar.bz2 https://phantomjs.googlecode.com/files/phantomjs-1.9.0-linux-x86_64.tar.bz2':
+#    user    => root,
+#    creates => '/usr/local/share/phantomjs-1.9.0-linux-x86_64.tar.bz2',
+#} ->
+#
+#exec { 'tar -xjvf /usr/local/share/phantomjs-1.9.0-linux-x86_64.tar.bz2 && ln -sf /usr/local/share/phantomjs-1.9.0-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs':
+#    cwd     => "/usr/local/share",
+#    user    => root,
+#    creates => '/usr/local/bin/phantomjs',
+#}
