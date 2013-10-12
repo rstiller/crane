@@ -53,8 +53,8 @@ module.exports = function (grunt) {
                         './src/components/**/*.js',
                         './src/app/modules.js',
                         './src/app/**/*.js',
-                        '!**/*.spec.js',
-                        '!**/*.scenario.js'
+                        '!./src/app/**/*.spec.js',
+                        '!./src/app/**/*.scenario.js'
                     ]
                 }
             },
@@ -72,8 +72,8 @@ module.exports = function (grunt) {
                         './src/components/**/*.js',
                         './src/app/modules.js',
                         './src/app/**/*.js',
-                        '!**/*.spec.js',
-                        '!**/*.scenario.js'
+                        '!./src/app/**/*.spec.js',
+                        '!./src/app/**/*.scenario.js'
                     ]
                 }
             }
