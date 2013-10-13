@@ -18,7 +18,7 @@
         "grunt-replace": "*",
         "grunt-rename": "*",
         "grunt-html2js": "*",
-        "grunt-karma": "0.6.*",
+        "grunt-karma": "~0.6",
         "matchdep": "*",
         "mocha": "git://github.com/visionmedia/mocha.git",
         "karma-mocha": "*",
