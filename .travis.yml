@@ -1,16 +1,20 @@
-language: node_js, ruby
+language: node_js
 rvm:
-    - "1.9.3"
+    - 1.9.3
 node_js:
-    - "0.8"
-    - "0.10"
+    - 0.8
+    - 0.10
 script: rspec --format nested && grunt build && grunt karma
 before_install:
+    - pwd
     - npm --version
     - node --version
+    - ruby --version
+    - gem --version
     - sudo apt-get update -qq
     - sudo apt-get install -qq g++ make git sqlite3 libsqlite3-ruby1.9.1 libsqlite3-dev cgroup-lite redir libxslt1-dev libxml2-dev
     - sudo npm install -g grunt-cli bower karma mocha
     - npm install
+    - bower install
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
