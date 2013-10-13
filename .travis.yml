@@ -1,7 +1,12 @@
-language: ruby
+language: node_js, ruby
 rvm:
     - "1.9.3"
-script: rspec --format nested
+node_js:
+    - "0.8"
+    - "0.10"
+script: rspec --format nested && grunt build && grunt karma
 before_install:
     - sudo apt-get update -qq
     - sudo apt-get install -qq g++ make git sqlite3 libsqlite3-ruby1.9.1 libsqlite3-dev cgroup-lite redir libxslt1-dev libxml2-dev
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
