@@ -1,4 +1,4 @@
-language: node_js
+language: ruby, node_js
 rvm:
     - "1.9.3"
 node_js:
