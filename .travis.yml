@@ -13,7 +13,7 @@ before_install:
     - gem --version
     - sudo apt-get update -qq
     - sudo apt-get install -qq g++ make git sqlite3 libsqlite3-ruby1.9.1 libsqlite3-dev cgroup-lite redir libxslt1-dev libxml2-dev
-    - npm install -g grunt-cli bower karma mocha
+    - npm install -g grunt-cli bower
     - npm install
     - bower install
     - export DISPLAY=:99.0
