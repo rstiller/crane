@@ -1,12 +1,13 @@
 language: node_js
 rvm:
-    - 1.9.3
+    - "1.9.3"
 node_js:
-    - 0.8
-    - 0.10
+    - "0.8"
+    - "0.10"
 script: rspec --format nested && grunt build && grunt karma
 before_install:
     - pwd
+    - sudo pwd
     - npm --version
     - node --version
     - ruby --version
