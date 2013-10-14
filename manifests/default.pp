@@ -54,6 +54,7 @@ file { '/etc/init/docker-daemon.conf':
     owner  => root,
     group  => root,
     mode   => 0755,
+    notify => Service['docker-daemon'],
 } ->
 
 service { 'docker-daemon':
