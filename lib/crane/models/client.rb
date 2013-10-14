@@ -57,21 +57,21 @@ module Crane
             def info
                 
                 response = HTTParty.get("http://#{address}:#{dockerPort}/info/json")
-                JSON.parse response
+                JSON.parse response.body
                 
             end
             
             def containers
                 
                 response = HTTParty.get("http://#{address}:#{dockerPort}/containers/json")
-                JSON.parse response
+                JSON.parse response.body
                 
             end
             
             def images
                 
                 response = HTTParty.get("http://#{address}:#{dockerPort}/images/json")
-                JSON.parse response
+                JSON.parse response.body
                 
             end
             

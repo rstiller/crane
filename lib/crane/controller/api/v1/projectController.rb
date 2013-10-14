@@ -55,7 +55,9 @@ module Crane
                         
                         workingCopy.runConfig.each do |runConfig|
                             
-                            workingCopyHash["runConfigs"].push runConfig.to_hash["values"]
+                            runConfigHash = runConfig.to_hash["values"]
+                            runConfigHash["imageId"] = runConfig.imageId workingCopy
+                            workingCopyHash["runConfigs"].push runConfigHash
                             
                         end
                         

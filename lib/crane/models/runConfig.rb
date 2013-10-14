@@ -1,5 +1,8 @@
 
 require "sequel"
+require "httparty"
+require "rubygems"
+require "json"
 
 module Crane
     
@@ -23,6 +26,29 @@ module Crane
             def to_hash
                 
                 Crane::objectToHash self
+                
+            end
+            
+            def imageId(workingCopy)
+                
+                response = HTTParty.get("http://localhost:4243/images/json")
+                images = JSON.parse response.body
+                id = nil
+                imageName = workingCopy.getImageName serviceName
+                imageVersion = workingCopy.getImageVersion environment
+                
+                images.each do |image|
+                    
+                    if imageName == image["Repository"] and imageVersion == image["Tag"]
+                        
+                        id = image["Id"]
+                        break
+                        
+                    end
+                    
+                end
+                
+                id
                 
             end
             
