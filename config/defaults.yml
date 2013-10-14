@@ -7,7 +7,7 @@ db:
     path: /var/crane/data.db
 
 schedule:
-    check: 10s
+    check: 60s
 
 registry:
     port: 5000
