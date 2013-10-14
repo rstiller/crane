@@ -2,6 +2,9 @@
 require "sequel"
 require "open3"
 require "configliere"
+require "httparty"
+require "rubygems"
+require "json"
 
 module Crane
     
@@ -48,6 +51,27 @@ module Crane
             def run(command, callback)
                 
                 Crane::subprocess "docker -H #{address}:#{dockerPort} #{command}", ".", callback
+                
+            end
+            
+            def info
+                
+                response = HTTParty.get("http://#{address}:#{dockerPort}/info/json")
+                JSON.parse response
+                
+            end
+            
+            def containers
+                
+                response = HTTParty.get("http://#{address}:#{dockerPort}/containers/json")
+                JSON.parse response
+                
+            end
+            
+            def images
+                
+                response = HTTParty.get("http://#{address}:#{dockerPort}/images/json")
+                JSON.parse response
                 
             end
             
