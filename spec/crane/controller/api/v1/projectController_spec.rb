@@ -3,6 +3,7 @@ require "rspec"
 require "rack/test"
 require "sequel"
 require "json"
+require "httparty"
 
 describe 'ProjectControllerTest' do
     
@@ -389,6 +390,10 @@ describe 'ProjectControllerTest' do
             runConfig = Crane::Models::RunConfig.new :serviceName => "my_app", :environment => "test", :command => "docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service"
             workingCopy.add_runConfig runConfig
             
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).with("http://localhost:4243/images/json").and_return(response)
+            
             get "/projects/#{project.id}"
             
             expect(last_response).to be_ok
@@ -424,6 +429,10 @@ describe 'ProjectControllerTest' do
             
             runConfig = Crane::Models::RunConfig.new :serviceName => "my_app", :environment => "test", :command => "docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service"
             workingCopy.add_runConfig runConfig
+            
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).with("http://localhost:4243/images/json").exactly(3).times.and_return(response)
             
             get "/projects/#{project.id}"
             
@@ -491,6 +500,10 @@ describe 'ProjectControllerTest' do
             
             expect(last_response.status).to be(201)
             
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).with("http://localhost:4243/images/json").twice.and_return(response)
+            
             get "/projects/#{project.id}"
             
             expect(last_response).to be_ok
@@ -551,6 +564,10 @@ describe 'ProjectControllerTest' do
             runConfig = Crane::Models::RunConfig.new :serviceName => "my_app", :environment => "test", :command => "docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service"
             workingCopy.add_runConfig runConfig
             
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).with("http://localhost:4243/images/json").twice.and_return(response)
+            
             get "/projects/#{project.id}"
             
             expect(last_response).to be_ok
@@ -609,6 +626,10 @@ describe 'ProjectControllerTest' do
             
             runConfig = Crane::Models::RunConfig.new :serviceName => "my_app", :environment => "test", :command => "docker run -d -t my_project-master/my_app-test /opt/my_app/bin/service"
             workingCopy.add_runConfig runConfig
+            
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).with("http://localhost:4243/images/json").and_return(response)
             
             get "/projects/#{project.id}"
             
