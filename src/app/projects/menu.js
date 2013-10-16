@@ -1,28 +1,29 @@
 
-angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope', '$http', 'Projects', function($scope, $http, Projects) {
+angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope', '$http', 'Projects', 'GithubProjectCache',
+                                                                        function($scope, $http, Projects, GithubProjectCache) {
     
     $scope.data = {};
     $scope.data.newProject = {
-        'name': '',
         'url': ''
     };
     
     var refresh = function() {
         Projects.query({}, function(projects) {
             
+            $scope.data.projects = projects;
+            
             for(var i = 0; i < projects.elements.length; i++) {
                 
                 var project = projects.elements[i];
-                var repo = project.url.split('https://github.com/')[1];
                 
                 project.imageUrl = '';
                 
-                $http.jsonp('https://api.github.com/repos/' + repo + '?callback=JSON_CALLBACK').success(function(response) {
+                GithubProjectCache.get(project, function(data) {
                     
                     angular.forEach($scope.data.projects.elements, function(project) {
                         
-                        if(project.url == response.data.html_url) {
-                            project.imageUrl = response.data.owner.avatar_url;
+                        if(project.url == data.html_url) {
+                            project.imageUrl = data.owner.avatar_url;
                         }
                         
                     });
@@ -31,21 +32,17 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope'
                 
             }
             
-            $scope.data.projects = projects;
         });
     };
     
-    $scope.save = function() {
-        Projects.save({}, $scope.data.newProject, function() {
-            $scope.data.newProject = {
-                'name': '',
-                'url': ''
-            };
-            refresh();
-        });
+    $scope.openDialog = function() {
+        console.log("openDialog");
     };
     
     $scope.remove = function(id) {
+        Projects.get({ 'id': id }, function(project) {
+            GithubProjectCache.clear(project);
+        });
         Projects.remove({ 'id': id }, function() {
             refresh();
         });

@@ -3,16 +3,21 @@
     
     <form class="pure-form projects-add">
         
-        <fieldset class="pure-group">
+        <fieldset>
             
             <legend class="legend-and-button">
                 <span><i class="icon-plus-sign"></i> New Project</span>
-                <button type="submit" class="pure-button pure-button-success pure-button-xsmall" ng-click="save()">Add</button>
             </legend>
             
-            <div class="pure-u-1">
-                <input class="pure-input-1" type="text" placeholder="Name" ng-model="data.newProject.name"/>
-                <input class="pure-input-1" type="text" placeholder="URL" ng-model="data.newProject.url"/>
+            <div class="pure-g">
+                <div class="pure-u-3-4">
+                    <input class="pure-input-1" type="text" placeholder="URL" ng-model="data.newProject.url"/>
+                </div>
+                <div class="pure-u-1-8 right-float">
+                    <button type="submit" class="pure-input-1 pure-button pure-button-success pure-button-small project-info-button" ng-click="openDialog()">
+                        <i class="icon-arrow-right"></i>
+                    </button>
+                </div>
             </div>
             
         </fieldset>

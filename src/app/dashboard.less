@@ -272,6 +272,38 @@ html,body {
     color: @color_dark;
 }
 
+.pure-dialog-pane {
+    background: rgba(255, 255, 255, 0.9);
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 3;
+}
+
+.pure-dialog-container {
+    display: table;
+}
+
+.pure-dialog-cell {
+    display: table-cell;
+    vertical-align: middle;
+    overflow: auto;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 50%;
+    width: 50%;
+    min-height: 25%;
+    min-width: 25%;
+    max-height: 75%;
+    max-width: 75%;
+}
+
 @import "./home/menu.less";
 @import "./home/overview.less";
 
