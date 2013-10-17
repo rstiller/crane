@@ -3,6 +3,7 @@
     "dependencies": {
         "pure": "*",
         "font-awesome": "*",
+        "jquery": "*",
         "angular": "*",
         "angular-resource": "*",
         "angular-ui-router": "*"

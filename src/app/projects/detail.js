@@ -11,7 +11,6 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope
         $scope.data.project = project;
         
         GithubProjectCache.get(project, function(data) {
-            console.log(data);
         });
         
     });
