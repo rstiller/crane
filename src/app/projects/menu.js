@@ -1,6 +1,6 @@
 
-angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope', '$http', 'Projects', 'GithubProjectCache',
-                                                                        function($scope, $http, Projects, GithubProjectCache) {
+angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope', '$http', 'Projects', 'GithubProjectCache', 'Dialog',
+                                                                        function($scope, $http, Projects, GithubProjectCache, Dialog) {
     
     $scope.data = {};
     $scope.data.newProject = {
@@ -36,7 +36,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope'
     };
     
     $scope.openDialog = function() {
-        console.log("openDialog");
+        new Dialog('NewProjectCtrl', 'app/projects/newProject.tpl.html');
     };
     
     $scope.remove = function(id) {
