@@ -1,6 +1,6 @@
 
-angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope', '$stateParams', 'Projects', 'GithubProjectCache',
-                                                                         function($scope, $stateParams, Projects, GithubProjectCache) {
+angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope', '$stateParams', 'Projects', 'Cache',
+                                                                         function($scope, $stateParams, Projects, Cache) {
     
     $scope.data = {};
     
@@ -10,7 +10,7 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope
         
         $scope.data.project = project;
         
-        GithubProjectCache.get(project, function(data) {
+        Cache.get(project.url, function(data) {
         });
         
     });

@@ -1,3 +1,28 @@
 
-<h1>{{ title }}</h1>
-<span>{{ content }}</span>
+<h1>{{ project.name }}</h1>
+<span>{{ project.description }}</span>
+
+<dl>
+    <dt>Homepage</dt>
+    <dd>{{ project.homepage }}</dd>
+    
+    <dt>URL</dt>
+    <dd>{{ project.html_url }}</dd>
+    
+    <dt>Last Update</dt>
+    <dd>{{ project.updated_at }}</dd>
+    
+    <dt>Forks / Watchers</dt>
+    <dd>{{ project.forks_count }} / {{ project.watchers_count }}</dd>
+</dl>
+
+<ul>
+    <li ng-repeat="branch in branches">
+        <a href="{{ branch.commit.url }}">{{ branch.name }}</a>
+    </li>
+</ul>
+
+// owner.name
+// owner.html_url
+// owner.avatar_url
+// owner.type

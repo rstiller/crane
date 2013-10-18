@@ -1,6 +1,6 @@
 
-angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope', '$http', 'Projects', 'GithubProjectCache', 'Dialog',
-                                                                        function($scope, $http, Projects, GithubProjectCache, Dialog) {
+angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope', '$http', 'Projects', 'Cache', 'Dialog',
+                                                                        function($scope, $http, Projects, Cache, Dialog) {
     
     $scope.data = {};
     $scope.data.newProject = {
@@ -18,7 +18,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope'
                 
                 project.imageUrl = '';
                 
-                GithubProjectCache.get(project, function(data) {
+                Cache.get(project.url, function(data) {
                     
                     angular.forEach($scope.data.projects.elements, function(project) {
                         
@@ -36,12 +36,14 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope'
     };
     
     $scope.openDialog = function() {
-        new Dialog('NewProjectCtrl', 'app/projects/newProject.tpl.html');
+        new Dialog('#dialog', 'NewProjectCtrl', 'app/projects/newProject.tpl.html', {
+            url: $scope.data.newProject.url
+        });
     };
     
     $scope.remove = function(id) {
         Projects.get({ 'id': id }, function(project) {
-            GithubProjectCache.clear(project);
+            Cache.clear(project.url);
         });
         Projects.remove({ 'id': id }, function() {
             refresh();

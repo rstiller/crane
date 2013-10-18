@@ -3,8 +3,9 @@ var dialog = angular.module('components.dialog');
 
 dialog.factory('Dialog', function() {
     
-    function Dialog(controller, template) {
-        var dialog = $('#dialog');
+    function Dialog(selector, controller, template, initArguments) {
+        var dialog = $(selector);
+        dialog.scope().initArguments = initArguments;
         dialog.attr('template', template);
         dialog.attr('dialog', controller);
     }
@@ -24,13 +25,21 @@ dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory
         templateUrl: 'components/dialog/dialog.tpl.html',
         link: function($scope, element, attributes, controller) {
             
-            var renderDialog = function(controller, template) {
+            var renderDialog = function(controller, template, initArguments) {
                 
                 var templateHtml = $templateCache.get(template);
                 var html = '<div class="pure-dialog-content" ng-controller="' + controller + '">' + templateHtml + '</div>';
                 
                 if(!!controller && controller.length > 0 && !!templateHtml && templateHtml.length > 0) {
                     var content = $compile(html)($scope);
+                    if(!!initArguments) {
+                        angular.forEach(initArguments, function(value, key) {
+                            content.scope()[key] = value;
+                        });
+                    }
+                    if(!!content.scope().init) {
+                        content.scope().init();
+                    }
                     element.find('.pure-dialog-container').html(content);
                 }
                 
@@ -38,7 +47,7 @@ dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory
             
             var observeAttribute = function() {
                 
-                renderDialog($scope.controller, $scope.template);
+                renderDialog($scope.controller, $scope.template, $scope.$parent.initArguments);
                 
                 if(!!$scope.controller && $scope.controller.length > 0 && !!$scope.template && $scope.template.length > 0) {
                     $scope.open();
@@ -58,7 +67,7 @@ dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory
                 observeAttribute();
             });
             
-            renderDialog($scope.controller, $scope.template);
+            renderDialog($scope.controller, $scope.template, $scope.$parent.initArguments);
             
         },
         controller: ['$scope', function($scope) {
