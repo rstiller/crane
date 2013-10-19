@@ -37,14 +37,14 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope'
     
     $scope.openDialog = function() {
         new Dialog('#dialog', 'NewProjectCtrl', 'app/projects/newProject.tpl.html', {
-            url: $scope.data.newProject.url
+            url: $scope.data.newProject.url,
+            saveCallback: refresh
         });
+        $scope.data.newProject.url = '';
     };
     
-    $scope.remove = function(id) {
-        Projects.get({ 'id': id }, function(project) {
-            Cache.clear(project.url);
-        });
+    $scope.remove = function(id, url) {
+        Cache.clear(url);
         Projects.remove({ 'id': id }, function() {
             refresh();
         });

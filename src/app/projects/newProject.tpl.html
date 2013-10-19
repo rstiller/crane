@@ -1,28 +1,64 @@
 
 <h1>{{ project.name }}</h1>
-<span>{{ project.description }}</span>
 
-<dl>
-    <dt>Homepage</dt>
-    <dd>{{ project.homepage }}</dd>
+<div class="pure-g new-project-info">
     
-    <dt>URL</dt>
-    <dd>{{ project.html_url }}</dd>
+    <aside ng-show="project.description">
+        <p>{{ project.description }}</p>
+    </aside>
+    <div class="vertical-pad-20" ng-show="project.description"></div>
     
-    <dt>Last Update</dt>
-    <dd>{{ project.updated_at }}</dd>
+    <form class="pure-form pure-form-aligned pure-u-1">
+        
+        <div class="pure-g">
+            <fieldset class="pure-u-3-8">
+                <div class="pure-control-group">
+                    <label>Homepage</label>
+                    <input type="text" value="{{ project.homepage }}" class="pure-input-1-2" readonly>
+                </div>
+                
+                <div class="pure-control-group">
+                    <label>URL</label>
+                    <input type="text" value="{{ project.html_url }}" class="pure-input-1-2" readonly>
+                </div>
+                
+                <div class="pure-control-group">
+                    <label>Last Update</label>
+                    <input type="text" value="{{ project.updated_at }}" class="pure-input-1-2" readonly>
+                </div>
+                
+                <div class="pure-control-group">
+                    <label>Forks / Watchers</label>
+                    <input type="text" value="{{ project.forks_count }} / {{ project.watchers_count }}" class="pure-input-1-2" readonly>
+                </div>
+        
+                <div class="pure-controls">
+                    <label for="buildTags" class="pure-checkbox">
+                        <input id="buildTags" type="checkbox" checked="checked" ng-model="buildTags"> Build Tags
+                    </label>
+                </div>
+            </fieldset>
+            
+            <div class="pure-u-1-8">
+                <div class="vertical-divider"></div>
+            </div>
+            
+            <fieldset class="pure-u-1-2">
+                <div class="pure-control-group">
+                    <label class="top-label">Branches</label>
+                    <select class="pure-u-1-2" multiple="multiple" size="10" ng-model="buildBranches" ng-options="branch.name for branch in branches">
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+        
+        <div class="vertical-pad-20"></div>
+        
+        <div class="float-right">
+            <button type="button" class="pure-button" ng-click="closeDialog()">Cancel</button>
+            <button type="submit" class="pure-button pure-button-success" ng-click="saveProject()">Add</button>
+        </div>
+        
+    </form>
     
-    <dt>Forks / Watchers</dt>
-    <dd>{{ project.forks_count }} / {{ project.watchers_count }}</dd>
-</dl>
-
-<ul>
-    <li ng-repeat="branch in branches">
-        <a href="{{ branch.commit.url }}">{{ branch.name }}</a>
-    </li>
-</ul>
-
-// owner.name
-// owner.html_url
-// owner.avatar_url
-// owner.type
+</div>

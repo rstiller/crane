@@ -4,10 +4,14 @@ var dialog = angular.module('components.dialog');
 dialog.factory('Dialog', function() {
     
     function Dialog(selector, controller, template, initArguments) {
+        
         var dialog = $(selector);
         dialog.scope().initArguments = initArguments;
-        dialog.attr('template', template);
-        dialog.attr('dialog', controller);
+        dialog.attr({
+            'template': template,
+            'dialog': controller
+        });
+        
     }
     
     return Dialog;
@@ -28,7 +32,7 @@ dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory
             var renderDialog = function(controller, template, initArguments) {
                 
                 var templateHtml = $templateCache.get(template);
-                var html = '<div class="pure-dialog-content" ng-controller="' + controller + '">' + templateHtml + '</div>';
+                var html = '<div class="pure-dialog-content {{ cssClass }}" ng-controller="' + controller + '">' + templateHtml + '</div>';
                 
                 if(!!controller && controller.length > 0 && !!templateHtml && templateHtml.length > 0) {
                     var content = $compile(html)($scope);
@@ -51,11 +55,14 @@ dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory
                 
                 if(!!$scope.controller && $scope.controller.length > 0 && !!$scope.template && $scope.template.length > 0) {
                     $scope.open();
-                } else {
+                } else if($scope.visibility == 'visible') {
                     $scope.close();
                 }
                 
             };
+            
+            $scope.element = element;
+            $scope.visibility = 'hidden';
             
             $scope.$watch(function() { return element.attr('dialog'); }, function(value) {
                 $scope.controller = value;
@@ -74,10 +81,24 @@ dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory
             
             $scope.close = function() {
                 $scope.visibility = 'hidden';
+                $scope.element.find('.pure-dialog-container').html('');
+                $scope.element.attr({
+                    'template': '',
+                    'dialog': ''
+                });
             };
             
             $scope.open = function() {
                 $scope.visibility = 'visible';
+            };
+            
+            $scope.closeOnOutsideClick = function() {
+                $scope.close();
+            };
+            
+            $scope.disarmOutsideClick = function($event) {
+                $event.stopPropagation();
+                return false;
             };
             
         }]

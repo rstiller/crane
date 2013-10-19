@@ -53,7 +53,7 @@
                 <a ui-sref="projects.detail({ projectId: project.id })">
                     <span title="{{ project.name }}">{{ project.name }}</span>
                 </a>
-                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project.id)" title="Remove {{ project.name }}">
+                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project.id, project.url)" title="Remove {{ project.name }}">
                     <i class="icon-remove"></i>
                 </a>
             </div>
