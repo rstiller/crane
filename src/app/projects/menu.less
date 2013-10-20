@@ -37,12 +37,13 @@
     display: none;
 }
 
-.menu-item:first-child .project-menu-item .project-menu-item-header a.project-menu-item-header-action {
+.menu-item:first-child .project-menu-item .project-menu-item-header a.project-menu-item-header-action,
+.menu-item.selected .project-menu-item .project-menu-item-header a.project-menu-item-header-action {
     visibility: visible;
     display: block;
 }
 
-.project-menu-item:hover {
+.project-menu-item:hover, .menu-item.selected .project-menu-item {
     border-left: 10px solid @color2_15l;
 }
 

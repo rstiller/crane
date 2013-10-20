@@ -1,6 +1,6 @@
 
-angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope', '$http', 'Projects', 'Cache', 'Dialog',
-                                                                        function($scope, $http, Projects, Cache, Dialog) {
+angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$rootScope', '$scope', '$http', '$location', 'Projects', 'Cache', 'Dialog',
+                                                                        function($rootScope, $scope, $http, $location, Projects, Cache, Dialog) {
     
     $scope.data = {};
     $scope.data.newProject = {
@@ -45,9 +45,14 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$scope'
     
     $scope.remove = function(id, url) {
         Cache.clear(url);
+        
         Projects.remove({ 'id': id }, function() {
             refresh();
         });
+        
+        if($rootScope.$stateParams.projectId == id) {
+            $location.path('/projects/');
+        }
     };
     
     refresh();

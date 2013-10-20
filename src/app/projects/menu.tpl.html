@@ -42,7 +42,7 @@
 
 <ul class="menu">
 
-    <li ng-repeat="project in data.projects.elements | filter:projectNameQuery" class="menu-item">
+    <li ng-repeat="project in data.projects.elements | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project.id}">
         <div class="menu-item-container project-menu-item">
             <div class="project-owner-image-container pure-u-1-5">
                 <a ui-sref="projects.detail({ projectId: project.id })">
