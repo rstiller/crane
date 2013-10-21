@@ -6,6 +6,7 @@
         "jquery": "*",
         "angular": "*",
         "angular-resource": "*",
-        "angular-ui-router": "*"
+        "angular-ui-router": "*",
+        "ng-grid": "*"
     }
 }

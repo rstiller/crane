@@ -36,7 +36,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$rootSc
     };
     
     $scope.openDialog = function() {
-        new Dialog('#dialog', 'NewProjectCtrl', 'app/projects/newProject.tpl.html', {
+        new Dialog('#dialog', 'NewProjectCtrl', 'app/projects/newProjectDialog.tpl.html', {
             url: $scope.data.newProject.url,
             saveCallback: refresh
         });
