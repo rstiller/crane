@@ -64,13 +64,26 @@ diagram.directive('sunburstDiagram', ['$compile', '$templateCache', function sun
             var mouseover = function(d) {};
             var mouseleave = function(d) {};
             
-            path = svg.selectAll('path').data(partition.nodes(data)).enter()
-                .append('path')
-                .attr('d', arc)
-                .style('fill', chooseColor)
-                .on('click', click)
-                .on('mouseover', mouseover)
-                .on('mouseleave', mouseleave);
+            var render = function() {
+                if(!!data) {
+                    
+                    path = svg.selectAll('path').data(partition.nodes(data)).enter()
+                        .append('path')
+                        .attr('d', arc)
+                        .style('fill', chooseColor)
+                        .on('click', click)
+                        .on('mouseover', mouseover)
+                        .on('mouseleave', mouseleave);
+                    
+                }
+            };
+            
+            $scope.$watch(dataAttribute, function(value) {
+                data = value;
+                render();
+            });
+            
+            render();
             
         },
         controller: ['$scope', function($scope) {

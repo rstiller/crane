@@ -3,36 +3,35 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope
                                                                          function($scope, $stateParams, Projects, Cache) {
     
     $scope.data = {};
-    $scope.diagramData = {
-        'name': 'master',
-        'children': [
-            {
-                'name': 'service1',
-                'children': [
-                    { 'name': 'machine1', 'size': 1 },
-                    { 'name': 'machine2', 'size': 1 },
-                    { 'name': 'machine3', 'size': 1 }
-                ]
-            },
-            {
-                'name': 'service2',
-                'children': [
-                    { 'name': 'machine1', 'size': 1 },
-                    { 'name': 'machine2', 'size': 1 }
-                ]
-            },
-            {
-                'name': 'service3',
-                'children': [
-                    { 'name': 'machine1', 'size': 1 }
-                ]
-            }
-        ]
-    };
+    $scope.diagramData = null;
     $scope.data.currentVersion = null;
     
     $scope.selectVersion = function(version) {
         $scope.data.currentVersion = version;
+        
+        var data = {};
+        
+        data.name = version.name;
+        data.children = [];
+        
+        angular.forEach(version.runConfigs, function(config) {
+            data.children.push({
+                'name': config.environment,
+                'children': []
+            });
+        });
+        
+        angular.forEach(version.runConfigs, function(config) {
+            data.children[config.environment].children.push({
+                'name': config.serviceName,
+                'size': 1
+            });
+        });
+        
+        if(version.runConfigs.length > 0) {
+            $scope.diagramData = data;
+        }
+        
     };
     
     Projects.get({
