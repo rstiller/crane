@@ -37,6 +37,32 @@ module.exports = function (grunt) {
                 dest: './.tmp/templates.js'
             },
         },
+        concat: {
+            dev: {
+                src: [
+                    './src/vendor/d3/d3.min.js',
+                    './src/vendor/jquery/jquery.min.js',
+                    './src/vendor/angular/angular.min.js',
+                    './src/vendor/angular-resource/angular-resource.min.js',
+                    './src/vendor/angular-ui-router/release/angular-ui-router.min.js',
+                    './src/vendor/ng-grid/build/ng-grid.min.js',
+                    './.tmp/script.js'
+                ],
+                dest: './public/script.js',
+            },
+            prod: {
+                src: [
+                    './src/vendor/d3/d3.min.js',
+                    './src/vendor/jquery/jquery.min.js',
+                    './src/vendor/angular/angular.min.js',
+                    './src/vendor/angular-resource/angular-resource.min.js',
+                    './src/vendor/angular-ui-router/release/angular-ui-router.min.js',
+                    './src/vendor/ng-grid/build/ng-grid.min.js',
+                    './.tmp/script.js'
+                ],
+                dest: './public/script.js',
+            }
+        },
         uglify: {
             dev: {
                 options: {
@@ -45,12 +71,7 @@ module.exports = function (grunt) {
                     beautify: true
                 },
                 files: {
-                    './public/script.js': [
-                        './src/vendor/jquery/jquery.js',
-                        './src/vendor/angular/angular.js',
-                        './src/vendor/angular-resource/angular-resource.js',
-                        './src/vendor/angular-ui-router/release/angular-ui-router.js',
-                        './src/vendor/ng-grid/build/ng-grid.js',
+                    './.tmp/script.js': [
                         './.tmp/templates.js',
                         './src/components/modules.js',
                         './src/components/**/*.js',
@@ -67,12 +88,7 @@ module.exports = function (grunt) {
                     compress: true
                 },
                 files: {
-                    './public/script.js': [
-                        './src/vendor/jquery/jquery.js',
-                        './src/vendor/angular/angular.js',
-                        './src/vendor/angular-resource/angular-resource.js',
-                        './src/vendor/angular-ui-router/release/angular-ui-router.js',
-                        './src/vendor/ng-grid/build/ng-grid.js',
+                    './.tmp/script.js': [
                         './.tmp/templates.js',
                         './src/components/modules.js',
                         './src/components/**/*.js',
@@ -157,6 +173,7 @@ module.exports = function (grunt) {
         'clean',
         'html2js',
         'uglify:dev',
+        'concat:dev',
         'less',
         'replace',
         'copy',
@@ -167,6 +184,7 @@ module.exports = function (grunt) {
         'clean',
         'html2js',
         'uglify:prod',
+        'concat:prod',
         'less',
         'replace',
         'copy',

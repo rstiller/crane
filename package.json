@@ -15,6 +15,7 @@
         "grunt-contrib-watch": "*",
         "grunt-contrib-uglify": "*",
         "grunt-contrib-less": "*",
+        "grunt-contrib-concat": "*",
         "grunt-replace": "*",
         "grunt-rename": "*",
         "grunt-html2js": "*",
