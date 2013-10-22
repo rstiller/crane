@@ -1,8 +1,46 @@
 
-<div class="projects-detail-header">
+<div class="project-detail-header">
     <h1>{{ data.project.name }}</h1>
     <small>{{ data.project.url }}</small>
 </div>
 
-<div class="project-versions-table" ng-grid="gridOptions">
+<div class="pure-g">
+    
+    <div class="pure-u-1-6 full-height right-bordered project-version-menu-container">
+        
+        <form class="pure-form project-version-filter">
+            <fieldset>
+                
+                <legend>
+                    <span><i class="icon-search"></i> Versions</span>
+                </legend>
+                
+                <div class="pure-u-1">
+                    <input type="text" class="pure-input-rounded pure-input-1" ng-model="projectVersionQuery" placeholder="Filter"/>
+                </div>
+                
+            </fieldset>
+        </form>
+        
+        <ul class="menu">
+            
+            <li ng-repeat="version in data.versions | filter:projectVersionQuery" class="menu-item" ng-class="{selected: data.currentVersion == version}">
+                <div class="menu-item-container project-version-menu-item" ng-click="selectVersion(version)">
+                    <h3>{{ version.name }}</h3>
+                </div>
+            </li>
+            
+        </ul>
+        
+    </div>
+    
+    <div class="project-version-detail pure-u-1-2" ng-show="data.currentVersion">
+        
+        <h2>{{ data.currentVersion.name }}</h2>
+        <small><a target="_blank" href="{{ data.project.url }}/tree/{{ currentVersion.ref }}">{{ currentVersion.ref }}</a></small>
+        
+        <div sunburst-diagram diagram-data="diagramData"></div>
+        
+    </div>
+    
 </div>

@@ -40,12 +40,12 @@ module.exports = function (grunt) {
         concat: {
             dev: {
                 src: [
-                    './src/vendor/d3/d3.min.js',
-                    './src/vendor/jquery/jquery.min.js',
-                    './src/vendor/angular/angular.min.js',
-                    './src/vendor/angular-resource/angular-resource.min.js',
-                    './src/vendor/angular-ui-router/release/angular-ui-router.min.js',
-                    './src/vendor/ng-grid/build/ng-grid.min.js',
+                    './src/vendor/d3/d3.js',
+                    './src/vendor/jquery/jquery.js',
+                    './src/vendor/angular/angular.js',
+                    './src/vendor/angular-resource/angular-resource.js',
+                    './src/vendor/angular-ui-router/release/angular-ui-router.js',
+                    './src/vendor/ng-grid/build/ng-grid.js',
                     './.tmp/script.js'
                 ],
                 dest: './public/script.js',
