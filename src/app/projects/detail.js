@@ -15,16 +15,28 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope
         data.children = [];
         
         angular.forEach(version.runConfigs, function(config) {
-            data.children.push({
-                'name': config.environment,
-                'children': []
+            var exists = false;
+            angular.forEach(data.children, function(envConfig) {
+                if(envConfig.name === config.environment) {
+                    exists = true;
+                }
             });
+            if(exists === false) {
+                data.children.push({
+                    'name': config.environment,
+                    'children': []
+                });
+            }
         });
         
         angular.forEach(version.runConfigs, function(config) {
-            data.children[config.environment].children.push({
-                'name': config.serviceName,
-                'size': 1
+            angular.forEach(data.children, function(envConfig) {
+                if(envConfig.name === config.environment) {
+                    envConfig.children.push({
+                        'name': config.serviceName,
+                        'size': 1
+                    });
+                }
             });
         });
         

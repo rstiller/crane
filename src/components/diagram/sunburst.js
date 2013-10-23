@@ -13,8 +13,8 @@ diagram.directive('sunburstDiagram', ['$compile', '$templateCache', function sun
             var data = $scope[dataAttribute];
             
             var width = element[0].offsetWidth;
-            var height = element[0].offsetWidth / 2;
-            var radius = Math.min(width, height) / 2;
+            var height = element[0].offsetWidth * (2 / 3);
+            var radius = Math.min(width, height) / 2 - 20;
             var getValue = function(d) {
                 return d.size;
             };
@@ -55,6 +55,7 @@ diagram.directive('sunburstDiagram', ['$compile', '$templateCache', function sun
             
             var path = null
             var click = function(d) {
+                console.log(d);
                 path.transition().duration(250).attrTween('d', tween(d));
             };
             var color = d3.scale.category20c();
@@ -63,17 +64,38 @@ diagram.directive('sunburstDiagram', ['$compile', '$templateCache', function sun
             };
             var mouseover = function(d) {};
             var mouseleave = function(d) {};
+            var buildId = function(d) {
+                if(!!d.parent) {
+                    return buildId(d.parent) + '-' + d.name;
+                } else {
+                    return d.name;
+                }
+            };
             
             var render = function() {
                 if(!!data) {
                     
                     path = svg.selectAll('path').data(partition.nodes(data)).enter()
                         .append('path')
+                        .attr('id', buildId)
                         .attr('d', arc)
                         .style('fill', chooseColor)
                         .on('click', click)
                         .on('mouseover', mouseover)
                         .on('mouseleave', mouseleave);
+                    
+                    var text = svg.selectAll('text').data(partition.nodes(data)).enter()
+                        .append("text")
+                            .style("font-size", 20)
+                            .append("textPath")
+                                .attr("xlink:href",function(d){
+                                    return "#"+buildId(d);
+                                })
+                                .attr("startOffset", 90)
+                                .text(function(d){
+                                    console.log(d);
+                                    return d.name;
+                                });
                     
                 }
             };
