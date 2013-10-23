@@ -63,7 +63,7 @@ module Crane
             
         end
         
-        def self.buildImage(project, localWorkingCopy, remoteWorkingCopyRef)
+        def buildImage(project, localWorkingCopy, remoteWorkingCopyRef)
             
             buildHistory = nil
             monitors = nil

@@ -9,6 +9,8 @@ module Crane
     
     module Models
         
+        require "crane/util/hashToObject"
+        
         class Service
             
             def initialize(infrastructure, serviceName, config)
@@ -31,7 +33,7 @@ module Crane
                 
                 raw = YAML.load_file @file
                 
-                Crane.hashToObject self, raw
+                Crane::hashToObject self, raw
                 
             end
             
@@ -47,10 +49,14 @@ module Crane
             
             def addPuppetFacts(file, checkoutPath, serviceManifest)
                 
-                provision.facts.each do |fact|
+                if provision.has_key? "facts"
                     
-                    sourcePath = getRelativePath checkoutPath, serviceManifest, fact
-                    file.puts "ADD #{sourcePath.to_s} /etc/facter/facts.d/"
+                    provision["facts"].each do |fact|
+                        
+                        sourcePath = getRelativePath checkoutPath, serviceManifest, fact
+                        file.puts "ADD #{sourcePath.to_s} /etc/facter/facts.d/"
+                        
+                    end
                     
                 end
                 
@@ -59,13 +65,23 @@ module Crane
             def addPuppetModules(file, checkoutPath, serviceManifest)
                 
                 index = 0
-                provision.modulePaths.each do |moduleFolder|
+                modules = []
+                
+                if provision.has_key? "modulePaths"
                     
-                    sourcePath = getRelativePath checkoutPath, serviceManifest, moduleFolder
-                    file.puts "ADD #{sourcePath.to_s} /tmp/puppet/_modules-#{index}/"
-                    index = index + 1
+                    provision["modulePaths"].each do |moduleFolder|
+                        
+                        sourcePath = getRelativePath checkoutPath, serviceManifest, moduleFolder
+                        modules.push "/tmp/puppet/_modules-#{index}/"
+                        
+                        file.puts "ADD #{sourcePath.to_s} /tmp/puppet/_modules-#{index}/"
+                        index = index + 1
+                        
+                    end
                     
                 end
+                
+                modules
                 
             end
             
@@ -79,7 +95,7 @@ module Crane
             def applyPuppetProvisioning(file, checkoutPath, serviceManifest)
                 
                 addPuppetFacts file, checkoutPath, serviceManifest
-                addPuppetModules file, checkoutPath, serviceManifest
+                modules = addPuppetModules file, checkoutPath, serviceManifest
                 addPuppetManifest file, checkoutPath, serviceManifest
                 
                 # http://docs.puppetlabs.com/references/stable/configuration.html#modulepath

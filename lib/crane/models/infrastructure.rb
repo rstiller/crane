@@ -6,6 +6,7 @@ module Crane
     module Models
         
         require "crane/models/service"
+        require "crane/util/hashToObject"
         
         class Infrastructure
             
@@ -14,7 +15,7 @@ module Crane
                 @file = file
                 raw = YAML.load_file file
                 
-                Crane.hashToObject self, raw
+                Crane::hashToObject self, raw
                 
             end
             

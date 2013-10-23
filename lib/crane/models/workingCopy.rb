@@ -227,23 +227,24 @@ module Crane
                 
             end
             
-            def buildRunCommand(project, serviceConfig, imageName, imageVersion)
+            def buildRunCommand(project, serviceConfig, serviceName, environment)
                 
-                runConfig = Models::RunConfig.where :imageName => imageName, :imageVersion => imageVersion
-                runConfig = runConfig.first
+                runConfig = runConfig_dataset.where :serviceName => serviceName, :environment => environment
                 
-                if runConfig.nil?
+                imageName = getImageName serviceName
+                imageVersion = getImageVersion environment
+                
+                if runConfig.count <= 0
                     
-                    runConfig = Models::RunConfig.new :imageName => imageName,
-                        :imageVersion => imageVersion,
+                    runConfig = Models::RunConfig.new :serviceName => serviceName,
+                        :environment => environment,
                         :command => "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
                     
-                    project.add_runConfig runConfig
+                    add_runConfig runConfig
                     
                 else
                     
-                    runConfig.command = "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
-                    runConfig.save
+                    runConfig.update :command => "docker run -d #{imageName}:#{imageVersion} -m=#{serviceConfig.options.memory}"
                     
                 end
                 
@@ -269,7 +270,7 @@ module Crane
                 imageVersion = getImageVersion environment
                 lineCount = File.open(dockerfile).readlines.length
                 
-                buildRunCommand project, service, imageName, imageVersion
+                buildRunCommand project, service, serviceName, environment
                 
                 dockerfileFolder = File.dirname dockerfile
                 
