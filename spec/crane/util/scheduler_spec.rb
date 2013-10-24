@@ -129,7 +129,7 @@ describe "Scheduler" do
             expect(buildHistory).to receive(:save)
             
             scheduler = Crane::Scheduler.new 1, 1
-            Crane::Scheduler.buildImage project, localWorkingCopy, remoteWorkingCopyRef
+            Crane::Scheduler::buildImage project, localWorkingCopy, remoteWorkingCopyRef
             
         end
         
@@ -155,7 +155,7 @@ describe "Scheduler" do
             scheduler = Crane::Scheduler.new 1, 1
             scheduler.buildImageProc project, localWorkingCopy, remoteWorkingCopyRef
             
-            expect(scheduler).to receive(:buildImage).with(project, localWorkingCopy, remoteWorkingCopyRef)
+            expect(Crane::Scheduler).to receive(:buildImage).with(project, localWorkingCopy, remoteWorkingCopyRef)
             
             originalFunc.call
             

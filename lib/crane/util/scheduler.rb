@@ -63,7 +63,7 @@ module Crane
             
         end
         
-        def buildImage(project, localWorkingCopy, remoteWorkingCopyRef)
+        def self.buildImage(project, localWorkingCopy, remoteWorkingCopyRef)
             
             buildHistory = nil
             monitors = nil
@@ -114,7 +114,7 @@ module Crane
                 
                 begin
                     
-                    buildImage project, workingCopy, ref
+                    Crane::Scheduler::buildImage project, workingCopy, ref
                     
                 rescue => exception
 
