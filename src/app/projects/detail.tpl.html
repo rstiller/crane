@@ -8,25 +8,25 @@
     
     <div class="pure-u-1-6 full-height right-bordered project-version-menu-container">
         
-        <form class="pure-form project-version-filter" ng-show="data.versions.length > 1">
-            <fieldset>
-                
-                <legend>
-                    <span><i class="icon-search"></i> Versions</span>
-                </legend>
-                
-                <div class="pure-u-1">
-                    <input type="text" class="pure-input-rounded pure-input-1" ng-model="projectVersionQuery" placeholder="Filter"/>
-                </div>
-                
-            </fieldset>
-        </form>
+        <div class="project-version-menu">
+            <form class="pure-form pure-form-stacked">
+                <fieldset>
+                    <legend>Version</legend>
+                    
+                    <div class="pure-u-1">
+                        <select class="pure-input-1" ng-model="data.selectedVersion" ng-options="version.name for version in data.versions">
+                        </select>
+                    </div>
+                    
+                </fieldset>
+            </form>
+        </div>
         
         <ul class="menu">
             
-            <li ng-repeat="version in data.versions | filter:projectVersionQuery" class="menu-item" ng-class="{selected: data.currentVersion == version}">
-                <div class="menu-item-container project-version-menu-item" ng-click="selectVersion(version)">
-                    <h3>{{ version.name }}</h3>
+            <li ng-repeat="environment in data.environments" class="menu-item" ng-class="{selected: data.selectedEnvironment == environment}">
+                <div class="menu-item-container project-environment-menu-item" ng-click="selectEnvironment(environment)">
+                    <h3>{{ environment.name }}</h3>
                 </div>
             </li>
             
@@ -34,12 +34,14 @@
         
     </div>
     
-    <div class="project-version-detail pure-u-1-2" ng-show="data.currentVersion">
+    <div class="project-services-detail pure-u-1-2" ng-show="data.selectedEnvironment">
         
-        <h2>{{ data.currentVersion.name }}</h2>
-        <small><a target="_blank" href="{{ data.project.url }}/tree/{{ currentVersion.ref }}">{{ currentVersion.ref }}</a></small>
-        
-        <div sunburst-diagram diagram-data="diagramData"></div>
+        <h2>{{ data.selectedEnvironment.name }}</h2>
+        <ul class="project-services-list">
+            <li ng-repeat="service in data.selectedEnvironment.services">
+                <i></i>{{ service }}
+            </li>
+        </ul>
         
     </div>
     
