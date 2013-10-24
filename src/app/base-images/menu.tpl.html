@@ -1,0 +1,63 @@
+
+<div class="base-images-add-container">
+    
+    <form class="pure-form base-images-add">
+        
+        <fieldset>
+            
+            <legend class="legend-and-button">
+                <span><i class="icon-plus-sign"></i> New Base-Image</span>
+            </legend>
+            
+            <div class="pure-g">
+                <div class="pure-u-3-5">
+                    <input class="pure-input-1" type="text" placeholder="URL" ng-model="data.newBaseImage.url"/>
+                </div>
+                <div class="pure-u-1-8 right-float base-image-button">
+                    <button type="submit" class="pure-input-1 pure-button pure-button-success pure-button-small" ng-click="pullImage()">
+                        <i class="icon-arrow-down"></i>
+                    </button>
+                </div>
+                <div class="pure-u-1-8 right-float base-image-button">
+                    <button type="button" class="pure-input-1 pure-button pure-button-success pure-button-small" ng-click="openDialog()">
+                        <i class="icon-plus-sign"></i>
+                    </button>
+                </div>
+            </div>
+            
+        </fieldset>
+        
+    </form>
+    
+</div>
+
+<form class="pure-form base-image-name-filter" ng-show="data.baseImages.elements.length > 1">
+    <fieldset>
+        
+        <legend>
+            <span><i class="icon-search"></i> Imagesearch</span>
+        </legend>
+        
+        <div class="pure-u-1">
+            <input type="text" class="pure-input-rounded pure-input-1" ng-model="baseImageNameQuery" placeholder="Filter"/>
+        </div>
+        
+    </fieldset>
+</form>
+
+<ul class="menu">
+
+    <li ng-repeat="baseImage in data.baseImages.elements | filter:baseImageNameQuery" class="menu-item" ng-class="{selected: $stateParams.baseImageId == baseImage.id}">
+        <div class="menu-item-container baseImage-menu-item">
+            <div class="base-image-menu-item-header pure-u-2-3">
+                <a ui-sref="baseImages.detail({ baseImageId: baseImage.id })">
+                    <span title="{{ baseImage.name }}">{{ baseImage.name }}</span>
+                </a>
+                <a class="float-right base-image-menu-item-header-action" href="" ng-click="remove(baseImage.id)" title="Remove {{ baseImage.name }}">
+                    <i class="icon-remove"></i>
+                </a>
+            </div>
+        </div>
+    </li>
+    
+</ul>

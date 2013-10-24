@@ -1,0 +1,81 @@
+
+.base-images-add-container {
+    padding: 0 10px 0;
+    background: @background_light_02d;
+    border-bottom: 1px solid @background_light_10d;
+    height: 105px;
+}
+
+.base-images-add {
+    display: table;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.legend-and-button span {
+    vertical-align: sub;
+}
+
+.legend-and-button button {
+    float: right;
+}
+
+.base-image-button {
+    margin-left: 20px;
+}
+
+.base-image-menu-item-header {
+    font-weight: bold;
+    padding: 0.5em 0;
+    border-bottom: 1px solid @background_light_10d;
+}
+
+.base-image-menu-item-header a.base-image-menu-item-header-action {
+    text-decoration: none;
+    margin: 0 3px;
+    visibility: hidden;
+    display: none;
+}
+
+.menu-item:first-child .base-image-menu-item .base-image-menu-item-header a.base-image-menu-item-header-action,
+.menu-item.selected .base-image-menu-item .base-image-menu-item-header a.base-image-menu-item-header-action {
+    visibility: visible;
+    display: block;
+}
+
+.base-image-menu-item:hover, .menu-item.selected .base-image-menu-item {
+    border-left: 10px solid @color2_15l;
+}
+
+.base-image-menu-item:hover .base-image-menu-item-header a.base-image-menu-item-header-action {
+    visibility: visible;
+    display: block;
+}
+
+.base-image-menu-item-header span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 165px;
+    float: left;
+}
+
+.base-image-menu-item {
+    height: 64px;
+}
+
+.base-image-menu-item small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 185px;
+}
+
+.base-image-name-filter {
+    padding: 10px;
+    background: @background_light_02d;
+    border-bottom: 1px solid @background_light_10d;
+}

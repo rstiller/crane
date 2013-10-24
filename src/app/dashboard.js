@@ -29,23 +29,23 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         }
     });
     
-    $stateProvider.state('container', {
+    $stateProvider.state('baseImages', {
         abstract: true,
-        url: '/container',
+        url: '/base-images',
         views: {
-            'menu@':    { templateUrl: 'app/container/menu.tpl.html',     controller: 'ContainerMenuCtrl' },
-            'content@': { templateUrl: 'app/container/overview.tpl.html', controller: 'ContainerOverviewCtrl' }
+            'menu@':    { templateUrl: 'app/base-images/menu.tpl.html',     controller: 'BaseImagesMenuCtrl' },
+            'content@': { templateUrl: 'app/base-images/overview.tpl.html', controller: 'BaseImagesOverviewCtrl' }
         }
     });
     
-    $stateProvider.state('container.overview', {
+    $stateProvider.state('baseImages.overview', {
         url: '/'
     });
     
-    $stateProvider.state('container.detail', {
-        url: '/:containerId',
+    $stateProvider.state('baseImages.detail', {
+        url: '/:baseImageId',
         views: {
-            'content@': { templateUrl: 'app/container/detail.tpl.html', controller: 'ContainerDetailCtrl' }
+            'content@': { templateUrl: 'app/base-images/detail.tpl.html', controller: 'BaseImagesDetailCtrl' }
         }
     });
     
