@@ -22,16 +22,23 @@ diagram.directive('sunburstDiagram', ['$compile', '$templateCache', function sun
             var x = d3.scale.linear().range([0, 2 * Math.PI]);
             var y = d3.scale.sqrt().range([0, radius]);
             var partition = d3.layout.partition().value(getValue);
+            var fontHeight = 20;
             
-            var svg = d3.select(element[0]).append('svg')
-                .attr('width', width).attr('height', height)
-                .append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+            var svg = d3.select(element[0]).append('svg').attr('width', width).attr('height', height);
+            var chart = svg.append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+            var textOverlay = svg.append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
             
             var arc = d3.svg.arc()
                 .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
                 .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
                 .innerRadius(function(d) { return Math.max(0, y(d.y)); })
                 .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+            
+            var textArc = d3.svg.arc()
+                .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+                .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+                .innerRadius(function(d) { return Math.max(0, y(d.y)); })
+                .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)) - ((y(d.y + d.dy) - y(d.y)) / 2) - (fontHeight / 2); });
             
             var tween = function(d) {
                 var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
@@ -55,7 +62,6 @@ diagram.directive('sunburstDiagram', ['$compile', '$templateCache', function sun
             
             var path = null
             var click = function(d) {
-                console.log(d);
                 path.transition().duration(250).attrTween('d', tween(d));
             };
             var color = d3.scale.category20c();
@@ -75,23 +81,29 @@ diagram.directive('sunburstDiagram', ['$compile', '$templateCache', function sun
             var render = function() {
                 if(!!data) {
                     
-                    path = svg.selectAll('path').data(partition.nodes(data)).enter()
+                    path = chart.selectAll('path').data(partition.nodes(data)).enter()
                         .append('path')
-                        .attr('id', buildId)
                         .attr('d', arc)
                         .style('fill', chooseColor)
                         .on('click', click)
                         .on('mouseover', mouseover)
                         .on('mouseleave', mouseleave);
                     
-                    var text = svg.selectAll('text').data(partition.nodes(data)).enter()
+                    textOverlay.selectAll('path').data(partition.nodes(data)).enter()
+                        .append('path')
+                        .attr('id', buildId)
+                        .attr('d', textArc)
+                        .style('fill', 'transparent')
+                        .style('stroke', 'transparent');
+                    
+                    var text = textOverlay.selectAll('text').data(partition.nodes(data)).enter()
                         .append("text")
-                            .style("font-size", 20)
+                            .style("font-size", fontHeight)
                             .append("textPath")
                                 .attr("xlink:href",function(d){
                                     return "#"+buildId(d);
                                 })
-                                .attr("startOffset", 90)
+                                .attr("startOffset", 20)
                                 .text(function(d){
                                     console.log(d);
                                     return d.name;
