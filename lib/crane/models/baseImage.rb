@@ -14,7 +14,8 @@ module Crane
         Sequel::Model.db.create_table? "base_images" do
             
             primary_key :id
-            DateTime :date
+            DateTime :date, :default => Time.now
+            String :type, :default => "custom"
             String :name
             String :version
             String :baseImage
@@ -24,6 +25,9 @@ module Crane
         end
         
         class BaseImage < Sequel::Model
+            
+            TYPE_STANDARD = "standard"
+            TYPE_CUSTOM = "custom"
             
             one_to_many :package
             
@@ -36,6 +40,7 @@ module Crane
             def self.from_hash(hash)
                 
                 BaseImage.new :name => hash["name"],
+                    :type => hash["type"],
                     :version => hash["version"],
                     :baseImage => hash["baseImage"],
                     :provision => hash["provision"],

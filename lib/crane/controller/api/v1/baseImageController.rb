@@ -14,6 +14,8 @@ module Crane
                 require "crane/controller/api/common/getEndpoint"
                 require "crane/controller/api/common/newEndpoint"
                 require "crane/controller/api/common/updateEndpoint"
+                require "crane/controller/api/v1/baseImageBuildEndpoint"
+                require "crane/controller/api/v1/baseImagePullEndpoint"
                 require "crane/models/baseImage"
                 require "crane/models/package"
                 
@@ -22,8 +24,20 @@ module Crane
                 extend Controller::GetEndpoint
                 extend Controller::NewEndpoint
                 extend Controller::UpdateEndpoint
+                extend Controller::V1::BaseImageBuildEndpoint
+                extend Controller::V1::BaseImagePullEndpoint
                 
                 module Helper
+                    
+                    def linkifyBaseImage(hash, path)
+                        
+                        linkify hash,
+                            {"path" => path, "rel" => "self"},
+                            {"path" => path, "rel" => "delete", "method" => "delete"},
+                            {"path" => path, "rel" => "update", "method" => "put"},
+                            {"path" => "#{path}/build", "rel" => "build", "method" => "put"}
+                        
+                    end
                     
                     def renderBaseImage(image)
                         
@@ -38,7 +52,7 @@ module Crane
                             
                         end
                         
-                        linkifyGet imageHash, "#{request.path}/#{image.id}"
+                        linkifyBaseImage imageHash, "#{request.path}/#{image.id}"
                         
                         imageHash
                         
@@ -83,6 +97,10 @@ module Crane
                     end
                     
                     deleteEndpoint app, "/baseImages/:id", Crane::Models::BaseImage
+                    
+                    buildBaseImage app, "/baseImages/:id/build"
+                    
+                    pullBaseImage app, "/baseImages/pull/*.*"
                     
                     updateEndpoint app, "/baseImages/:id", Crane::Models::BaseImage, [ "name", "version", "baseImage", "provision", "provisionVersion" ] do |image, payload|
                         
