@@ -4,8 +4,8 @@
         "pure": "*",
         "font-awesome": "*",
         "jquery": "*",
-        "angular": "*",
-        "angular-resource": "*",
+        "angular": "v1.2.0-rc.3",
+        "angular-resource": "v1.2.0-rc.3",
         "angular-ui-router": "*",
         "ng-grid": "*",
         "d3": "*"

@@ -11,7 +11,7 @@
             
             <div class="pure-g">
                 <div class="pure-u-3-5">
-                    <input class="pure-input-1" type="text" placeholder="URL" ng-model="data.newBaseImage.url"/>
+                    <input class="pure-input-1" type="text" placeholder="Repository" ng-model="data.pullBaseImage.name"/>
                 </div>
                 <div class="pure-u-1-8 right-float base-image-button">
                     <button type="submit" class="pure-input-1 pure-button pure-button-success pure-button-small" ng-click="pullImage()">
@@ -48,8 +48,8 @@
 <ul class="menu">
 
     <li ng-repeat="baseImage in data.baseImages.elements | filter:baseImageNameQuery" class="menu-item" ng-class="{selected: $stateParams.baseImageId == baseImage.id}">
-        <div class="menu-item-container baseImage-menu-item">
-            <div class="base-image-menu-item-header pure-u-2-3">
+        <div class="menu-item-container base-image-menu-item">
+            <div class="base-image-menu-item-header">
                 <a ui-sref="baseImages.detail({ baseImageId: baseImage.id })">
                     <span title="{{ baseImage.name }}">{{ baseImage.name }}</span>
                 </a>
@@ -57,6 +57,9 @@
                     <i class="icon-remove"></i>
                 </a>
             </div>
+            <a href="https://index.docker.io/u/{{ baseImage.name }}" title="href="https://index.docker.io/u/{{ baseImage.name }}"" target="_blank" ng-show="baseImage.type == 'standard'">
+                <small>https://index.docker.io/u/{{ baseImage.name }}</small>
+            </a>
         </div>
     </li>
     
