@@ -52,6 +52,10 @@ describe 'BaseImageControllerTest' do
             baseImage = Crane::Models::BaseImage.new :name => "ubuntu", :version => "1.0.0", :baseImage => "base"
             baseImage.save
             
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
+            
             get "/baseImages"
             
             expect(last_response).to be_ok
@@ -86,6 +90,10 @@ describe 'BaseImageControllerTest' do
             Crane::Models::BaseImage.where.delete
             baseImage = Crane::Models::BaseImage.new :name => "ubuntu", :version => "1.0.0", :baseImage => "base"
             baseImage.save
+            
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
             
             package = Crane::Models::Package.new :name => "ruby", :version => "1.9.3"
             baseImage.add_package package
@@ -138,6 +146,10 @@ describe 'BaseImageControllerTest' do
             baseImage = Crane::Models::BaseImage.new :name => "ubuntu", :version => "1.0.0", :baseImage => "base"
             baseImage.save
             
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
+            
             get "/baseImages"
             
             expect(last_response).to be_ok
@@ -172,6 +184,10 @@ describe 'BaseImageControllerTest' do
         it "new baseImage full data-set" do
             
             Crane::Models::BaseImage.where.delete
+            
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
             
             get "/baseImages"
             
@@ -221,6 +237,10 @@ describe 'BaseImageControllerTest' do
             
             Crane::Models::BaseImage.where.delete
             
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
+            
             get "/baseImages"
             
             expect(last_response).to be_ok
@@ -268,6 +288,10 @@ describe 'BaseImageControllerTest' do
         it "new baseImage with packages" do
             
             Crane::Models::BaseImage.where.delete
+            
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
             
             get "/baseImages"
             
@@ -351,6 +375,10 @@ describe 'BaseImageControllerTest' do
             baseImage = Crane::Models::BaseImage.new :name => "ubuntu", :version => "1.0.0", :baseImage => "base"
             baseImage.save
             
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
+            
             get "/baseImages"
             
             expect(last_response).to be_ok
@@ -403,6 +431,10 @@ describe 'BaseImageControllerTest' do
             baseImage = Crane::Models::BaseImage.new :name => "ubuntu", :version => "1.0.0", :baseImage => "base"
             baseImage.save
             
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
+            
             get "/baseImages"
             
             expect(last_response).to be_ok
@@ -442,6 +474,10 @@ describe 'BaseImageControllerTest' do
             
             package = Crane::Models::Package.new :name => "htop", :version => "1.0.1"
             baseImage.add_package package
+            
+            response = double(HTTParty::Response)
+            response.stub(:body).and_return("[]")
+            expect(HTTParty).to receive(:get).at_least(:once).with("http://localhost:4243/images/json").and_return(response)
             
             get "/baseImages"
             
