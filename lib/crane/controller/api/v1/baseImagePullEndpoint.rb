@@ -21,6 +21,7 @@ module Crane
                             
                             baseImage = Crane::Models::BaseImage.new
                             baseImage.name = baseImageName
+                            baseImage.date = Time.now
                             baseImage.type = Crane::Models::BaseImage::TYPE_STANDARD
                             baseImage.version = ""
                             baseImage.save

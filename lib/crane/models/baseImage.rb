@@ -17,7 +17,7 @@ module Crane
         Sequel::Model.db.create_table? "base_images" do
             
             primary_key :id
-            DateTime :date, :default => Time.now
+            DateTime :date
             String :type, :default => "custom"
             String :name
             String :version

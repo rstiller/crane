@@ -79,6 +79,7 @@ module Crane
                     newEndpoint app, "/baseImages", Crane::Models::BaseImage do |image, payload|
                         
                         updatePackages image, payload["packages"]
+                        image.date = Time.now
                         renderBaseImage image
                         
                     end
