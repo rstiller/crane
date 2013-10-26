@@ -1,6 +1,6 @@
 
-angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl', ['$rootScope', '$scope', '$location', 'BaseImages',
-                                                                          function($rootScope, $scope, $location, BaseImages) {
+angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl', ['$rootScope', '$scope', '$location', 'BaseImages', 'DockerUtil', 'Dialog',
+                                                                          function($rootScope, $scope, $location, BaseImages, DockerUtil, Dialog) {
     
     $scope.data = {};
     $scope.data.baseImages = [];
@@ -8,7 +8,7 @@ angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl', ['$root
         'name': ''
     };
     
-    var refresh = function() {
+    $scope.refresh = function() {
         
         BaseImages.query({}, function(baseImages) {
             $scope.data.baseImages = baseImages;
@@ -21,16 +21,18 @@ angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl', ['$root
             'id': $scope.data.pullBaseImage.name
         }, function() {
             $scope.data.pullBaseImage.name = '';
-            refresh();
+            $scope.refresh();
         });
     };
     
     $scope.openDialog = function() {
+        new Dialog('#dialog', 'BaseImagesFormCtrl', 'app/base-images/base-image-dialog.tpl.html', {
+        });
     };
     
     $scope.remove = function(id) {
         BaseImages.remove({ 'id': id }, function() {
-            refresh();
+            $scope.refresh();
         });
         
         if($rootScope.$stateParams.baseImageId == id) {
@@ -39,13 +41,9 @@ angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl', ['$root
     };
     
     $scope.url = function(name) {
-        if(name.indexOf('/') === -1) {
-            return 'https://index.docker.io/_/' + name;
-        } else {
-            return 'https://index.docker.io/u/' + name;
-        }
+        return DockerUtil.indexUrl(name);
     };
     
-    refresh();
+    $scope.refresh();
     
 }]);

@@ -300,6 +300,18 @@ dd {
     display: block;
 }
 
+.vertical-divider {
+    display: block;
+    width: 1px;
+    background: @background_light_15d;
+    height: 215px;
+    float: right;
+}
+
+.pure-control-group label.top-label {
+    vertical-align: top;
+}
+
 @import "../vendor/ng-grid/src/less/global.less";
 
 @import "../components/diagram/sunburst.less";
@@ -308,6 +320,7 @@ dd {
 @import "./home/menu.less";
 @import "./home/overview.less";
 
+@import "./base-images/base-image-form.less";
 @import "./base-images/detail.less";
 @import "./base-images/menu.less";
 @import "./base-images/overview.less";

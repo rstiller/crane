@@ -1,6 +1,6 @@
 
-angular.module('dashboard.controllers').controller('BaseImagesDetailCtrl', ['$scope', '$stateParams', 'BaseImages',
-                                                                            function($scope, $stateParams, BaseImages) {
+angular.module('dashboard.controllers').controller('BaseImagesDetailCtrl', ['$scope', '$stateParams', 'BaseImages', 'DockerUtil',
+                                                                            function($scope, $stateParams, BaseImages, DockerUtil) {
     
     $scope.data = {};
     
@@ -10,13 +10,8 @@ angular.module('dashboard.controllers').controller('BaseImagesDetailCtrl', ['$sc
             return '';
         }
         
-        var name = $scope.data.baseImage.name;
+        return DockerUtil.indexUrl($scope.data.baseImage.name);
         
-        if(name.indexOf('/') === -1) {
-            return 'https://index.docker.io/_/' + name;
-        } else {
-            return 'https://index.docker.io/u/' + name;
-        }
     };
     
     BaseImages.get({

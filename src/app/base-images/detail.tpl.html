@@ -46,4 +46,10 @@
     
     </div>
     
+    <div ng-show="data.baseImage.type == 'custom'" class="pure-g">
+        <div ng-controller="BaseImagesFormCtrl">
+            <div ng-include="'app/base-images/base-image-edit.tpl.html'"></div>
+        </div>
+    </div>
+    
 </div>

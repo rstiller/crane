@@ -48,7 +48,7 @@
 <ul class="menu">
 
     <li ng-repeat="baseImage in data.baseImages.elements | filter:baseImageNameQuery" class="menu-item" ng-class="{selected: $stateParams.baseImageId == baseImage.id}">
-        <div class="menu-item-container base-image-menu-item">
+        <div class="menu-item-container base-image-menu-item" ng-show="baseImage.type == 'standard'">
             <div class="base-image-menu-item-header">
                 <a ui-sref="baseImages.detail({ baseImageId: baseImage.id })">
                     <span title="{{ baseImage.name }}">{{ baseImage.name }}</span>
@@ -60,6 +60,16 @@
             <a href="{{ url(baseImage.name) }}" title="href="{{ url(baseImage.name) }}"" target="_blank" ng-show="baseImage.type == 'standard'">
                 <small>{{ url(baseImage.name) }}</small>
             </a>
+        </div>
+        <div class="menu-item-container base-image-menu-item" ng-show="baseImage.type == 'custom'">
+            <div class="base-image-menu-item-header">
+                <a ui-sref="baseImages.detail({ baseImageId: baseImage.id })">
+                    <span title="{{ baseImage.name }}">{{ baseImage.name }}</span>
+                </a>
+                <a class="float-right base-image-menu-item-header-action" href="" ng-click="remove(baseImage.id)" title="Remove {{ baseImage.name }}">
+                    <i class="icon-remove"></i>
+                </a>
+            </div>
         </div>
     </li>
     
