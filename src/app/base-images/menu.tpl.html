@@ -57,8 +57,8 @@
                     <i class="icon-remove"></i>
                 </a>
             </div>
-            <a href="https://index.docker.io/u/{{ baseImage.name }}" title="href="https://index.docker.io/u/{{ baseImage.name }}"" target="_blank" ng-show="baseImage.type == 'standard'">
-                <small>https://index.docker.io/u/{{ baseImage.name }}</small>
+            <a href="{{ url(baseImage.name) }}" title="href="{{ url(baseImage.name) }}"" target="_blank" ng-show="baseImage.type == 'standard'">
+                <small>{{ url(baseImage.name) }}</small>
             </a>
         </div>
     </li>

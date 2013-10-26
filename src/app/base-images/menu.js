@@ -38,6 +38,14 @@ angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl', ['$root
         }
     };
     
+    $scope.url = function(name) {
+        if(name.indexOf('/') === -1) {
+            return 'https://index.docker.io/_/' + name;
+        } else {
+            return 'https://index.docker.io/u/' + name;
+        }
+    };
+    
     refresh();
     
 }]);

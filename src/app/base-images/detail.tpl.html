@@ -1,12 +1,12 @@
 
-<div class="base-image-detail-header">
+<div class="base-image-detail-header" ng-show="data.baseImage">
     <h1>{{ data.baseImage.name }}</h1>
-    <a href="https://index.docker.io/u/{{ data.baseImage.name }}" title="href="https://index.docker.io/u/{{ data.baseImage.name }}"" target="_blank" ng-show="data.baseImage.type == 'standard'">
-        <small>https://index.docker.io/u/{{ data.baseImage.name }}</small>
+    <a href="{{ url() }}" title="{{ url() }}" target="_blank" ng-show="data.baseImage.type == 'standard'">
+        <small>{{ url() }}</small>
     </a>
 </div>
 
-<div class="base-image-detail-content">
+<div class="base-image-detail-content" ng-show="data.baseImage">
     
     <div ng-show="data.baseImage.type == 'standard'" class="pure-g">
         
