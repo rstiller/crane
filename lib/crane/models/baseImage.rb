@@ -3,6 +3,9 @@ require "digest/md5"
 require "sequel"
 require "fileutils"
 require "configliere"
+require "rubygems"
+require "json"
+require "httparty"
 
 module Crane
     
@@ -45,6 +48,24 @@ module Crane
                     :baseImage => hash["baseImage"],
                     :provision => hash["provision"],
                     :provisionVersion => hash["provisionVersion"]
+                
+            end
+            
+            def info
+                
+                response = HTTParty.get("http://localhost:4243/images/json")
+                images = JSON.parse response.body
+                tags = []
+                
+                images.each do |image|
+                    
+                    if image["Repository"] == name
+                        tags.push image
+                    end
+                    
+                end
+                
+                tags
                 
             end
             

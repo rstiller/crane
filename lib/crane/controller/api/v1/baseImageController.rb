@@ -1,6 +1,4 @@
 
-require "sinatra/base"
-
 module Crane
     
     module Controller
@@ -44,6 +42,7 @@ module Crane
                         packages = image.package
                         
                         imageHash = image.to_hash["values"]
+                        imageHash["tags"] = image.info
                         imageHash["packages"] = []
                         
                         packages.each do |package|

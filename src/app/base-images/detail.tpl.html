@@ -1,1 +1,48 @@
-Container Detail
+
+<div class="base-image-detail-header">
+    <h1>{{ data.baseImage.name }}</h1>
+    <a href="https://index.docker.io/u/{{ data.baseImage.name }}" title="href="https://index.docker.io/u/{{ data.baseImage.name }}"" target="_blank" ng-show="data.baseImage.type == 'standard'">
+        <small>https://index.docker.io/u/{{ data.baseImage.name }}</small>
+    </a>
+</div>
+
+<div class="base-image-detail-content">
+    
+    <div ng-show="data.baseImage.type == 'standard'" class="pure-g">
+        
+        <h2 class="pure-u-1">Tags</h2>
+        
+        <div ng-repeat="tag in data.baseImage.tags" class="pure-u-1-2">
+            <h4>{{ tag.Tag }}</h4>
+            
+            <form class="pure-form pure-form-aligned">
+                
+                <fieldset>
+                    <div class="pure-control-group">
+                        <label>Id</label>
+                        <input type="text" value="{{ tag.Id }}" class="pure-input-1-2" readonly>
+                    </div>
+                    
+                    <div class="pure-control-group">
+                        <label>Created</label>
+                        <input type="text" value="{{ tag.Created }}" class="pure-input-1-2" readonly>
+                    </div>
+                    
+                    <div class="pure-control-group">
+                        <label>Size</label>
+                        <input type="text" value="{{ tag.Size }}" class="pure-input-1-2" readonly>
+                    </div>
+                    
+                    <div class="pure-control-group">
+                        <label>VirtualSize</label>
+                        <input type="text" value="{{ tag.VirtualSize }}" class="pure-input-1-2" readonly>
+                    </div>
+                </fieldset>
+                
+            </form>
+            
+        </div>
+    
+    </div>
+    
+</div>
