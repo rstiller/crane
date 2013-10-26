@@ -100,7 +100,7 @@ module Crane
                     
                     buildBaseImage app, "/baseImages/:id/build"
                     
-                    pullBaseImage app, "/baseImages/pull/*.*"
+                    pullBaseImage app, "/baseImages/pull"
                     
                     updateEndpoint app, "/baseImages/:id", Crane::Models::BaseImage, [ "name", "version", "baseImage", "provision", "provisionVersion" ] do |image, payload|
                         

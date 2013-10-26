@@ -11,7 +11,9 @@ module Crane
                     
                     app.post route do
                         
-                        baseImageName = params[:splat]
+                        payload = parsePayload
+                        baseImageName = payload["id"]
+                        puts baseImageName
                         
                         images = Crane::Models::BaseImage.where :name => baseImageName
                         
