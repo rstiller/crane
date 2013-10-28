@@ -3,11 +3,15 @@
     "dependencies": {
         "pure": "*",
         "font-awesome": "*",
-        "jquery": "*",
+        "jquery": "~1.9.0",
         "angular": "v1.2.0-rc.3",
         "angular-resource": "v1.2.0-rc.3",
         "angular-ui-router": "*",
         "ng-grid": "*",
+        "angular-kendo-ui": "*",
         "d3": "*"
+    },
+    "resolutions": {
+        "angular": "v1.2.0-rc.3"
     }
 }
