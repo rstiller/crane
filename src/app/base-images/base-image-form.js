@@ -4,20 +4,15 @@ angular.module('dashboard.controllers').controller('BaseImagesFormCtrl', ['$scop
     
     $scope.data = {};
     $scope.data.baseImage = {};
-    $scope.data.packages = [];
-    $scope.data.packagesOptions = {
-        dataSource: [
-            {
-                'name': 'ruby1.9.1',
-                'version': 'asd'
-            },{
-                'name': 'puppet-common',
-                'version': '2.7.19'
-            }
-        ],
-        template: kendo.template($templateCache.get('app/base-images/base-image-package-item.tpl.html')),
-        editTemplate: kendo.template($templateCache.get('app/base-images/base-image-package-edit.tpl.html'))
-    };
+    $scope.data.packages = [
+        {
+            'name': 'ruby1.9.1',
+            'version': ''
+        },{
+            'name': 'puppet-common',
+            'version': '2.7.19'
+        }
+    ];
     $scope.cssClass = "new-base-image-dialog";
     
     $scope.$parent.$watch('data.baseImage', function(baseImage) {
@@ -36,12 +31,6 @@ angular.module('dashboard.controllers').controller('BaseImagesFormCtrl', ['$scop
     
     $scope.closeDialog = function() {
         $scope.$parent.close();
-    };
-    
-    $scope.addPackage = function() {
-        list = $('.package-list').data('kendoListView');
-        list.add();
-        console.log(list);
     };
     
     $scope.saveBaseImage = function() {
