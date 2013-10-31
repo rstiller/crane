@@ -4,15 +4,7 @@ angular.module('dashboard.controllers').controller('BaseImagesFormCtrl', ['$scop
     
     $scope.data = {};
     $scope.data.baseImage = {};
-    $scope.data.packages = [
-        {
-            'name': 'ruby1.9.1',
-            'version': ''
-        },{
-            'name': 'puppet-common',
-            'version': '2.7.19'
-        }
-    ];
+    $scope.data.packages = [];
     $scope.cssClass = "new-base-image-dialog";
     
     $scope.$parent.$watch('data.baseImage', function(baseImage) {

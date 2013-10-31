@@ -1,6 +1,26 @@
 
-<ul>
-    <li ng-repeat="item in data.items">
-        {{ item.name }} {{ item.version }}
-    </li>
-</ul>
+<div class="package-list-container">
+    <ul class="package-list">
+        <li ng-repeat="item in data.items" class="package-list-item">
+            {{ item.name }} <span class="package-item-version" ng-show="item.version">({{ item.version }})</span>
+            <a class="float-right package-list-item-remove" ng-click="remove($event, $index)"><i class="icon-remove"></i></a>
+        </li>
+        
+        <li ng-show="!data.items.length">No Packages yet.</li>
+        
+        <li ng-class="{hidden: !data.editVisible}">
+            <form class="pure-form pure-g">
+                <fieldset>
+                    <input type="text" name="name" class="package-right-margin pure-input-1-3" placeholder="Package"/>
+                    <input type="text" name="version" class="package-right-margin pure-input-1-4" placeholder="Version"/>
+                    <button type="submit" class="package-right-margin pure-button pure-button-small" ng-click="saveNewPackage()"><i class="icon-ok"></i></button>
+                    <button type="button" class="pure-button pure-button-small" ng-click="hideEdit()"><i class="icon-ban-circle"></i></button>
+                </fieldset>
+            </form>
+        </li>
+    </ul>
+    
+    <div>
+        <button tabindex="-1" class="pure-button" ng-click="showEditAndFocus($event)"><i class="icon-plus-sign"></i> Add Package</button>
+    </div>
+</div>
