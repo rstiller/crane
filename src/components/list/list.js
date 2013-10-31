@@ -6,11 +6,14 @@ list.directive('list', ['$compile', '$templateCache', function listFactory($comp
     return {
         replace: true,
         require: 'ngModel',
-        scope: false,
+        scope: {},
         templateUrl: 'components/list/list.tpl.html',
         link: function($scope, element, attributes, ngModel) {
             $scope.data = $scope.data || {};
-            $scope.data.items = ngModel;
+            
+            $scope.$parent.$watch(attributes.ngModel, function(value) {
+                $scope.data.items = value;
+            });
         },
         controller: ['$scope', function($scope) {
         }]
