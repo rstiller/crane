@@ -33,11 +33,7 @@
         </div>
         
         <fieldset class="pure-u-1-2">
-            <div class="pure-control-group">
-                <label class="top-label">Packages</label>
-                <select class="pure-u-1-2" size="10" ng-options="package.name for package in data.packages">
-                </select>
-            </div>
+            <div list ng-model="$parent.data.packages"></div>
         </fieldset>
     </div>
     
