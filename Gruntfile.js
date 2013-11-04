@@ -15,7 +15,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     dot: true,
-                    cwd: './src/assets',
+                    cwd: './assets',
                     dest: './public',
                     src: [
                         '**/*.*'
@@ -23,7 +23,7 @@ module.exports = function (grunt) {
                 }, {
                     expand: true,
                     dot: true,
-                    cwd: './src/vendor/font-awesome',
+                    cwd: './vendor/font-awesome',
                     dest: './public',
                     src: [
                         'font/**/*.*'
@@ -40,28 +40,28 @@ module.exports = function (grunt) {
         concat: {
             dev: {
                 src: [
-                    './src/vendor/d3/d3.js',
-                    './src/vendor/jquery/jquery.js',
-                    './src/vendor/angular/angular.js',
-                    //'./src/vendor/kendo-ui/js/kendo.web.min.js',
-                    //'./src/vendor/angular-kendo-ui/build/angular-kendo.js',
-                    './src/vendor/angular-resource/angular-resource.js',
-                    './src/vendor/angular-ui-router/release/angular-ui-router.js',
-                    //'./src/vendor/ng-grid/build/ng-grid.js',
+                    './vendor/d3/d3.js',
+                    './vendor/jquery/jquery.js',
+                    './vendor/angular/angular.js',
+                    //'./vendor/kendo-ui/js/kendo.web.min.js',
+                    //'./vendor/angular-kendo-ui/build/angular-kendo.js',
+                    './vendor/angular-resource/angular-resource.js',
+                    './vendor/angular-ui-router/release/angular-ui-router.js',
+                    //'./vendor/ng-grid/build/ng-grid.js',
                     './.tmp/script.js'
                 ],
                 dest: './public/script.js',
             },
             prod: {
                 src: [
-                    './src/vendor/d3/d3.min.js',
-                    './src/vendor/jquery/jquery.min.js',
-                    './src/vendor/angular/angular.min.js',
-                    //'./src/vendor/kendo-ui/js/kendo.web.min.js',
-                    //'./src/vendor/angular-kendo-ui/build/angular-kendo.min.js',
-                    './src/vendor/angular-resource/angular-resource.min.js',
-                    './src/vendor/angular-ui-router/release/angular-ui-router.min.js',
-                    //'./src/vendor/ng-grid/build/ng-grid.min.js',
+                    './vendor/d3/d3.min.js',
+                    './vendor/jquery/jquery.min.js',
+                    './vendor/angular/angular.min.js',
+                    //'./vendor/kendo-ui/js/kendo.web.min.js',
+                    //'./vendor/angular-kendo-ui/build/angular-kendo.min.js',
+                    './vendor/angular-resource/angular-resource.min.js',
+                    './vendor/angular-ui-router/release/angular-ui-router.min.js',
+                    //'./vendor/ng-grid/build/ng-grid.min.js',
                     './.tmp/script.js'
                 ],
                 dest: './public/script.js',
@@ -77,12 +77,12 @@ module.exports = function (grunt) {
                 files: {
                     './.tmp/script.js': [
                         './.tmp/templates.js',
-                        './src/components/modules.js',
-                        './src/components/**/*.js',
-                        './src/app/modules.js',
-                        './src/app/**/*.js',
-                        '!./src/app/**/*.spec.js',
-                        '!./src/app/**/*.scenario.js'
+                        './components/modules.js',
+                        './components/**/*.js',
+                        './app/modules.js',
+                        './app/**/*.js',
+                        '!./app/**/*.spec.js',
+                        '!./app/**/*.scenario.js'
                     ]
                 }
             },
@@ -94,12 +94,12 @@ module.exports = function (grunt) {
                 files: {
                     './.tmp/script.js': [
                         './.tmp/templates.js',
-                        './src/components/modules.js',
-                        './src/components/**/*.js',
-                        './src/app/modules.js',
-                        './src/app/**/*.js',
-                        '!./src/app/**/*.spec.js',
-                        '!./src/app/**/*.scenario.js'
+                        './components/modules.js',
+                        './components/**/*.js',
+                        './app/modules.js',
+                        './app/**/*.js',
+                        '!./app/**/*.spec.js',
+                        '!./app/**/*.scenario.js'
                     ]
                 }
             }
@@ -110,7 +110,7 @@ module.exports = function (grunt) {
             },
             prod: {
                 files: {
-                    './public/style.css': './src/app/dashboard.less'
+                    './public/style.css': './app/dashboard.less'
                 }
             }
         },
@@ -134,13 +134,13 @@ module.exports = function (grunt) {
                     'prefix': '@@'
                 },
                 files: [
-                    { 'expand': true, 'cwd': './src', 'src': 'index.html', 'dest': './public' }
+                    { 'expand': true, 'cwd': '.', 'src': 'index.html', 'dest': './public' }
                 ]
             }
         },
         watch: {
             resources: {
-                'files': ['./src/index.html', './src/app/**/*.*', './src/assets/**/*.*', './src/components/**/*.*'],
+                'files': ['./index.html', './app/**/*.*', './assets/**/*.*', './components/**/*.*'],
                 'tasks': ['build-dev'],
                 'options': {
                     'nospawn': true,

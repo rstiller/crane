@@ -9,41 +9,34 @@ exec { 'apt-get update':
 
 package { [
     'g++',
-    'ruby1.9.3',
-    'make',
-    'git',
-    'sqlite3',
-    'libsqlite3-ruby1.9.1',
-    'libsqlite3-dev',
     'lxc',
     'cgroup-lite',
     'redir',
-    'build-essential',
-    'python-dev',
-    'python-software-properties',
-    'libevent-dev',
     'python-pip',
-    'libxslt1-dev',
-    'libxml2-dev',
-    'libssl-dev',
-    'libfontconfig1-dev',
-    'chrpath',
+    'python-software-properties',
     'curl',
+    'htop',
+    'git',
+    'build-essential',
+    'erlang-base-hipe',
+    'erlang-dev',
+    'erlang-manpages',
+    'erlang-eunit',
+    'erlang-nox',
+    'erlang-xmerl',
+    'erlang-inets',
+    'libtool',
+    'libcurl4-gnutls-dev',
+    'libicu-dev',
+    'libmozjs185-dev',
+    'libmozjs-dev',
+    'libcurl4-openssl-dev',
     ]:
     ensure => latest,
 } ->
 
-package { ['bundler']:
-    provider => gem,
-    ensure   => latest,
-} ->
-
-exec { 'bundle install':
-    cwd     => '/vagrant',
-    user    => root,
-} ->
-
-exec { 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/docker-latest && chmod +x /usr/bin/docker':
+exec { 'docker_install':
+    command => 'wget --output-document=docker https://get.docker.io/builds/Linux/x86_64/docker-latest && chmod +x /usr/bin/docker',
     cwd     => '/usr/bin',
     user    => root,
     creates => '/usr/bin/docker',
@@ -89,6 +82,38 @@ service { 'docker-registry':
     ensure => running,
 }
 
+file { '/tmp/couchdb':
+    ensure => directory,
+    owner  => root,
+    group  => root,
+    mode   => 0755,
+} ->
+
+file { '/tmp/couchdb/Dockerfile':
+    source => "puppet:///modules/crane/couchdb/Dockerfile",
+    owner  => root,
+    group  => root,
+    mode   => 0755,
+} ->
+
+exec { 'docker build -t="couchdb" .':
+    user    => root,
+    cwd     => '/tmp/couchdb',
+    require => Service['docker-daemon'],
+    timeout => 0,
+} ->
+
+file { '/etc/init/couchdb.upstart':
+    source => "puppet:///modules/crane/couchdb.upstart",
+    owner  => root,
+    group  => root,
+    mode   => 0755,
+} ->
+
+service { 'couchdb':
+    ensure => running,
+}
+
 exec { 'apt-add-repository ppa:chris-lea/node.js && apt-get update':
     user    => root,
     creates => '/etc/apt/sources.list.d/chris-lea-node_js-precise.list',
@@ -106,15 +131,8 @@ exec { 'npm install -g grunt-cli bower karma mocha':
 exec { 'npm install --no-bin-links':
     cwd     => '/vagrant',
     creates => '/vagrant/node_modules',
-}
+} ->
 
-#exec { 'wget -O /usr/local/share/phantomjs-1.9.0-linux-x86_64.tar.bz2 https://phantomjs.googlecode.com/files/phantomjs-1.9.0-linux-x86_64.tar.bz2':
-#    user    => root,
-#    creates => '/usr/local/share/phantomjs-1.9.0-linux-x86_64.tar.bz2',
-#} ->
-#
-#exec { 'tar -xjvf /usr/local/share/phantomjs-1.9.0-linux-x86_64.tar.bz2 && ln -sf /usr/local/share/phantomjs-1.9.0-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs':
-#    cwd     => "/usr/local/share",
-#    user    => root,
-#    creates => '/usr/local/bin/phantomjs',
-#}
+exec { 'bower install --allow-root':
+    cwd => '/vagrant',
+}
