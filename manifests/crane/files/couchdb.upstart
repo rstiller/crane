@@ -1,9 +1,9 @@
-# docker
+# docker couchdb image
 
-description "docker"
+description "docker couchdb image"
 
 start on filesystem and started lxc-net and started docker
 stop on runlevel [!2345]
 
 respawn
-exec docker run -d couchdb:latest
+exec docker run -p 5984:5984,6984:6984 -d rstiller/couchdb:1.5.0-ubuntu-12.04 /usr/local/bin/couchdb

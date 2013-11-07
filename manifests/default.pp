@@ -17,20 +17,8 @@ package { [
     'curl',
     'htop',
     'git',
+    'vim',
     'build-essential',
-    'erlang-base-hipe',
-    'erlang-dev',
-    'erlang-manpages',
-    'erlang-eunit',
-    'erlang-nox',
-    'erlang-xmerl',
-    'erlang-inets',
-    'libtool',
-    'libcurl4-gnutls-dev',
-    'libicu-dev',
-    'libmozjs185-dev',
-    'libmozjs-dev',
-    'libcurl4-openssl-dev',
     ]:
     ensure => latest,
 } ->
@@ -52,12 +40,7 @@ file { '/etc/init/docker-daemon.conf':
 
 service { 'docker-daemon':
     ensure => running,
-} ->
-
-exec { 'git clone https://github.com/dotcloud/docker-registry.git /var/crane/registry':
-    user    => root,
-    creates => "/var/crane/registry",
-} ->
+}
 
 file { '/etc/init/docker-registry.conf':
     source => "puppet:///modules/crane/docker_registry.upstart",
@@ -72,35 +55,16 @@ file { '/var/crane/registry/config.yml':
     group  => root,
 } ->
 
-exec { 'pip install -r requirements.txt':
-    cwd     => "/var/crane/registry/",
+exec { 'docker pull -t="0.6.0" stackbrew/registry':
     user    => root,
-    creates => "/var/crane/registry/wsgi.pyc",
-} ->
-
-service { 'docker-registry':
-    ensure => running,
+    timeout => 0,
+    require => Service["docker-daemon"],
 }
 
-file { '/tmp/couchdb':
-    ensure => directory,
-    owner  => root,
-    group  => root,
-    mode   => 0755,
-} ->
-
-file { '/tmp/couchdb/Dockerfile':
-    source => "puppet:///modules/crane/couchdb/Dockerfile",
-    owner  => root,
-    group  => root,
-    mode   => 0755,
-} ->
-
-exec { 'docker build -t="couchdb" .':
+exec { 'docker pull -t="1.5.0-ubuntu-12.04" rstiller/couchdb':
     user    => root,
-    cwd     => '/tmp/couchdb',
-    require => Service['docker-daemon'],
     timeout => 0,
+    require => Service["docker-daemon"],
 } ->
 
 file { '/etc/init/couchdb.upstart':

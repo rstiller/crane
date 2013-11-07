@@ -7,6 +7,7 @@ Vagrant::configure("2") do |config|
     
     config.vm.define :crane do |cfg|
         cfg.vm.network :forwarded_port, guest: 5984, host: 5984, auto_correct: true
+        cfg.vm.network :forwarded_port, guest: 6984, host: 6984, auto_correct: true
         cfg.vm.network :forwarded_port, guest: 5000, host: 5000, auto_correct: true
         cfg.vm.network :forwarded_port, guest: 9000, host: 9000, auto_correct: true
         cfg.vm.provision :puppet do |puppet|
