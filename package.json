@@ -7,6 +7,14 @@
         "type": "git",
         "url": "git@github.com:rstiller/crane.git"
     },
+    "main": "lib/main.js",
+    "directories": {
+        "src": "lib"
+    },
+    "dependencies": {
+        "cron": "*",
+        "pouchdb": "*"
+    },
     "devDependencies": {
         "lodash": "*",
         "grunt": "*",
