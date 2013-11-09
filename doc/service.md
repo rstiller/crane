@@ -4,7 +4,7 @@ Services put together your application and are configured as follows:
 
 ```yaml
 name: my_servcie
-description: My Servcie description
+description: My Service description
 version: 1.0.0
 category: custom | database | webserver | proxy | management | statistic
 

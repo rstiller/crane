@@ -10,7 +10,7 @@ Project orchestration in a git repository got some benefits:
 - versioning of your entire application enables you to roll-back your application entirely
 - system / service documentation
 
-The Crane builds the [docker](http://www.docker.io/) images of all services and bundels them
+Crane builds the [docker](http://www.docker.io/) images of all services and bundles them
 under the branch / tag name they are built from.
 
 To define an infrastructure you need a git-repository with an ``infrastructure.(yml | json)``
@@ -49,7 +49,7 @@ environments:
 
 - ``services`` - a list of service definition which represents your entire project / application.
     - each service got a name, a node-configuration and a provisioning-configuration
-    - ``nodes`` - the number of nodes or `auto` for automatical deployment
+    - ``nodes`` - the number of nodes or `auto` for automatic deployment
     - ``minNodes`` - the minimum number of nodes
     - ``maxNodes`` - the maximum number of nodes
     - ``manifest`` - the relative path or URL to the services' provisioning-configuration
