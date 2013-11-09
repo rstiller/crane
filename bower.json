@@ -10,6 +10,8 @@
         "ng-grid": "*",
         "angular-kendo-ui": "*",
         "d3": "*",
+        "curl": "*",
+        "js-yaml": "*",
         "pouchdb": "http://download.pouchdb.com/pouchdb-nightly.js"
     },
     "resolutions": {

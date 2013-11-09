@@ -13,7 +13,9 @@
     },
     "dependencies": {
         "cron": "*",
+        "amdefine": "*",
         "underscore": "*",
+        "js-yaml": "*",
         "pouchdb": "git://github.com/daleharvey/pouchdb.git"
     },
     "devDependencies": {

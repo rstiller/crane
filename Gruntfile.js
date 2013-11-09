@@ -12,23 +12,11 @@ module.exports = function (grunt) {
         },
         copy: {
             dist: {
-                files: [{
-                    expand: true,
-                    dot: true,
-                    cwd: './assets',
-                    dest: './public',
-                    src: [
-                        '**/*.*'
-                    ]
-                }, {
-                    expand: true,
-                    dot: true,
-                    cwd: './vendor/font-awesome',
-                    dest: './public',
-                    src: [
-                        'font/**/*.*'
-                    ]
-                }]
+                files: [
+                    { expand: true, dot: true, cwd: './assets', dest: './public', src: [ '**/*.*' ]},
+                    { expand: true, dot: true, cwd: './', dest: './public', src: [ 'shared/**/*.*' ]},
+                    { expand: true, dot: true, cwd: './vendor/font-awesome', dest: './public', src: [ 'font/**/*.*' ] }
+                ]
             }
         },
         html2js: {
@@ -40,31 +28,27 @@ module.exports = function (grunt) {
         concat: {
             dev: {
                 src: [
+                    './vendor/curl/dist/curl/curl.js',
                     './vendor/d3/d3.js',
                     './vendor/jquery/jquery.js',
                     './vendor/angular/angular.js',
-                    //'./vendor/kendo-ui/js/kendo.web.min.js',
-                    //'./vendor/angular-kendo-ui/build/angular-kendo.js',
                     './vendor/angular-resource/angular-resource.js',
                     './vendor/angular-ui-router/release/angular-ui-router.js',
-                    //'./vendor/ng-grid/build/ng-grid.js',
                     './.tmp/script.js'
                 ],
-                dest: './public/script.js',
+                dest: './public/script.js'
             },
             prod: {
                 src: [
+                    './vendor/curl/dist/curl/curl.js',
                     './vendor/d3/d3.min.js',
                     './vendor/jquery/jquery.min.js',
                     './vendor/angular/angular.min.js',
-                    //'./vendor/kendo-ui/js/kendo.web.min.js',
-                    //'./vendor/angular-kendo-ui/build/angular-kendo.min.js',
                     './vendor/angular-resource/angular-resource.min.js',
                     './vendor/angular-ui-router/release/angular-ui-router.min.js',
-                    //'./vendor/ng-grid/build/ng-grid.min.js',
                     './.tmp/script.js'
                 ],
-                dest: './public/script.js',
+                dest: './public/script.js'
             }
         },
         uglify: {
@@ -76,13 +60,18 @@ module.exports = function (grunt) {
                 },
                 files: {
                     './.tmp/script.js': [
+                        './shared/**/*.js',
                         './.tmp/templates.js',
                         './components/modules.js',
                         './components/**/*.js',
                         './app/modules.js',
                         './app/**/*.js',
                         '!./app/**/*.spec.js',
-                        '!./app/**/*.scenario.js'
+                        '!./app/**/*.scenario.js',
+                        '!./components/**/*.spec.js',
+                        '!./components/**/*.scenario.js',
+                        '!./shared/**/*.spec.js',
+                        '!./shared/**/*.scenario.js'
                     ]
                 }
             },
@@ -93,13 +82,18 @@ module.exports = function (grunt) {
                 },
                 files: {
                     './.tmp/script.js': [
+                        './shared/**/*.js',
                         './.tmp/templates.js',
                         './components/modules.js',
                         './components/**/*.js',
                         './app/modules.js',
                         './app/**/*.js',
                         '!./app/**/*.spec.js',
-                        '!./app/**/*.scenario.js'
+                        '!./app/**/*.scenario.js',
+                        '!./components/**/*.spec.js',
+                        '!./components/**/*.scenario.js',
+                        '!./shared/**/*.spec.js',
+                        '!./shared/**/*.scenario.js'
                     ]
                 }
             }
