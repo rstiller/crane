@@ -13,7 +13,8 @@
     },
     "dependencies": {
         "cron": "*",
-        "pouchdb": "*"
+        "underscore": "*",
+        "pouchdb": "git://github.com/daleharvey/pouchdb.git"
     },
     "devDependencies": {
         "lodash": "*",
