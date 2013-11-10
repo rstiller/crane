@@ -17,8 +17,6 @@ define(['./reader', './github-url', './service', 'js-yaml', 'underscore'], funct
                 var infrastructure = YAML.safeLoad(data);
                 var counter = _.size(infrastructure.services);
                 
-                infrastructure._services = {};
-                
                 _.each(infrastructure.services, function(config, serviceName) {
                     
                     var service = new Service();
@@ -27,7 +25,8 @@ define(['./reader', './github-url', './service', 'js-yaml', 'underscore'], funct
                         'file': !!config.manifest ? config.manifest : (serviceName + '.yml')
                     }, options, {
                         'callback': function(obj) {
-                            infrastructure._services[serviceName] = obj;
+                            infrastructure.services[serviceName] = service;
+                            _.extend(service, config);
                             
                             counter--;
                             if(counter === 0) {
@@ -40,6 +39,29 @@ define(['./reader', './github-url', './service', 'js-yaml', 'underscore'], funct
                 });
                 
             });
+        };
+        
+        this.buildDockerfiles = function(callback) {
+            
+            var counter = _.size(slf.environments) * _.size(slf.services);
+            
+            _.each(slf.environments, function(environment, environmentName) {
+                _.each(slf.services, function(service, serviceName) {
+                    service.buildDockerfile({
+                        'environment': environmentName,
+                        'variables': environment,
+                        'callback': function(dockerfile) {
+                            
+                            counter--;
+                            if(counter === 0) {
+                                callback();
+                            }
+                            
+                        }
+                    });
+                });
+            });
+            
         };
         
     };

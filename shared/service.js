@@ -17,6 +17,22 @@ define(['./reader', './github-url', 'js-yaml', 'underscore'], function(reader, g
             });
         };
         
+        this.buildDockerfile = function(options) {
+            
+            var dockerfile = 'myDockerfile';
+            
+            // TODO
+            
+            slf.environments = slf.environments || {};
+            slf.environments[options.environment] = {
+                'dockerfile': dockerfile,
+                'variables': options.variables
+            };
+            
+            options.callback(dockerfile);
+            
+        };
+        
     };
     
     return Service;
