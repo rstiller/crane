@@ -43,7 +43,7 @@ define(['./reader', './github-url', './service', 'js-yaml', 'underscore'], funct
         
         this.buildDockerfiles = function(callback) {
             
-            var counter = _.size(slf.environments) * _.size(slf.services);
+            var counter = (_.size(slf.environments) === 0 ? 1 : _.size(slf.environments)) * (_.size(slf.services) === 0 ? 1 : _.size(slf.services));
             
             _.each(slf.environments, function(environment, environmentName) {
                 _.each(slf.services, function(service, serviceName) {
