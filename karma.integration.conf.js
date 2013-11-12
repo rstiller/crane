@@ -4,7 +4,7 @@ module.exports = function(config) {
     config.set({
         basePath : '',
         frameworks : [ 'mocha' ],
-        files : [ 'src/app/**/*.scenario.js' ],
+        files : [ 'app/**/*.scenario.js' ],
         exclude : [],
         reporters : [ 'progress' ],
         port : 9876,
