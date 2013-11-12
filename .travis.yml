@@ -2,8 +2,3 @@ language: nodejs
 node_js:
     - "0.10"
 script: grunt build && grunt karma
-before_install:
-    - npm install -g grunt-cli bower
-    - bower install
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
