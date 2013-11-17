@@ -49,6 +49,18 @@ file { '/etc/init/docker-registry.conf':
     mode   => 0755,
 } ->
 
+file { '/var/crane':
+    ensure => directory,
+    owner  => root,
+    group  => root,
+} ->
+
+file { '/var/crane/registry':
+    ensure => directory,
+    owner  => root,
+    group  => root,
+} ->
+
 file { '/var/crane/registry/config.yml':
     source => "puppet:///modules/crane/registry.yml",
     owner  => root,
@@ -67,7 +79,7 @@ exec { 'docker pull -t="1.5.0-ubuntu-12.04" rstiller/couchdb':
     require => Service["docker-daemon"],
 } ->
 
-file { '/etc/init/couchdb.upstart':
+file { '/etc/init/couchdb.conf':
     source => "puppet:///modules/crane/couchdb.upstart",
     owner  => root,
     group  => root,
