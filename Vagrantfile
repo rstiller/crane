@@ -29,8 +29,8 @@ Vagrant::configure("2") do |config|
         override.vm.box = 'precise64'
         override.vm.box_url = 'http://files.vagrantup.com/precise64.box'
         v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
-        v.customize ["modifyvm", :id, "--memory", 512]
-        v.customize ["modifyvm", :id, "--cpus", 2]
+        v.customize ["modifyvm", :id, "--memory", 1024]
+        v.customize ["modifyvm", :id, "--cpus", 8]
         v.customize ["modifyvm", :id, "--hwvirtex", "on"]
         v.customize ["modifyvm", :id, "--nestedpaging", "on"]
     end
