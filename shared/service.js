@@ -17,11 +17,116 @@ define(['./reader', './github-url', 'js-yaml', 'underscore'], function(reader, g
             });
         };
         
+        this.buildEnvironmentVariables = function(variables) {
+            var str = '';
+            
+            for(var key in variables) {
+                str += 'ENV ' + key + ' ' + variables[key];
+            }
+            
+            return str;
+        };
+        
+        this.buildPuppetFacts = function() {
+            var str = '';
+            
+            if(!!slf.provision.facts) {
+                for(var i = 0; i < slf.provision.facts.length; i++) {
+                    // TODO: include file
+                    str += 'ADD ' + slf.provision.facts[i] + ' /etc/facter/facts.d/\n';
+                }
+            }
+            
+            return str;
+        };
+        
+        this.buildPuppetModules = function() {
+            var str = '';
+            
+            // TODO modules
+            
+            return str;
+        };
+        
+        this.buildPuppetManifest = function() {
+            // TODO: add file
+            return 'ADD ' + '' + ' /tmp/puppet/_manifest/manifest.pp';
+        };
+        
+        this.buildPuppetProvisioning = function() {
+            var str = '';
+            var modules = slf.buildPuppetModules();
+            
+            str += slf.buildPuppetFacts();
+            str += slf.buildPuppetManifest();
+            
+            // http://docs.puppetlabs.com/references/stable/configuration.html#modulepath
+            str += 'RUN puppet apply --modulepath=' + modules.join(':') + ' /tmp/puppet/_manifest/manifest.pp'
+            
+            return str;
+        };
+        
+        this.buildShellProvisioning = function() {
+            var str = '';
+            
+            // TODO: directories
+            
+            if(!!provision.path) {
+                str += 'RUN PATH=' + provision.path.join(':') + ':$PATH';
+            }
+            
+            if(!!provision.commands && provision.commands.length > 0) {
+                for(var i = 0; i < provision.commands.length; i++) {
+                    str += 'RUN ' + provision.commands[i];
+                }
+            }
+            
+            return str;
+        };
+        
+        this.buildProvisioning = function() {
+            var str = '';
+            
+            if(!!slf.provision) {
+                if(slf.provision.provider === 'puppet') {
+                    str = slf.buildPuppetProvisioning();
+                } else if(slf.provision.provider === 'shell') {
+                    str = slf.buildShellProvisioning();
+                }
+            }
+            
+            return str;
+        };
+        
         this.buildDockerfile = function(options) {
             
             var dockerfile = 'myDockerfile';
             
-            // TODO
+            dockerfile += '# ' + slf.name + ' (' + slf.version + ')';
+            dockerfile += 'FROM ' + slf.base;
+            
+            if(!!slf.ports) {
+                dockerfile += 'EXPOSE ' + slf.ports.join(' ');
+            }
+            
+            dockerfile += slf.buildEnvironmentVariables(options.variables);
+            dockerfile += slf.buildProvisioning();
+            
+            slf.environments = slf.environments || {};
+            slf.environments[options.environment] = {
+                'dockerfile': dockerfile,
+                'variables': options.variables
+            };
+            
+            options.callback(dockerfile);
+            
+        };
+        
+    };
+    
+    return Service;
+    
+});
             
             /*
             module Crane
@@ -235,22 +340,6 @@ define(['./reader', './github-url', 'js-yaml', 'underscore'], function(reader, g
     
 end
              */
-            
-            slf.environments = slf.environments || {};
-            slf.environments[options.environment] = {
-                'dockerfile': dockerfile,
-                'variables': options.variables
-            };
-            
-            options.callback(dockerfile);
-            
-        };
-        
-    };
-    
-    return Service;
-    
-});
 
 /*
 module Crane
