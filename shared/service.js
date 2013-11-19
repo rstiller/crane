@@ -40,10 +40,17 @@ define(['./reader', './github-url', 'js-yaml', 'underscore'], function(reader, g
             return str;
         };
         
-        this.buildPuppetModules = function() {
+        this.buildPuppetModules = function(modules) {
             var str = '';
+            var index = 0
             
-            // TODO modules
+            if(!!provision.modulePaths) {
+                for(var i = 0; i < provision.modulePaths.length; i++) {
+                    var path = '/tmp/puppet/_modules-' + index++ + '/';
+                    // TODO: source path
+                    str += 'ADD xyz ' + path;
+                }
+            }
             
             return str;
         };
@@ -55,9 +62,10 @@ define(['./reader', './github-url', 'js-yaml', 'underscore'], function(reader, g
         
         this.buildPuppetProvisioning = function() {
             var str = '';
-            var modules = slf.buildPuppetModules();
+            var modules = [];
             
             str += slf.buildPuppetFacts();
+            str += slf.buildPuppetModules(modules);
             str += slf.buildPuppetManifest();
             
             // http://docs.puppetlabs.com/references/stable/configuration.html#modulepath
