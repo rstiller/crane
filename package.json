@@ -16,6 +16,7 @@
         "amdefine": "*",
         "underscore": "*",
         "js-yaml": "*",
+        "winston": "*",
         "pouchdb": "git://github.com/daleharvey/pouchdb.git"
     },
     "devDependencies": {
