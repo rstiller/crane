@@ -37,7 +37,7 @@ Vagrant::configure("2") do |config|
     
     config.vm.provider :lxc do |v, override|
         override.vm.box = 'precise64'
-        override.vm.box_url = 'http://dl.dropbox.com/u/13510779/lxc-precise-amd64-2013-05-08.box'
+        override.vm.box_url = 'http://dl.dropbox.com/u/13510779/lxc-raring-amd64-2013-07-12.box'
         v.customize 'cgroup.memory.limit_in_bytes', '256M'
     end
     

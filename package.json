@@ -17,6 +17,7 @@
         "underscore": "*",
         "js-yaml": "*",
         "winston": "*",
+        "async": "*",
         "pouchdb": "git://github.com/daleharvey/pouchdb.git"
     },
     "devDependencies": {
