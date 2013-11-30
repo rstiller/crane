@@ -13,6 +13,15 @@ file { '/etc/init/docker.conf':
     mode   => 0755,
 } ->
 
+group { 'docker':
+    ensure => present,
+} ->
+
+user { 'vagrant':
+    ensure => present,
+    groups => ['docker'],
+} ->
+
 service { 'docker':
     ensure => running,
 }
