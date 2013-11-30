@@ -20,10 +20,13 @@ module.exports = function (grunt) {
             }
         },
         html2js: {
-            main: {
-                src: ['src/app/**/*.tpl.html', 'src/components/**/*.tpl.html'],
-                dest: './.tmp/templates.js'
+            options: {
+                base: '.'
             },
+            main: {
+                src: ['./app/**/*.tpl.html', './components/**/*.tpl.html'],
+                dest: './.tmp/templates.js'
+            }
         },
         concat: {
             dev: {
@@ -142,6 +145,14 @@ module.exports = function (grunt) {
                 }
             }
         },
+        express: {
+            dev: {
+                options: {
+                    port: 9000,
+                    bases: 'public'
+                }
+            }
+        },
         karma: {
             unit: {
                 configFile: './karma.unit-test.conf.js',
@@ -164,6 +175,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('dev', [
         'build-dev',
+        'express:dev',
         'watch'
     ]);
 
