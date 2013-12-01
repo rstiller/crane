@@ -21,7 +21,7 @@ dialog.factory('Dialog', function() {
 dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory($compile, $templateCache) {
     
     return {
-        replace: true,
+        replace: false,
         scope: {
             template: '@template',
             controller: '@dialog'

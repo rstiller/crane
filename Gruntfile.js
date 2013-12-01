@@ -37,6 +37,7 @@ module.exports = function (grunt) {
                     './vendor/angular/angular.js',
                     './vendor/angular-resource/angular-resource.js',
                     './vendor/angular-ui-router/release/angular-ui-router.js',
+                    './vendor/pouchdb/index.js',
                     './.tmp/script.js'
                 ],
                 dest: './public/script.js'
@@ -49,6 +50,7 @@ module.exports = function (grunt) {
                     './vendor/angular/angular.min.js',
                     './vendor/angular-resource/angular-resource.min.js',
                     './vendor/angular-ui-router/release/angular-ui-router.min.js',
+                    './vendor/pouchdb/index.js',
                     './.tmp/script.js'
                 ],
                 dest: './public/script.js'
@@ -140,7 +142,7 @@ module.exports = function (grunt) {
                 'files': ['./index.html', './app/**/*.*', './assets/**/*.*', './components/**/*.*'],
                 'tasks': ['build-dev'],
                 'options': {
-                    'nospawn': true,
+                    'spawn': false,
                     'interval': 500
                 }
             }
@@ -176,7 +178,7 @@ module.exports = function (grunt) {
     grunt.registerTask('dev', [
         'build-dev',
         'express:dev',
-        'watch'
+        'watch:resources'
     ]);
 
     grunt.registerTask('build-dev', [
