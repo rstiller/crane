@@ -1,12 +1,20 @@
 
-angular.module('dashboard.controllers').controller('ProjectsMenuCtrl', ['$rootScope', '$scope', '$http', '$location', 'Projects', 'Cache', 'Dialog',
-                                                                        function($rootScope, $scope, $http, $location, Projects, Cache, Dialog) {
+angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
+    ['$rootScope', '$scope', '$http', '$location', 'Projects', 'Cache', 'Dialog', 'DBS',
+    function($rootScope, $scope, $http, $location, Projects, Cache, Dialog, DBS) {
     
     $scope.data = {};
     $scope.data.newProject = {
         'url': ''
     };
     
+    DBS.Projects.changes({
+        continuous: true,
+        onChange: function(change) {
+            console.log(change);
+        }
+    });
+                                                                            
     var refresh = function() {
         Projects.query({}, function(projects) {
             

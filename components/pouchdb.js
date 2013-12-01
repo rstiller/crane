@@ -1,6 +1,7 @@
 
-angular.module('components.pouchdb').service(function() {
+angular.module('components.pouchdb').factory('PouchDB', [function() {
     
+    PouchDB.enableAllDbs = true;
     return PouchDB;
     
-});
+}]);

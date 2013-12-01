@@ -139,19 +139,16 @@ module.exports = function (grunt) {
         },
         watch: {
             resources: {
-                'files': ['./index.html', './app/**/*.*', './assets/**/*.*', './components/**/*.*'],
+                'files': [
+                    './index.html',
+                    './app/**/*.*',
+                    './assets/**/*.*',
+                    './components/**/*.*'
+                ],
                 'tasks': ['build-dev'],
                 'options': {
                     'spawn': false,
-                    'interval': 500
-                }
-            }
-        },
-        express: {
-            dev: {
-                options: {
-                    port: 9000,
-                    bases: 'public'
+                    'interval': 1000
                 }
             }
         },
@@ -177,7 +174,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('dev', [
         'build-dev',
-        'express:dev',
         'watch:resources'
     ]);
 

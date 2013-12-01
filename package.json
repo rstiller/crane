@@ -18,7 +18,9 @@
         "js-yaml": "*",
         "winston": "*",
         "async": "*",
-        "pouchdb": "git://github.com/daleharvey/pouchdb.git"
+        "pouchdb": "git://github.com/daleharvey/pouchdb.git",
+        "http-proxy": "*",
+        "express": "*"
     },
     "devDependencies": {
         "lodash": "*",
