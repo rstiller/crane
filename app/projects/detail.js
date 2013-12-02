@@ -13,20 +13,15 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     };
     
     $scope.$watch('data.selectedVersion', function() {
-        var environmentNames = {};
-        angular.forEach($scope.data.selectedVersion.runConfigs, function(runConfig) {
-            environmentNames[runConfig.environment] = environmentNames[runConfig.environment] || [];
-            environmentNames[runConfig.environment].push(runConfig.serviceName);
+        var environments = [];
+        
+        angular.forEach($scope.data.selectedVersion.infrastructure.environments, function(variables, name) {
+            environments.push(name);
         });
-        var environemnts = [];
-        angular.forEach(environmentNames, function(value, key) {
-            environemnts.push({
-                'name': key,
-                'services': value
-            });
-        });
-        $scope.data.environments = environemnts;
-        $scope.data.selectedEnvironment = '';
+        
+        environments.sort();
+        
+        $scope.data.environments = environments;
     });
     
     DBS.Projects.get($stateParams.projectId, function(err, project) {

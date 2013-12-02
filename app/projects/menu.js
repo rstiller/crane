@@ -11,7 +11,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
         project.imageUrl = '';
         
         Cache.get(project.url, function(data) {
-            angular.forEach($scope.data.projects.elements, function(project) {
+            angular.forEach($scope.data.projects, function(project) {
                 if(project.url == data.html_url) {
                     project.imageUrl = data.owner.avatar_url;
                 }
