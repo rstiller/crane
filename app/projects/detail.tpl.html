@@ -1,38 +1,28 @@
 
 <div class="project-detail-header">
-    <h1>{{ data.project.name }}</h1>
-    <small>{{ data.project.url }}</small>
+    <div>
+        <form class="pure-form pure-form-stacked">
+            <fieldset>
+                <legend>{{ data.project.name }}</legend>
+                <small>{{ data.project.url }}</small>
+                <div class="pure-g-r">
+                    <div class="pure-u-1-4">
+                        <label>Version</label>
+                        <select class="pure-input-2-3" ng-model="data.selectedVersion" ng-options="key for (key, value) in data.versions">
+                        </select>
+                    </div>
+                    <div class="pure-u-1-4">
+                        <label>Environment</label>
+                        <select class="pure-input-2-3" ng-model="data.selectedEnvironment" ng-options="environment for environment in data.environments">
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
 </div>
 
 <div class="pure-g">
-    
-    <div class="pure-u-1-6 full-height right-bordered project-version-menu-container">
-        
-        <div class="project-version-menu">
-            <form class="pure-form pure-form-stacked">
-                <fieldset>
-                    <legend>Version</legend>
-                    
-                    <div class="pure-u-1">
-                        <select class="pure-input-1" ng-model="data.selectedVersion" ng-options="key for (key, value) in data.versions">
-                        </select>
-                    </div>
-                    
-                </fieldset>
-            </form>
-        </div>
-        
-        <ul class="menu">
-            
-            <li ng-repeat="environment in data.environments" class="menu-item" ng-class="{selected: data.selectedEnvironment == environment}">
-                <div class="menu-item-container project-environment-menu-item" ng-click="selectEnvironment(environment)">
-                    <h3>{{ environment }}</h3>
-                </div>
-            </li>
-            
-        </ul>
-        
-    </div>
     
     <div class="project-services-detail pure-u-1-2" ng-show="data.selectedEnvironment">
         

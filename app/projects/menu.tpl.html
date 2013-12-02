@@ -6,7 +6,7 @@
         <fieldset>
             
             <legend class="legend-and-button">
-                <span><i class="icon-plus-sign"></i> New Project</span>
+                <span><i class="fa fa-plus"></i> New Project</span>
             </legend>
             
             <div class="pure-g">
@@ -15,7 +15,7 @@
                 </div>
                 <div class="pure-u-1-8 right-float">
                     <button type="submit" class="pure-input-1 pure-button pure-button-success pure-button-small project-info-button" ng-click="openDialog()">
-                        <i class="icon-arrow-right"></i>
+                        <i class="fa fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
@@ -30,7 +30,7 @@
     <fieldset>
         
         <legend>
-            <span><i class="icon-search"></i> Projectsearch</span>
+            <span><i class="fa fa-search"></i> Projectsearch</span>
         </legend>
         
         <div class="pure-u-1">
@@ -54,7 +54,7 @@
                     <span title="{{ project.name }}">{{ project.name }}</span>
                 </a>
                 <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project._id, project.url)" title="Remove {{ project.name }}">
-                    <i class="icon-remove"></i>
+                    <i class="fa fa-trash-o"></i>
                 </a>
             </div>
             <small><a target="_blank" href="{{ project.url }}">{{ project.url }}</a></small>
