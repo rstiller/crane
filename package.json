@@ -27,22 +27,17 @@
         "grunt": "*",
         "grunt-contrib-copy": "*",
         "grunt-contrib-clean": "*",
-        "grunt-contrib-watch": "*",
         "grunt-contrib-uglify": "*",
         "grunt-contrib-less": "*",
         "grunt-contrib-concat": "*",
+        "grunt-contrib-watch": "*",
         "grunt-replace": "*",
         "grunt-rename": "*",
         "grunt-html2js": "*",
         "grunt-karma": "~0.6",
-        "grunt-express": "*",
-        "grunt-express": "*",
         "matchdep": "*",
-        "mocha": "git://github.com/visionmedia/mocha.git",
         "karma-mocha": "*",
-        "karma-ng-scenario": "*",
-        "chai": "*",
-        "sinon": "*"
+        "karma-ng-scenario": "*"
     },
     "licenses": [
         {

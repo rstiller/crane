@@ -1,6 +1,6 @@
 
-angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope', '$stateParams', 'Projects', 'Cache',
-                                                                         function($scope, $stateParams, Projects, Cache) {
+angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
+    ['$scope', '$stateParams', 'Cache', 'DBS', function($scope, $stateParams, Cache, DBS) {
     
     $scope.data = {};
     $scope.data.selectedEnvironment = '';
@@ -29,25 +29,23 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl', ['$scope
         $scope.data.selectedEnvironment = '';
     });
     
-    Projects.get({
-        'id': $stateParams.projectId
-    }, function(project) {
+    DBS.Projects.get($stateParams.projectId, function(err, project) {
         
         $scope.data.project = project;
         
         Cache.get(project.url, function(data) {
         });
         
-        var versions = [];
+        var versions = {};
         
-        angular.forEach(project.branches, function(branch) {
-            versions.push(branch);
-            if(branch.name === 'master') {
+        angular.forEach(project.branches, function(branch, branchName) {
+            versions[branchName] = branch;
+            if(branchName === 'master') {
                 $scope.data.selectedVersion = branch;
             }
         });
-        angular.forEach(project.tags, function(tag) {
-            versions.push(tag);
+        angular.forEach(project.tags, function(tag, tagName) {
+            versions[tagName] = tag;
         });
         
         $scope.data.versions = versions;

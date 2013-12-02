@@ -1,6 +1,6 @@
 
-angular.module('dashboard.controllers').controller('NewProjectCtrl', ['$scope', 'Cache', 'Projects',
-                                                                      function($scope, Cache, Projects) {
+angular.module('dashboard.controllers').controller('NewProjectCtrl',
+    ['$scope', 'Cache', 'DBS', function($scope, Cache, DBS) {
     
     $scope.project = {};
     $scope.branches = [];
@@ -43,12 +43,17 @@ angular.module('dashboard.controllers').controller('NewProjectCtrl', ['$scope', 
             branches.push(branch.name);
         });
         
-        Projects.save({
+        DBS.Projects.post({
             'name': $scope.project.name,
             'url': $scope.project.html_url,
             'buildTags': $scope.buildTags,
             'branches': branches
-        }, function() {
+        }, function(err) {
+            if(!!err) {
+                console.log(err);
+                return;
+            }
+            
             if($scope.saveCallback) {
                 $scope.saveCallback(); 
             }

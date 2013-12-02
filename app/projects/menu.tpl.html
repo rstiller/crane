@@ -26,7 +26,7 @@
     
 </div>
 
-<form class="pure-form project-name-filter" ng-show="data.projects.elements.length > 1">
+<form class="pure-form project-name-filter" ng-show="data.projects.length > 1">
     <fieldset>
         
         <legend>
@@ -42,18 +42,18 @@
 
 <ul class="menu">
 
-    <li ng-repeat="project in data.projects.elements | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project.id}">
+    <li ng-repeat="project in data.projects | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project.id}">
         <div class="menu-item-container project-menu-item">
             <div class="project-owner-image-container pure-u-1-5">
-                <a ui-sref="projects.detail({ projectId: project.id })">
+                <a ui-sref="projects.detail({ projectId: project._id })">
                     <span class="project-owner-image" title="{{ project.name }}" style="background-image: url('{{ project.imageUrl }}');"></span>
                 </a>
             </div>
             <div class="project-menu-item-header pure-u-2-3">
-                <a ui-sref="projects.detail({ projectId: project.id })">
+                <a ui-sref="projects.detail({ projectId: project._id })">
                     <span title="{{ project.name }}">{{ project.name }}</span>
                 </a>
-                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project.id, project.url)" title="Remove {{ project.name }}">
+                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project._id, project.url)" title="Remove {{ project.name }}">
                     <i class="icon-remove"></i>
                 </a>
             </div>

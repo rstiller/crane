@@ -148,7 +148,7 @@ module.exports = function (grunt) {
                 'tasks': ['build-dev'],
                 'options': {
                     'spawn': false,
-                    'interval': 1000
+                    'interval': 500
                 }
             }
         },

@@ -14,7 +14,7 @@
                     <legend>Version</legend>
                     
                     <div class="pure-u-1">
-                        <select class="pure-input-1" ng-model="data.selectedVersion" ng-options="version.name for version in data.versions">
+                        <select class="pure-input-1" ng-model="data.selectedVersion" ng-options="key for (key, value) in data.versions">
                         </select>
                     </div>
                     
