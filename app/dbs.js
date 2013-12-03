@@ -1,5 +1,6 @@
 
-angular.module('dashboard.dbs').factory('DBS', ['PouchDB', '$location', function(PouchDB, $location) {
+angular.module('dashboard.dbs').factory('DBS',
+    ['PouchDB', '$location', '$rootScope', function(PouchDB, $location, $rootScope) {
     
     var opts = {
         continuous: true
@@ -14,12 +15,22 @@ angular.module('dashboard.dbs').factory('DBS', ['PouchDB', '$location', function
         return database;
     };
     
-    return {
+    var dbs = {
         'Projects': db('projects'),
         'Machines': db('machines'),
         'Commands': db('commands'),
         'Builds': db('builds'),
         'BuildLogs': db('build-logs')
     };
+    
+    dbs.Projects.changes({
+        continuous: true,
+        include_docs: true,
+        onChange: function(change) {
+            $rootScope.$broadcast('projects.update', change.doc);
+        }
+    });
+    
+    return dbs;
     
 }]);

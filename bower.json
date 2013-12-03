@@ -9,6 +9,7 @@
         "angular-ui-router": "*",
         "d3": "*",
         "curl": "*",
+        "async": "*",
         "pouchdb": "http://download.pouchdb.com/pouchdb-nightly.js"
     }
 }

@@ -31,6 +31,7 @@ module.exports = function (grunt) {
         concat: {
             dev: {
                 src: [
+                    './vendor/async/lib/async.js',
                     './vendor/curl/dist/curl/curl.js',
                     './vendor/d3/d3.js',
                     './vendor/jquery/jquery.js',
@@ -44,6 +45,7 @@ module.exports = function (grunt) {
             },
             prod: {
                 src: [
+                    './vendor/async/lib/async.js',
                     './vendor/curl/dist/curl/curl.js',
                     './vendor/d3/d3.min.js',
                     './vendor/jquery/jquery.min.js',

@@ -42,7 +42,7 @@
 
 <ul class="menu">
 
-    <li ng-repeat="project in data.projects | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project.id}">
+    <li ng-repeat="project in data.projects | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project._id}">
         <div class="menu-item-container project-menu-item">
             <div class="project-owner-image-container pure-u-1-5">
                 <a ui-sref="projects.detail({ projectId: project._id })">
@@ -53,7 +53,7 @@
                 <a ui-sref="projects.detail({ projectId: project._id })">
                     <span title="{{ project.name }}">{{ project.name }}</span>
                 </a>
-                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project._id, project.url)" title="Remove {{ project.name }}">
+                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project, project.url)" title="Remove {{ project.name }}">
                     <i class="fa fa-trash-o"></i>
                 </a>
             </div>

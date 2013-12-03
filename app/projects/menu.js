@@ -1,24 +1,14 @@
 
 angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
-    ['$rootScope', '$scope', '$http', '$location', 'Cache', 'Dialog', 'DBS', function($rootScope, $scope, $http, $location, Cache, Dialog, DBS) {
+    ['$rootScope', '$scope', '$http', '$location', 'Cache', 'Dialog', 'DBS', 'RenderPipeline',
+     function($rootScope, $scope, $http, $location, Cache, Dialog, DBS, RenderPipeline) {
     
     $scope.data = {};
     $scope.data.newProject = {
         'url': ''
     };
     
-    var refreshProject = function(project) {
-        project.imageUrl = '';
-        
-        Cache.get(project.url, function(data) {
-            angular.forEach($scope.data.projects, function(project) {
-                if(project.url == data.html_url) {
-                    project.imageUrl = data.owner.avatar_url;
-                }
-            });
-        });
-    };
-    var refreshAllProjects = function() {
+    var renderPipeline = new RenderPipeline(function(next) {
         
         DBS.Projects.allDocs({
             include_docs: true
@@ -33,36 +23,53 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
                 projects.push(row.doc);
                 refreshProject(row.doc);
             });
+            console.log('projects', projects);
             $scope.data.projects = projects;
+            $scope.$apply();
+            
+            next();
         });
-        
+    });
+    
+    var refreshProject = function(project) {
+        Cache.get(project.url, function(data) {
+            angular.forEach($scope.data.projects, function(project) {
+                if(project.url === data.html_url && !project.imageUrl) {
+                    project.imageUrl = data.owner.avatar_url;
+                }
+            });
+        });
     };
     
     $scope.openDialog = function() {
         new Dialog('#dialog', 'NewProjectCtrl', 'app/projects/newProjectDialog.tpl.html', {
             url: $scope.data.newProject.url,
-            saveCallback: refreshAllProjects
+            saveCallback: function() {
+                renderPipeline.push({});
+            }
         });
         $scope.data.newProject.url = '';
     };
     
-    $scope.remove = function(id, url) {
+    $scope.remove = function(project, url) {
         Cache.clear(url);
         
-        // TODO: remove project
-        
-        if($rootScope.$stateParams.projectId == id) {
-            $location.path('/projects/');
-        }
+        DBS.Projects.remove(project, function(err, response) {
+            if(!!err) {
+                console.log(err);
+                return;
+            }
+            
+            if($rootScope.$stateParams.projectId == project._id) {
+                $location.path('/projects/');
+            }
+        });
     };
     
-    DBS.Projects.changes({
-        continuous: true,
-        onChange: function(change) {
-            refreshAllProjects();
-        }
-    });
+    $rootScope.$on('projects.update', function(event, project) {
+        renderPipeline.push({});
+    })
     
-    refreshAllProjects();
+    renderPipeline.push({});
     
 }]);
