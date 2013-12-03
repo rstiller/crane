@@ -1,29 +1,31 @@
 
-<div class="project-detail-header">
-    <div>
-        <form class="pure-form pure-form-stacked">
-            <fieldset>
-                <legend><h1>{{ data.project.name }}</h1></legend>
-                <small>{{ data.project.url }}</small>
-                
-                <div class="pure-g-r">
-                    <div class="pure-u-1-4">
-                        <label>Version</label>
-                        <select class="pure-input-2-3" ng-model="data.selectedVersion" ng-options="key for (key, value) in data.versions">
-                        </select>
-                    </div>
-                    <div class="pure-u-1-4">
-                        <label>Environment</label>
-                        <select class="pure-input-2-3" ng-model="data.selectedEnvironment" ng-options="environment for environment in data.environments">
-                        </select>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
-    </div>
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
 </div>
 
-<div class="pure-g">
+<div class="project-detail-header" ng-show="data.ready">
+    <form class="pure-form pure-form-stacked">
+        <fieldset>
+            <legend><h1>{{ data.project.name }}</h1></legend>
+            <small>{{ data.project.url }}</small>
+            
+            <div class="pure-g-r">
+                <div class="pure-u-1-4">
+                    <label>Version</label>
+                    <select class="pure-input-2-3" ng-model="data.selectedVersion" ng-options="key for (key, value) in data.versions">
+                    </select>
+                </div>
+                <div class="pure-u-1-4">
+                    <label>Environment</label>
+                    <select class="pure-input-2-3" ng-model="data.selectedEnvironment" ng-options="environment for environment in data.environments">
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<div class="pure-g" ng-show="data.ready">
     
     <div class="project-services-detail pure-u-1-2" ng-show="data.selectedEnvironment">
         

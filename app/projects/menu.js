@@ -7,8 +7,11 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     $scope.data.newProject = {
         'url': ''
     };
+    $scope.data.ready = false;
     
     var renderPipeline = new RenderPipeline(function(next) {
+        $scope.data.ready = false;
+        
         DBS.Projects.allDocs({
             include_docs: true
         }, function(err, docs) {
@@ -18,13 +21,17 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
             }
             
             var projects = [];
+            
             angular.forEach(docs.rows, function(row) {
                 projects.push(row.doc);
             });
+            
             $scope.data.projects = projects;
             angular.forEach(projects, function(project) {
                 refreshProject(project);
             });
+            
+            $scope.data.ready = true;
             $scope.$apply();
             
             next();

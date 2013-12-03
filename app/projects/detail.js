@@ -8,11 +8,12 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     $scope.data.selectedVersion = {};
     $scope.data.versions = [];
     $scope.data.environments = [];
+    $scope.data.ready = false;
     
     var renderPipeline = new RenderPipeline(function(next) {
+        $scope.data.ready = false;
         
         DBS.Projects.get($stateParams.projectId, function(err, project) {
-            
             $scope.data.project = project;
             
             Cache.get(project.url, function(data) {
@@ -31,12 +32,11 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
             });
             
             $scope.data.versions = versions;
+            $scope.data.ready = true;
             $scope.$apply();
             
             next();
-            
         });
-        
     });
     
     $scope.selectEnvironment = function(environment) {

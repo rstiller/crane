@@ -26,7 +26,11 @@
     
 </div>
 
-<form class="pure-form project-name-filter" ng-show="data.projects.length > 1">
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+</div>
+
+<form class="pure-form project-name-filter" ng-show="data.projects.length > 1" ng-show="data.ready">
     <fieldset>
         
         <legend>
@@ -40,7 +44,7 @@
     </fieldset>
 </form>
 
-<ul class="menu">
+<ul class="menu" ng-show="data.ready">
 
     <li ng-repeat="project in data.projects | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project._id}">
         <div class="menu-item-container project-menu-item">
