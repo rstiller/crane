@@ -32,7 +32,6 @@ module.exports = function (grunt) {
             dev: {
                 src: [
                     './vendor/async/lib/async.js',
-                    './vendor/curl/dist/curl/curl.js',
                     './vendor/d3/d3.js',
                     './vendor/jquery/jquery.js',
                     './vendor/angular/angular.js',
@@ -46,7 +45,6 @@ module.exports = function (grunt) {
             prod: {
                 src: [
                     './vendor/async/lib/async.js',
-                    './vendor/curl/dist/curl/curl.js',
                     './vendor/d3/d3.min.js',
                     './vendor/jquery/jquery.min.js',
                     './vendor/angular/angular.min.js',
@@ -67,10 +65,11 @@ module.exports = function (grunt) {
                 },
                 files: {
                     './.tmp/script.js': [
-                        './shared/**/*.js',
                         './.tmp/templates.js',
                         './components/modules.js',
                         './components/**/*.js',
+                        './shared/modules.js',
+                        './shared/**/*.js',
                         './app/modules.js',
                         './app/**/*.js',
                         '!./app/**/*.spec.js',
@@ -89,10 +88,11 @@ module.exports = function (grunt) {
                 },
                 files: {
                     './.tmp/script.js': [
-                        './shared/**/*.js',
                         './.tmp/templates.js',
                         './components/modules.js',
                         './components/**/*.js',
+                        './shared/modules.js',
+                        './shared/**/*.js',
                         './app/modules.js',
                         './app/**/*.js',
                         '!./app/**/*.spec.js',
@@ -145,7 +145,8 @@ module.exports = function (grunt) {
                     './index.html',
                     './app/**/*.*',
                     './assets/**/*.*',
-                    './components/**/*.*'
+                    './components/**/*.*',
+                    './shared/**/*.*'
                 ],
                 'tasks': ['build-dev'],
                 'options': {

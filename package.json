@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "cron": "*",
-        "amdefine": "*",
         "underscore": "*",
         "js-yaml": "*",
         "winston": "*",
