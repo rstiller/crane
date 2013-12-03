@@ -9,7 +9,6 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     };
     
     var renderPipeline = new RenderPipeline(function(next) {
-        
         DBS.Projects.allDocs({
             include_docs: true
         }, function(err, docs) {
@@ -21,10 +20,11 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
             var projects = [];
             angular.forEach(docs.rows, function(row) {
                 projects.push(row.doc);
-                refreshProject(row.doc);
             });
-            console.log('projects', projects);
             $scope.data.projects = projects;
+            angular.forEach(projects, function(project) {
+                refreshProject(project);
+            });
             $scope.$apply();
             
             next();
