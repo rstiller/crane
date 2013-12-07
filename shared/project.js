@@ -5,7 +5,7 @@
     var async = null;
     var DBS = null;
 
-    function Project() {
+    function Project(options) {
 
         var slf = this;
         var updateQueue = async.queue(function(task, callback) {
@@ -28,10 +28,25 @@
         this.tags = null;
         this.url = '';
 
+        _.extend(slf, options);
+
         this.update = function(callback) {
             updateQueue.push({}, function() {
                 if(!!callback) {
                     callback();
+                }
+            });
+        };
+
+        this.remove = function(callback) {
+            DBS.Projects.remove(slf, function(err, response) {
+                if(!!err) {
+                    callback(err);
+                    return;
+                }
+
+                if(!!callback) {
+                    callback(null);
                 }
             });
         };
@@ -79,6 +94,25 @@
 
             if(!!callback) {
                 callback(null, Project.fromJson(project));
+            }
+        });
+    };
+
+    Project.all = function(callback) {
+        DBS.Projects.allDocs({
+            include_docs: true
+        }, function(err, docs) {
+            if(!!err) {
+                callback(err);
+                return;
+            }
+
+            if(!!callback) {
+                var projects = [];
+                _.each(docs.rows, function(row) {
+                    projects.push(Project.fromJson(row.doc));
+                });
+                callback(null, projects);
             }
         });
     };
