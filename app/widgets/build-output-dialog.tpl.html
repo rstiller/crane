@@ -1,0 +1,23 @@
+
+<h1>Console Output</h1>
+
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+</div>
+
+<div class="build-output-container" ng-show="data.ready">
+    
+    <div class="console">
+        <div ng-repeat="log in data.logs" class="command" ng-class="{'command-collapsed': log.collapsed, 'command-expanded': !log.collapsed}">
+            <span class="cmd" ng-click="log.collapsed=!log.collapsed" ng-class="{'cmd-err': log.exitCode != 0}">
+                <i class="fa" ng-class="{'fa-plus-square-o': log.collapsed, 'fa-minus-square-o': !log.collapsed}"></i> {{ log.cmd }}
+            </span>
+            <code ng-repeat="output in log.output" ng-class="output.type">{{ output.data }}</code>
+            <span class="exit">exited with {{ log.exitCode }}</span>
+        </div>
+    </div>
+    
+    <div class="actions">
+        <button type="button" class="pure-button float-right" ng-click="closeDialog()">Close</button>
+    </div>
+</div>

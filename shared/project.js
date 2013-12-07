@@ -82,7 +82,7 @@
         DBS = require('../lib/dbs');
         module.exports.Project = Project;
     } else {
-        angular.module('shared.entities').factory('Project', ['_', 'async', 'dbs', function(a, b, c) {
+        angular.module('shared.entities').factory('ProjectEntity', ['_', 'async', 'DBS', function(a, b, c) {
             _ = a;
             async = b;
             DBS = c;

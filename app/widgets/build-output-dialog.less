@@ -1,0 +1,76 @@
+
+.build-output-dialog {
+}
+
+.build-output-dialog h1 {
+    color: #fff;
+    background: @color2_15l;
+}
+
+.build-output-container {
+    padding: 20px;
+}
+
+.build-output-container .actions {
+    bottom: 10px;
+    left: 0;
+    position: absolute;
+    right: 20px;
+}
+
+.build-output-dialog .console {
+    font-family: monospace;
+    font-size: 11px;
+    line-height: 18px;
+    word-wrap: break-word;
+}
+
+.build-output-dialog .console .command {
+    background: #F8F8F8;
+    border: 1px dashed @background_light_15d;
+    border-radius: 5px;
+    margin: 0 0 10px;
+    padding: 5px;
+}
+
+.build-output-dialog .console .command-collapsed .err,
+.build-output-dialog .console .command-collapsed .out,
+.build-output-dialog .console .command-collapsed .exit {
+    display: none;
+    visibility: hidden;
+}
+
+.build-output-dialog .console .command-expanded .err,
+.build-output-dialog .console .command-expanded .out,
+.build-output-dialog .console .command-expanded .exit {
+    visibility: visible;
+}
+
+.build-output-dialog .console .cmd {
+    display: block;
+    font-weight: bold;
+}
+
+.build-output-dialog .console .cmd.cmd-err {
+    color: red;
+    display: block;
+    font-weight: bold;
+}
+
+.build-output-dialog .console .exit {
+    color: @color_light_25d;
+    display: block;
+    margin: 0 0 0 20px;
+}
+
+.build-output-dialog .console .out {
+    display: block;
+    margin: 0 0 0 20px;
+}
+
+.build-output-dialog .console .err {
+    color: red;
+    display: block;
+    margin: 0 0 0 20px;
+}
+

@@ -4,7 +4,7 @@ angular.module('dashboard.controllers').controller('NewProjectCtrl',
     
     $scope.project = {};
     $scope.branches = [];
-    $scope.cssClass = "new-project-dialog";
+    $scope.cssClass = 'new-project-dialog';
     $scope.buildTags = true;
     $scope.buildBranches = [];
     

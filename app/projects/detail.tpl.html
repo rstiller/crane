@@ -7,11 +7,18 @@
     <form class="pure-form pure-form-stacked">
         <fieldset>
             <legend><h1>{{ data.project.name }}</h1></legend>
-            <small>{{ data.project.url }}</small>
+            <a href="{{ data.project.url }}" target="_blank" class="source-code-link">
+                {{ data.project.url }}
+            </a>
             
-            <div class="pure-g-r">
+            <div class="pure-g version-chooser">
                 <div class="pure-u-1-4">
-                    <label>Version</label>
+                    <label>
+                        Version
+                        <a href="{{ data.project.url }}/tree/{{ data.selectedVersion.rev }}" target="_blank" class="source-code-link">
+                            <i class="fa fa-github"></i> Browse Source Code
+                        </a>
+                    </label>
                     <select class="pure-input-2-3" ng-model="data.selectedVersion" ng-options="key for (key, value) in data.versions">
                     </select>
                 </div>
@@ -27,14 +34,19 @@
 
 <div class="pure-g" ng-show="data.ready">
     
-    <div class="project-services-detail pure-u-1-2" ng-show="data.selectedEnvironment">
+    <div class="project-detail pure-u-1" ng-show="data.selectedEnvironment">
         
-        <h2>{{ data.selectedEnvironment.name }}</h2>
-        <ul class="project-services-list">
-            <li ng-repeat="service in data.selectedEnvironment.services">
-                <i></i>{{ service }}
-            </li>
-        </ul>
+        <h2>{{ data.selectedEnvironment }}</h2>
+        <div class="project-services-detail pure-g">
+            <div ng-repeat="(key, value) in data.services" class="pure-u-1-2">
+                <div service-widget
+                     data-project="{{ data.project._id }}"
+                     data-service="{{ key }}"
+                     data-version="{{ data.selectedVersion.rev }}"
+                     data-environment="{{ data.selectedEnvironment }}">
+                </div>
+            </div>
+        </div>
         
     </div>
     

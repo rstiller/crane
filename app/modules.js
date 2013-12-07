@@ -20,10 +20,15 @@ angular.module('dashboard.utils', [
 angular.module('dashboard.services', [
     'dashboard.deps'
 ]);
+angular.module('dashboard.widgets', [
+    'dashboard.deps',
+    'shared.entities'
+]);
 angular.module('dashboard.controllers', [
     'dashboard.deps',
     'dashboard.services',
-    'dashboard.utils'
+    'dashboard.utils',
+    'dashboard.widgets'
 ]);
 angular.module('dashboard', [
     'dashboard.controllers',

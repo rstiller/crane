@@ -8,7 +8,7 @@ dialog.factory('Dialog', function() {
         var dialog = $(selector);
         dialog.scope().initArguments = initArguments;
         dialog.attr({
-            'template': template,
+            'data-template': template,
             'dialog': controller
         });
         
@@ -69,7 +69,7 @@ dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory
                 observeAttribute();
             });
             
-            $scope.$watch(function() { return element.attr('template'); }, function(value) {
+            $scope.$watch(function() { return element.attr('data-template'); }, function(value) {
                 $scope.template = value;
                 observeAttribute();
             });
@@ -83,7 +83,7 @@ dialog.directive('dialog', ['$compile', '$templateCache', function dialogFactory
                 $scope.visibility = 'hidden';
                 $scope.element.find('.pure-dialog-container').html('');
                 $scope.element.attr({
-                    'template': '',
+                    'data-template': '',
                     'dialog': ''
                 });
             };

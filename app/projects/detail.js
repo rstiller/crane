@@ -8,7 +8,9 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     $scope.data.selectedVersion = {};
     $scope.data.versions = [];
     $scope.data.environments = [];
+    $scope.data.services = [];
     $scope.data.ready = false;
+    $scope.data.project = null;
     
     var renderPipeline = new RenderPipeline(function(next) {
         $scope.data.ready = false;
@@ -20,6 +22,7 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
             });
             
             var versions = {};
+            var workingCopy = null;
             
             angular.forEach(project.branches, function(branch, branchName) {
                 versions[branchName] = branch;
@@ -30,6 +33,10 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
             angular.forEach(project.tags, function(tag, tagName) {
                 versions[tagName] = tag;
             });
+            
+            if(!!$scope.data.selectedVersion.infrastructure) {
+                $scope.data.services = $scope.data.selectedVersion.infrastructure.services;
+            }
             
             $scope.data.versions = versions;
             $scope.data.ready = true;

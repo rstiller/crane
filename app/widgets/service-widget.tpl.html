@@ -1,0 +1,41 @@
+
+<div class="service-container pure-g">
+    <div class="pure-u-1">
+        <h3>{{ service }}</h3>
+    </div>
+    <dl class="pure-u-1-2 info">
+        <div class="pure-g">
+            <dt ng-show="data.service.category" class="pure-u-1-4">Category</dt>
+            <dd ng-show="data.service.category" class="pure-u-2-3">{{ data.service.category }}</dd>
+            
+            <dt ng-show="data.service.version" class="pure-u-1-4">Version</dt>
+            <dd ng-show="data.service.version" class="pure-u-2-3">{{ data.service.version }}</dd>
+            
+            <dt ng-show="data.service.options" class="pure-u-1-4">Options</dt>
+            <dd ng-show="data.service.options" class="pure-u-2-3">{{ data.service.options }}</dd>
+            
+            <dt ng-show="data.service.ports" class="pure-u-1-4">Ports</dt>
+            <dd ng-show="data.service.ports" class="pure-u-2-3">{{ data.service.ports }}</dd>
+            
+            <dt ng-show="data.service.nodes" class="pure-u-1-4">Nodes</dt>
+            <dd ng-show="data.service.nodes" class="pure-u-2-3">
+                {{ data.service.nodes }} <span ng-show="data.service.minNodes && data.service.maxNodes">({{ data.service.minNodes }} - {{ data.service.maxNodes }})</span>
+            </dd>
+        </div>
+    </dl>
+    <div class="pure-u-1-2">
+        <p class="description" ng-show="data.service.description">{{ data.service.description }}</p>
+        <p class="no-description" ng-show="!data.service.description">No Description</p>
+        <ul class="builds">
+            <li ng-repeat="build in data.builds | limitTo:3">
+                <a ng-click="openDialog(build)" ng-class="{'err': !build.successful}">
+                    <i class="fa fa-exclamation-triangle err" ng-show="!build.successful"></i>
+                    <i class="fa fa-check-circle" ng-show="build.successful"></i>
+                    {{ build.started | date:'yy/MM/dd HH:mm:ss' }} - {{ build.finished | date:'HH:mm:ss' }}
+                    ({{ (build.finished.getTime() - build.started.getTime()) / 1000 | number:1 }} s)
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="pure-u-1" id="service-widget-console-output" dialog="" data-template=""></div>
+</div>

@@ -7,10 +7,7 @@ angular.module('dashboard.dbs').factory('DBS',
     };
     var db = function(name) {
         var url = 'http://' + $location.host() +':9000/' + name;
-        var database = new PouchDB(name);
-        
-        database.replicate.to(url, opts);
-        database.replicate.from(url, opts);
+        var database = new PouchDB(url);
         
         return database;
     };

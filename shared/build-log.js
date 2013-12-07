@@ -1,6 +1,7 @@
 
 (function() {
     
+    var _ = null;
     var async = null;
     var DBS = null;
     
@@ -66,14 +67,44 @@
         
     }
     
+    BuildLog.forBuild = function(build, callback) {
+        var funcs = [];
+        
+        _.each(build.logs, function(logId) {
+            funcs.push(function(next) {
+                DBS.BuildLogs.get(logId, function(err, log) {
+                    if(!!err) {
+                        next(err);
+                        return;
+                    }
+                    
+                    next(null, log);
+                });
+            });
+        });
+        
+        async.series(funcs, function(err, logs) {
+            if(!!err) {
+                callback(err);
+                return;
+            }
+            
+            if(!!callback) {
+                callback(null, logs);
+            }
+        });
+    };
+    
     if (typeof module !== 'undefined') {
+        _ = require('underscore');
         async = require('async');
         DBS = require('../lib/dbs');
         module.exports.BuildLog = BuildLog;
     } else {
-        angular.module('shared.entities').factory('BuildLog', ['async', 'dbs', function(a, b) {
-            async = a;
-            DBS = b;
+        angular.module('shared.entities').factory('BuildLogEntity', ['_', 'async', 'DBS', function(a, b, c) {
+            _ = a;
+            async = b;
+            DBS = c;
             return BuildLog;
         }]);
     }

@@ -9,6 +9,8 @@
         "angular-ui-router": "*",
         "d3": "*",
         "async": "*",
-        "pouchdb": "http://download.pouchdb.com/pouchdb-nightly.js"
+        "underscore": "*",
+        "pouchdb": "*",
+        "pouchdb-collate": "https://github.com/pouchdb/collate.git"
     }
 }

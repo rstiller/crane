@@ -49,7 +49,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     };
     
     $scope.openDialog = function() {
-        new Dialog('#dialog', 'NewProjectCtrl', 'app/projects/newProjectDialog.tpl.html', {
+        new Dialog('#dialog', 'NewProjectCtrl', 'app/projects/new-project-dialog.tpl.html', {
             url: $scope.data.newProject.url,
             saveCallback: function() {
                 renderPipeline.push({});

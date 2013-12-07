@@ -69,7 +69,20 @@
 @color5_15d: darken(@color5, 15%);
 
 @color_dark: #252A3A;
+@color_dark_02d: lighten(@color_dark, 2%);
+@color_dark_05d: lighten(@color_dark, 5%);
+@color_dark_10d: lighten(@color_dark, 10%);
+@color_dark_15d: lighten(@color_dark, 15%);
+@color_dark_20d: lighten(@color_dark, 20%);
+@color_dark_25d: lighten(@color_dark, 25%);
+
 @color_light: #fff;
+@color_light_02d: darken(@color_light, 2%);
+@color_light_05d: darken(@color_light, 5%);
+@color_light_10d: darken(@color_light, 10%);
+@color_light_15d: darken(@color_light, 15%);
+@color_light_20d: darken(@color_light, 20%);
+@color_light_25d: darken(@color_light, 25%);
 
 @background_dark: #252A3A;
 @background_dark_02d: lighten(@background_dark, 2%);
@@ -321,6 +334,15 @@ dd {
     padding: 20px;
 }
 
+/*a[href^="http://github.com"]::before,
+a[href^="https://github.com"]::before {
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    content: "\F098";
+}*/
+
 @import "../components/diagram/sunburst.less";
 @import "../components/dialog/dialog.less";
 @import "../components/list/list.less";
@@ -339,5 +361,8 @@ dd {
 
 @import "./projects/detail.less";
 @import "./projects/menu.less";
-@import "./projects/newProjectDialog.less";
+@import "./projects/new-project-dialog.less";
 @import "./projects/overview.less";
+
+@import "./widgets/build-output-dialog.less";
+@import "./widgets/service-widget.less";

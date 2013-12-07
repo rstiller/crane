@@ -14,7 +14,6 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     { expand: true, dot: true, cwd: './assets', dest: './public', src: [ '**/*.*' ]},
-                    { expand: true, dot: true, cwd: './', dest: './public', src: [ 'shared/**/*.*' ]},
                     { expand: true, dot: true, cwd: './vendor/font-awesome', dest: './public', src: [ 'fonts/**/*.*' ] }
                 ]
             }
@@ -33,11 +32,14 @@ module.exports = function (grunt) {
                 src: [
                     './vendor/async/lib/async.js',
                     './vendor/d3/d3.js',
+                    './vendor/underscore/underscore.js',
                     './vendor/jquery/jquery.js',
                     './vendor/angular/angular.js',
                     './vendor/angular-resource/angular-resource.js',
                     './vendor/angular-ui-router/release/angular-ui-router.js',
-                    './vendor/pouchdb/index.js',
+                    './vendor/pouchdb/dist/pouchdb-nightly.js',
+                    //'./vendor/pouchdb-collate/dist/pouchdb-collate.js',
+                    //'./vendor/pouchdb/src/plugins/pouchdb.gql.js',
                     './.tmp/script.js'
                 ],
                 dest: './public/script.js'
@@ -46,11 +48,14 @@ module.exports = function (grunt) {
                 src: [
                     './vendor/async/lib/async.js',
                     './vendor/d3/d3.min.js',
+                    './vendor/underscore/underscore.min.js',
                     './vendor/jquery/jquery.min.js',
                     './vendor/angular/angular.min.js',
                     './vendor/angular-resource/angular-resource.min.js',
                     './vendor/angular-ui-router/release/angular-ui-router.min.js',
-                    './vendor/pouchdb/index.js',
+                    './vendor/pouchdb/dist/pouchdb-nightly.min.js',
+                    //'./vendor/pouchdb-collate/dist/pouchdb-collate.js',
+                    //'./vendor/pouchdb/src/plugins/pouchdb.gql.js',
                     './.tmp/script.js'
                 ],
                 dest: './public/script.js'
