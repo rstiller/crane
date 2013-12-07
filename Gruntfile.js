@@ -2,10 +2,10 @@
 var path = require('path');
 
 module.exports = function (grunt) {
-    
+
     // load all grunt tasks
     require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
-    
+
     grunt.initConfig({
         clean: {
             dist: './public/**/*.*'
@@ -173,7 +173,7 @@ module.exports = function (grunt) {
             }
         }
     });
-    
+
     grunt.hash = function hash(filename) {
         var crypto = require('crypto');
         var content = require('fs').readFileSync(filename, { 'encoding': 'utf8' });
@@ -208,5 +208,5 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('default', ['build']);
-    
+
 };
