@@ -17,9 +17,13 @@ angular.module('dashboard.dbs', [
     'dashboard.deps'
 ]);
 angular.module('dashboard.provider', [
+    'dashboard.cache',
     'dashboard.deps'
 ]);
 angular.module('dashboard.utils', [
+    'dashboard.deps'
+]);
+angular.module('dashboard.cache', [
     'dashboard.deps'
 ]);
 angular.module('dashboard.services', [

@@ -1,14 +1,24 @@
 
-angular.module('dashboard.provider').factory('Github', ['Hoster', '$http', 'async', function(Hoster, $http, async) {
+angular.module('dashboard.provider').factory('Github', ['Hoster', '$http', 'async', 'Cache', function(Hoster, $http, async, Cache) {
 
     function Github() {
 
         var slf = this;
 
+        this.cache = new Cache('github');
         this.queue = async.queue(function(task, callback) {
 
-            slf.doRequest(task.url, function(err, response) {
-                callback(null, response);
+            slf.cache.get(task.url, function(err, value) {
+                if(!!err) {
+                    slf.doRequest(task.url, function(err, response) {
+                        slf.cache.put(task.url, response, function(err) {
+                            callback(null, response);
+                        });
+                    });
+                    return;
+                }
+
+                callback(null, value);
             });
 
         }, 1);
@@ -71,8 +81,8 @@ angular.module('dashboard.provider').factory('Github', ['Hoster', '$http', 'asyn
             });
         };
 
-        this.clearCache = function() {
-            // TODO
+        this.clearCache = function(url) {
+            slf.cache.remove(url);
         };
 
         Hoster.register(slf);

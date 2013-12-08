@@ -38,6 +38,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
             }
 
             project.imageUrl = imageUrl;
+            $scope.$apply();
         });
     };
 
