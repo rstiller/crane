@@ -16,6 +16,9 @@ angular.module('dashboard.deps', [
 angular.module('dashboard.dbs', [
     'dashboard.deps'
 ]);
+angular.module('dashboard.provider', [
+    'dashboard.deps'
+]);
 angular.module('dashboard.utils', [
     'dashboard.deps'
 ]);
@@ -28,6 +31,7 @@ angular.module('dashboard.widgets', [
 ]);
 angular.module('dashboard.controllers', [
     'dashboard.deps',
+    'dashboard.provider',
     'dashboard.services',
     'dashboard.utils',
     'dashboard.widgets'

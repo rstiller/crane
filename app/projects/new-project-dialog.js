@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('NewProjectCtrl',
-    ['$scope', 'Cache', 'ProjectEntity',
-    function($scope, Cache, ProjectEntity) {
+    ['$scope', 'Hoster', 'ProjectEntity',
+    function($scope, Hoster, ProjectEntity) {
 
     $scope.project = {};
     $scope.branches = [];
@@ -11,23 +11,21 @@ angular.module('dashboard.controllers').controller('NewProjectCtrl',
 
     $scope.init = function() {
 
-        Cache.get($scope.url, function(project) {
-
-            Cache.getRaw(project.branches_url.replace('{/branch}', ''), function(branches) {
-                $scope.branches = branches;
-
-                angular.forEach(branches, function(branch) {
-                    if(branch.name == 'master') {
-                        $scope.buildBranches = [branch];
-                    }
-                });
-            });
-
-            $scope.project = project;
-            if(!!project.description && !!project.description.length > 0) {
+        Hoster.get($scope.url).getRepositoryInfo($scope.url, function(err, info) {
+            $scope.project = info;
+            if(!!info.description && !!info.description.length > 0) {
                 $scope.cssClass = "new-project-dialog-with-description";
             }
+        });
 
+        Hoster.get($scope.url).getBranches($scope.url, function(err, branches) {
+            $scope.branches = branches;
+
+            angular.forEach(branches, function(branch) {
+                if(branch.name == 'master') {
+                    $scope.buildBranches = [branch];
+                }
+            });
         });
 
     };

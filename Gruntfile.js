@@ -148,16 +148,25 @@ module.exports = function (grunt) {
             }
         },
         watch: {
-            resources: {
+            scripts: {
                 'files': [
                     './index.html',
                     './app/**/*.*',
-                    './doc/**/*.*',
-                    './assets/**/*.*',
                     './components/**/*.*',
                     './shared/**/*.*'
                 ],
                 'tasks': ['build-dev'],
+                'options': {
+                    'spawn': false,
+                    'interval': 500
+                }
+            },
+            resources: {
+                'files': [
+                    './doc/**/*.*',
+                    './assets/**/*.*'
+                ],
+                'tasks': ['copy'],
                 'options': {
                     'spawn': false,
                     'interval': 500
@@ -186,7 +195,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('dev', [
         'build-dev',
-        'watch:resources'
+        'watch'
     ]);
 
     grunt.registerTask('build-dev', [

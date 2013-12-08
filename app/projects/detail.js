@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
-    ['$scope', '$stateParams', 'Cache', 'ProjectEntity', 'RenderPipeline',
-    function($scope, $stateParams, Cache, ProjectEntity, RenderPipeline) {
+    ['$scope', '$stateParams', 'ProjectEntity', 'RenderPipeline',
+    function($scope, $stateParams, ProjectEntity, RenderPipeline) {
 
     $scope.data = {};
     $scope.data.selectedEnvironment = '';
@@ -17,9 +17,6 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
 
         ProjectEntity.get($stateParams.projectId, function(err, project) {
             $scope.data.project = project;
-
-            Cache.get(project.url, function(data) {
-            });
 
             var versions = {};
             var workingCopy = null;

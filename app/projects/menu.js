@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
-    ['$rootScope', '$scope', '$http', '$location', 'Cache', 'Dialog', 'ProjectEntity', 'RenderPipeline',
-     function($rootScope, $scope, $http, $location, Cache, Dialog, ProjectEntity, RenderPipeline) {
+    ['$rootScope', '$scope', '$http', '$location', 'Hoster', 'Dialog', 'ProjectEntity', 'RenderPipeline',
+     function($rootScope, $scope, $http, $location, Hoster, Dialog, ProjectEntity, RenderPipeline) {
 
     $scope.data = {};
     $scope.data.newProject = {
@@ -31,12 +31,13 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     });
 
     var refreshProject = function(project) {
-        Cache.get(project.url, function(data) {
-            angular.forEach($scope.data.projects, function(project) {
-                if(project.url === data.html_url && !project.imageUrl) {
-                    project.imageUrl = data.owner.avatar_url;
-                }
-            });
+        Hoster.get(project.url).getRepositoryImageUrl(project.url, function(err, imageUrl) {
+            if(!!err) {
+                console.log(err);
+                return;
+            }
+
+            project.imageUrl = imageUrl;
         });
     };
 
@@ -50,8 +51,8 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
         $scope.data.newProject.url = '';
     };
 
-    $scope.remove = function(project, url) {
-        Cache.clear(url);
+    $scope.remove = function(project) {
+        Hoster.get(project.url).clearCache(project.url);
 
         project.remove(function(err, response) {
             if(!!err) {

@@ -1,26 +1,26 @@
 
 var dashboard = angular.module('dashboard');
 
-dashboard.run(['$rootScope', '$state', '$stateParams', '$http', function ($rootScope, $state, $stateParams, $http) {
-    
+dashboard.run(['$rootScope', '$state', '$stateParams', '$http', 'Github', function ($rootScope, $state, $stateParams, $http) {
+
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
-    
-    $http.defaults.headers.common['Accept'] = 'application/vnd.crane.v1-0-0+json';
+
+    /*$http.defaults.headers.common['Accept'] = 'application/vnd.crane.v1-0-0+json';
     $http.defaults.headers.common['Content-Type'] = 'application/vnd.crane.v1-0-0+json;charset=utf-8';
-    
+
     $http.defaults.headers.post['Accept'] = 'application/vnd.crane.v1-0-0+json';
     $http.defaults.headers.post['Content-Type'] = 'application/vnd.crane.v1-0-0+json;charset=utf-8';
-    
+
     $http.defaults.headers.put['Accept'] = 'application/vnd.crane.v1-0-0+json';
-    $http.defaults.headers.put['Content-Type'] = 'application/vnd.crane.v1-0-0+json;charset=utf-8';
-    
+    $http.defaults.headers.put['Content-Type'] = 'application/vnd.crane.v1-0-0+json;charset=utf-8';*/
+
 }]);
 
 dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-    
+
     $urlRouterProvider.otherwise('/');
-    
+
     $stateProvider.state('home', {
         url: '/',
         views: {
@@ -28,7 +28,7 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
             'content@': { templateUrl: 'app/home/overview.tpl.html', controller: 'HomeOverviewCtrl' }
         }
     });
-    
+
     $stateProvider.state('baseImages', {
         abstract: true,
         url: '/base-images',
@@ -37,18 +37,18 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
             'content@': { templateUrl: 'app/base-images/overview.tpl.html', controller: 'BaseImagesOverviewCtrl' }
         }
     });
-    
+
     $stateProvider.state('baseImages.overview', {
         url: '/'
     });
-    
+
     $stateProvider.state('baseImages.detail', {
         url: '/:baseImageId',
         views: {
             'content@': { templateUrl: 'app/base-images/detail.tpl.html', controller: 'BaseImagesDetailCtrl' }
         }
     });
-    
+
     $stateProvider.state('machines', {
         abstract: true,
         url: '/machines',
@@ -57,18 +57,18 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
             'content@': { templateUrl: 'app/machines/overview.tpl.html', controller: 'MachineOverviewCtrl' }
         }
     });
-    
+
     $stateProvider.state('machines.overview', {
         url: '/'
     });
-    
+
     $stateProvider.state('machines.detail', {
         url: '/:machineId',
         views: {
             'content@': { templateUrl: 'app/machines/detail.tpl.html', controller: 'MachineDetailCtrl' }
         }
     });
-    
+
     $stateProvider.state('projects', {
         abstract: true,
         url: '/projects',
@@ -77,16 +77,16 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
             'content@': { templateUrl: 'app/projects/overview.tpl.html', controller: 'ProjectOverviewCtrl' }
         }
     });
-    
+
     $stateProvider.state('projects.overview', {
         url: '/'
     });
-    
+
     $stateProvider.state('projects.detail', {
         url: '/:projectId',
         views: {
             'content@': { templateUrl: 'app/projects/detail.tpl.html', controller: 'ProjectDetailCtrl' }
         }
     });
-    
+
 }]);

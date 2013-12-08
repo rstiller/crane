@@ -1,14 +1,14 @@
 
 <div class="projects-add-container">
-    
+
     <form class="pure-form projects-add">
-        
+
         <fieldset>
-            
+
             <legend class="legend-and-button">
                 <span><i class="fa fa-plus"></i> New Project</span>
             </legend>
-            
+
             <div class="pure-g">
                 <div class="pure-u-3-4">
                     <input class="pure-input-1" type="text" placeholder="URL" ng-model="data.newProject.url"/>
@@ -19,11 +19,11 @@
                     </button>
                 </div>
             </div>
-            
+
         </fieldset>
-        
+
     </form>
-    
+
 </div>
 
 <div class="load-indicator" ng-show="!data.ready">
@@ -32,15 +32,15 @@
 
 <form class="pure-form project-name-filter" ng-show="data.projects.length > 1" ng-show="data.ready">
     <fieldset>
-        
+
         <legend>
             <span><i class="fa fa-search"></i> Projectsearch</span>
         </legend>
-        
+
         <div class="pure-u-1">
             <input type="text" class="pure-input-rounded pure-input-1" ng-model="projectNameQuery" placeholder="Filter"/>
         </div>
-        
+
     </fieldset>
 </form>
 
@@ -57,12 +57,12 @@
                 <a ui-sref="projects.detail({ projectId: project._id })">
                     <span title="{{ project.name }}">{{ project.name }}</span>
                 </a>
-                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project, project.url)" title="Remove {{ project.name }}">
+                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project)" title="Remove {{ project.name }}">
                     <i class="fa fa-trash-o"></i>
                 </a>
             </div>
             <small><a target="_blank" href="{{ project.url }}">{{ project.url }}</a></small>
         </div>
     </li>
-    
+
 </ul>
