@@ -5,8 +5,10 @@ angular.module('dashboard.deps', [
     'components.dialog',
     'components.focus',
     'components.list',
+    'components.marked',
     'components.pouchdb',
     'components.renderPipeline',
+    'ng',
     'ngResource',
     'templates-main',
     'ui.router'

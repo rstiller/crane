@@ -9,3 +9,4 @@ src/vendor/
 .tmp/
 vendor/
 .geany
+.fuse*

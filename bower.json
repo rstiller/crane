@@ -10,6 +10,7 @@
         "d3": "*",
         "async": "*",
         "underscore": "*",
+        "marked": "*",
         "pouchdb": "*",
         "pouchdb-collate": "https://github.com/pouchdb/collate.git"
     }
