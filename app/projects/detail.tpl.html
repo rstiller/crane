@@ -10,7 +10,7 @@
             <a href="{{ data.project.url }}" target="_blank" class="source-code-link">
                 {{ data.project.url }}
             </a>
-            
+
             <div class="pure-g version-chooser">
                 <div class="pure-u-1-4">
                     <label>
@@ -33,10 +33,9 @@
 </div>
 
 <div class="pure-g" ng-show="data.ready">
-    
+
     <div class="project-detail pure-u-1" ng-show="data.selectedEnvironment">
-        
-        <h2>{{ data.selectedEnvironment }}</h2>
+
         <div class="project-services-detail pure-g">
             <div ng-repeat="(key, value) in data.services" class="pure-u-1-2">
                 <div service-widget
@@ -47,7 +46,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
-    
+
 </div>

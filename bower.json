@@ -2,6 +2,7 @@
     "name": "crane",
     "dependencies": {
         "pure": "*",
+        "bootstrap": "*",
         "font-awesome": "*",
         "jquery": "*",
         "angular": "v1.2.3",

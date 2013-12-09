@@ -48,7 +48,7 @@
 
     <li ng-repeat="project in data.projects | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project._id}">
         <div class="menu-item-container project-menu-item">
-            <div class="project-owner-image-container pure-u-1-5">
+            <div class="project-owner-image-container">
                 <a ui-sref="projects.detail({ projectId: project._id })">
                     <span class="project-owner-image" title="{{ project.name }}" style="background-image: url('{{ project.imageUrl }}');"></span>
                 </a>
