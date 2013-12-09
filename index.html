@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 
 <html lang="en" ng-app="dashboard">
-    
+
     <head>
         <meta charset="utf-8" http-equiv="content-type">
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Crane - Your Container Manager</title>
         <link href="@@style" type="text/css" rel="stylesheet">
     </head>
-    
+
     <body>
-        
+
         <div class="pure-g content full-height no-padding no-margin">
-            
+
             <nav class="pure-u-1-6 full-height">
-                
+
                 <div class="pure-menu pure-menu-open pure-u-1-6 full-height">
-                    
+
                     <a class="pure-menu-heading" href="#" ui-sref="home">
                         <span class="icon-stack">
                             <i class="icon-check-empty icon-stack-base"></i>
@@ -24,9 +24,9 @@
                         </span>
                         Crane - Dashboard
                     </a>
-                    
+
                     <ul>
-                        
+
                         <li class="color2" ng-class="{active: $state.includes('projects')}">
                             <a href="#" ui-sref="projects.overview">
                                 <span class="fa-stack fa-lg">
@@ -36,7 +36,7 @@
                                 Projects
                             </a>
                         </li>
-                        
+
                         <li class="color3" ng-class="{active: $state.includes('machines')}">
                             <a href="#" ui-sref="machines.overview">
                                 <span class="fa-stack fa-lg">
@@ -46,7 +46,7 @@
                                 Machines
                             </a>
                         </li>
-                        
+
                         <li class="color4" ng-class="{active: $state.includes('baseImages')}">
                             <a href="#" ui-sref="baseImages.overview">
                                 <span class="fa-stack fa-lg">
@@ -56,23 +56,23 @@
                                 Base-Images
                             </a>
                         </li>
-                        
+
                     </ul>
-                    
+
                 </div>
-                
+
             </nav>
-        
+
             <div class="pure-u-1-6 full-height right-bordered menu-container" ui-view="menu"></div>
-            
+
             <div class="pure-u-2-3 content-container" ui-view="content"></div>
-            
+
         </div>
-        
+
         <div id="dialog" dialog="" data-template=""></div>
-        
+
         <script type="text/javascript" src="@@script"></script>
-        
+
     </body>
-    
+
 </html>
