@@ -1,1 +1,35 @@
- 
+<div class="pure-g action-container">
+
+    <div class="pure-u-1-2">
+        <button href="" class="action-box">
+            <span>Add Group</span>
+            <i class="fa fa-sitemap fa-2x"></i>
+        </button>
+    </div>
+
+    <div class="pure-u-1-2">
+        <button href="" class="action-box">
+            <span>Add Machine</span>
+            <i class="fa fa-desktop fa-2x"></i>
+        </button>
+    </div>
+
+</div>
+
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+</div>
+
+<form class="pure-form search-filter" ng-show="data.groups.length > 1" ng-show="data.ready">
+    <fieldset>
+
+        <legend>
+            <span><i class="fa fa-search"></i> Group-/Machinesearch</span>
+        </legend>
+
+        <div class="pure-u-1">
+            <input type="text" class="pure-input-rounded pure-input-1" ng-model="machineQuery" placeholder="Filter"/>
+        </div>
+
+    </fieldset>
+</form>
