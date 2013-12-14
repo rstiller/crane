@@ -1,0 +1,29 @@
+
+<h1>New Group</h1>
+
+<div class="pure-g new-group-info">
+
+    <form class="pure-form pure-form-stacked pure-u-1-2">
+
+        <fieldset class="pure-g">
+            <label class="pure-u-1">Name</label>
+            <div class="pure-u-1">
+                <input class="pure-input-1" type="text" ng-model="data.name" tabindex="0">
+            </div>
+
+            <label class="pure-u-1">Description</label>
+            <div class="pure-u-1">
+                <textarea class="pure-input-1" ng-model="data.description"></textarea>
+            </div>
+        </fieldset>
+
+    </form>
+
+    <div class="pure-u-1">
+        <div class="float-right">
+            <button type="button" class="pure-button" ng-click="closeDialog()">Cancel</button>
+            <button type="submit" class="pure-button pure-button-success" ng-click="saveGroup()">Add</button>
+        </div>
+    </div>
+
+</div>

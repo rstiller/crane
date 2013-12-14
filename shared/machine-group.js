@@ -25,6 +25,7 @@
 
         // TODO: initial values
         this.machines = [];
+        this.description = '';
         this.name = '';
 
         _.extend(slf, options);
