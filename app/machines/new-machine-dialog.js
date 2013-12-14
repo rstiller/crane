@@ -52,6 +52,7 @@ angular.module('dashboard.controllers').controller('NewMachineCtrl',
             }
 
             $scope.closeDialog();
+            $scope.$apply();
         });
     };
 
