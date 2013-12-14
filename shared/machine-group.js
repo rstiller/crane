@@ -24,6 +24,8 @@
         }, 1);
 
         // TODO: initial values
+        this.machines = [];
+        this.name = '';
 
         _.extend(slf, options);
 

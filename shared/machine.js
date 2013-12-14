@@ -25,6 +25,11 @@
 
         // TODO: initial values
 
+        this.address = '';
+        this.username = '';
+        this.password = '';
+        this.type = Machine.Type.DOCKER;
+
         _.extend(slf, options);
 
         this.update = function(callback) {
@@ -76,11 +81,30 @@
         });
     };
 
+    Machine.saveAll = function(machines, callback) {
+        DBS.Machines.bulkDocs({
+            'docs': machines
+        }, function(err) {
+            if(!!err) {
+                callback(err);
+                return;
+            }
+
+            if(!!callback) {
+                callback();
+            }
+        });
+    };
+
     Machine.fromJson = function(json) {
         var machine = new Machine();
         _.extend(machine, json);
         return machine;
     };
+
+    Machine.Type = {};
+    Machine.Type.LXC = 'lxc';
+    Machine.Type.DOCKER = 'docker';
 
     if (typeof module !== 'undefined') {
         _ = require('underscore');

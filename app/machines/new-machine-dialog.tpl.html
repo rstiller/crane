@@ -8,43 +8,55 @@
         <fieldset class="pure-g">
             <label class="pure-u-1">Start-IP</label>
             <div class="pure-u-1-8">
-                <input class="pure-input-2-3" type="number">
+                <input class="pure-input-2-3" type="number" ng-model="data.startIp1" tabindex="0">
             </div>
             <div class="pure-u-1-8">
-                <input class="pure-input-2-3" type="number">
+                <input class="pure-input-2-3" type="number" ng-model="data.startIp2">
             </div>
             <div class="pure-u-1-8">
-                <input class="pure-input-2-3" type="number">
+                <input class="pure-input-2-3" type="number" ng-model="data.startIp3">
             </div>
             <div class="pure-u-1-8">
-                <input class="pure-input-2-3" type="number">
+                <input class="pure-input-2-3" type="number" ng-model="data.startIp4">
             </div>
 
             <label class="pure-u-1">End-IP</label>
             <div class="pure-u-1-8">
-                <input class="pure-input-2-3" type="number">
+                <input class="pure-input-2-3" type="number" ng-model="data.startIp1" readonly="readonly" tabindex="-1">
             </div>
             <div class="pure-u-1-8">
-                <input class="pure-input-2-3" type="number">
+                <input class="pure-input-2-3" type="number" ng-model="data.startIp2" readonly="readonly" tabindex="-1">
             </div>
             <div class="pure-u-1-8">
-                <input class="pure-input-2-3" type="number">
+                <input class="pure-input-2-3" type="number" ng-model="data.startIp3" readonly="readonly" tabindex="-1">
             </div>
             <div class="pure-u-1-8">
-                <input class="pure-input-2-3" type="number">
+                <input class="pure-input-2-3" type="number" ng-model="data.endIp4">
             </div>
 
             <label class="pure-u-1">Username</label>
             <div class="pure-u-1">
-                <input class="pure-input-1" type="text">
+                <input class="pure-input-1" type="text" ng-model="data.username">
             </div>
 
             <label class="pure-u-1">Password</label>
             <div class="pure-u-1">
-                <input class="pure-input-1" type="password">
+                <input class="pure-input-1" type="password" ng-model="data.password">
+            </div>
+
+            <label class="pure-u-1">Type</label>
+            <div class="pure-u-1">
+                <select class="pure-input-1" ng-model="data.type" ng-options="value for value in data.types"></select>
             </div>
         </fieldset>
 
     </form>
+
+    <div class="pure-u-1">
+        <div class="float-right">
+            <button type="button" class="pure-button" ng-click="closeDialog()">Cancel</button>
+            <button type="submit" class="pure-button pure-button-success" ng-click="saveMachines()">Add</button>
+        </div>
+    </div>
 
 </div>
