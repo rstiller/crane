@@ -29,6 +29,14 @@ angular.module('dashboard.dbs').factory('DBS',
         }
     });
 
+    dbs.MachineGroups.changes({
+        continuous: true,
+        include_docs: true,
+        onChange: function(change) {
+            $rootScope.$broadcast('groups.update', change.doc);
+        }
+    });
+
     return dbs;
 
 }]);

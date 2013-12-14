@@ -23,8 +23,6 @@
             });
         }, 1);
 
-        // TODO: initial values
-
         this.address = '';
         this.username = '';
         this.password = '';

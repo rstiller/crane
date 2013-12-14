@@ -4,8 +4,8 @@ angular.module('dashboard.controllers').controller('NewGroupCtrl',
     function($scope, MachineGroupEntity) {
 
     $scope.data = {
-        'name': '',
-        'description': ''
+        name: '',
+        description: ''
     };
     $scope.cssClass = 'new-group-dialog';
 

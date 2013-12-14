@@ -29,3 +29,28 @@
 .machine-menu-item {
 
 }
+
+.menu-item:first-child .machine-menu-item .machine-menu-item-header a.machine-menu-item-header-action,
+.menu-item:hover .machine-menu-item .machine-menu-item-header a.machine-menu-item-header-action {
+    visibility: visible;
+    display: inherit;
+}
+
+.menu-item:first-child .machine-menu-item,
+.menu-item:hover .machine-menu-item,
+.menu-item.selected .machine-menu-item {
+    border-left: 10px solid @color3_15l;
+}
+
+.machine-menu-item-header {
+    font-weight: bold;
+    padding: 0.5em 0;
+    border-bottom: 1px solid @background_light_10d;
+}
+
+.machine-menu-item-header a.machine-menu-item-header-action {
+    text-decoration: none;
+    margin: 0 3px;
+    visibility: hidden;
+    display: none;
+}

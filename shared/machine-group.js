@@ -23,7 +23,6 @@
             });
         }, 1);
 
-        // TODO: initial values
         this.machines = [];
         this.description = '';
         this.name = '';

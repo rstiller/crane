@@ -31,3 +31,18 @@
 
     </fieldset>
 </form>
+
+<ul class="menu">
+    <li class="menu-item" ng-repeat="group in data.groups | filter:machineQuery">
+        <div class="menu-item-container machine-menu-item">
+            <div class="machine-menu-item-header">
+                <a ui-sref="machines.detail({ groupId: group._id })">
+                    <span title="{{ group.name }}">{{ group.name }}</span>
+                </a>
+                <a class="float-right machine-menu-item-header-action" href="" ng-click="remove(group)" title="Remove {{ group.name }}">
+                    <i class="fa fa-trash-o"></i>
+                </a>
+            </div>
+        </div>
+    </li>
+</ul>
