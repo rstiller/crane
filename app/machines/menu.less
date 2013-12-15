@@ -27,7 +27,6 @@
 }
 
 .machine-menu-item {
-
 }
 
 .menu-item:first-child .machine-menu-item .machine-menu-item-header a.machine-menu-item-header-action,
@@ -36,7 +35,6 @@
     display: inherit;
 }
 
-.menu-item:first-child .machine-menu-item,
 .menu-item:hover .machine-menu-item,
 .menu-item.selected .machine-menu-item {
     border-left: 10px solid @color3_15l;
@@ -49,8 +47,28 @@
 }
 
 .machine-menu-item-header a.machine-menu-item-header-action {
+    cursor: pointer;
     text-decoration: none;
     margin: 0 3px;
     visibility: hidden;
     display: none;
+}
+
+.machine-list {
+    font-size: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.machine-list li .machine-list-item-action {
+    cursor: pointer;
+    visibility: hidden;
+    display: none;
+}
+
+.machine-list li:first-child .machine-list-item-action,
+.machine-list li:hover .machine-list-item-action {
+    visibility: visible;
+    display: inherit;
 }

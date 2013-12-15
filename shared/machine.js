@@ -79,6 +79,54 @@
         });
     };
 
+    Machine.all = function(callback) {
+        DBS.Machines.allDocs({
+            include_docs: true
+        }, function(err, docs) {
+            if(!!err) {
+                callback(err);
+                return;
+            }
+
+            var machines = [];
+            _.each(docs.rows, function(row) {
+                machines.push(Machine.fromJson(row.doc));
+            });
+
+            if(!!callback) {
+                callback(null, machines);
+            }
+        });
+    };
+
+    Machine.forGroup = function(group, callback) {
+        var funcs = [];
+
+        _.each(group.machines, function(machineId) {
+            funcs.push(function(next) {
+                DBS.Machines.get(machineId, function(err, machine) {
+                    if(!!err) {
+                        next(err);
+                        return;
+                    }
+
+                    next(null, Machine.fromJson(machine));
+                });
+            });
+        });
+
+        async.series(funcs, function(err, machines) {
+            if(!!err) {
+                callback(err);
+                return;
+            }
+
+            if(!!callback) {
+                callback(null, machines);
+            }
+        });
+    };
+
     Machine.saveAll = function(machines, callback) {
         DBS.Machines.bulkDocs({
             'docs': machines

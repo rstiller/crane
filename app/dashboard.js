@@ -62,10 +62,17 @@ dashboard.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
         url: '/'
     });
 
-    $stateProvider.state('machines.detail', {
+    $stateProvider.state('machines.group', {
+        url: '/group/:groupId',
+        views: {
+            'content@': { templateUrl: 'app/machines/group.tpl.html', controller: 'GroupDetailCtrl' }
+        }
+    });
+
+    $stateProvider.state('machines.machine', {
         url: '/:machineId',
         views: {
-            'content@': { templateUrl: 'app/machines/detail.tpl.html', controller: 'MachineDetailCtrl' }
+            'content@': { templateUrl: 'app/machines/machine.tpl.html', controller: 'MachineDetailCtrl' }
         }
     });
 

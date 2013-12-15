@@ -3,7 +3,11 @@
 
 <div class="pure-g new-group-info">
 
-    <form class="pure-form pure-form-stacked pure-u-1-2">
+    <div class="pure-u-1 load-indicator" ng-show="!data.ready">
+        <i class="fa fa-spinner fa-spin fa-5x"></i>
+    </div>
+
+    <form class="pure-form pure-form-stacked pure-u-2-5" ng-show="data.ready">
 
         <fieldset class="pure-g">
             <label class="pure-u-1">Name</label>
@@ -14,6 +18,20 @@
             <label class="pure-u-1">Description</label>
             <div class="pure-u-1">
                 <textarea class="pure-input-1" ng-model="data.description"></textarea>
+            </div>
+        </fieldset>
+
+    </form>
+
+    <div class="pure-u-1-5" ng-show="data.ready"></div>
+    <form class="pure-form pure-form-stacked pure-u-2-5" ng-show="data.ready">
+
+        <fieldset class="pure-g">
+            <label class="pure-u-1">Machines</label>
+            <div class="pure-u-1">
+                <select class="pure-input-1" size="11" multiple="multiple"
+                    ng-model="data.selectedMachines"
+                    ng-options="machine.username + '@' + machine.address for machine in data.machines track by machine._id"></select>
             </div>
         </fieldset>
 
