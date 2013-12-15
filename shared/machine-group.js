@@ -32,7 +32,7 @@
         this.update = function(callback) {
             updateQueue.push({}, function() {
                 if(!!callback) {
-                    callback();
+                    callback(slf);
                 }
             });
         };

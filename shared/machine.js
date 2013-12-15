@@ -33,7 +33,7 @@
         this.update = function(callback) {
             updateQueue.push({}, function() {
                 if(!!callback) {
-                    callback();
+                    callback(slf);
                 }
             });
         };
@@ -130,14 +130,19 @@
     Machine.saveAll = function(machines, callback) {
         DBS.Machines.bulkDocs({
             'docs': machines
-        }, function(err) {
+        }, function(err, response) {
             if(!!err) {
                 callback(err);
                 return;
             }
 
+            _.each(machines, function(machine, index) {
+                machine._id = response[index].id;
+                machine._rev = response[index].rev;
+            });
+
             if(!!callback) {
-                callback();
+                callback(null, machines);
             }
         });
     };

@@ -1,29 +1,25 @@
 
 angular.module('dashboard.controllers').controller('NewMachineCtrl',
-    ['$scope', 'MachineEntity',
-    function($scope, MachineEntity) {
+    ['$scope', 'MachineEntity', 'MachineGroupEntity',
+    function($scope, MachineEntity, MachineGroupEntity) {
 
     $scope.data = {
-        'startIp1': '',
-        'startIp2': '',
-        'startIp3': '',
-        'startIp4': '',
-        'endIp4': '',
-        'type': MachineEntity.Type.DOCKER,
-        'username': 'docker',
-        'password': '',
-        'types': [MachineEntity.Type.DOCKER, MachineEntity.Type.LXC]
+        startIp1: '',
+        startIp2: '',
+        startIp3: '',
+        startIp4: '',
+        endIp4: '',
+        type: MachineEntity.Type.DOCKER,
+        username: 'docker',
+        password: '',
+        types: [MachineEntity.Type.DOCKER, MachineEntity.Type.LXC],
+        ready: false,
+        selectedGroups: [],
+        newGroupName: ''
     };
     $scope.cssClass = 'new-machine-dialog';
 
-    $scope.init = function() {
-    };
-
-    $scope.closeDialog = function() {
-        $scope.$parent.close();
-    };
-
-    $scope.saveMachines = function() {
+    var getMachines = function() {
         var machines = [];
 
         if(!!$scope.data.endIp4) {
@@ -45,10 +41,52 @@ angular.module('dashboard.controllers').controller('NewMachineCtrl',
                 type: $scope.data.type
             }));
         }
-        MachineEntity.saveAll(machines, function(err) {
+
+        return machines;
+    };
+
+    $scope.init = function() {
+        $scope.data.ready = false;
+        MachineGroupEntity.all(function(err, groups) {
+            $scope.data.groups = groups;
+            $scope.data.ready = true;
+            $scope.$apply();
+        });
+    };
+
+    $scope.closeDialog = function() {
+        $scope.$parent.close();
+    };
+
+    $scope.saveMachines = function() {
+        var machines = getMachines();
+
+        MachineEntity.saveAll(machines, function(err, machines) {
             if(!!err) {
                 console.log(err);
                 return;
+            }
+
+            var machineIds = [];
+
+            angular.forEach(machines, function(machine) {
+                machineIds.push(machine._id);
+            });
+
+            if(!!$scope.data.newGroupName) {
+                new MachineGroupEntity({
+                    name: $scope.data.newGroupName,
+                    machines: machineIds
+                }).update();
+            }
+
+            if($scope.data.selectedGroups.length > 0) {
+                angular.forEach($scope.data.selectedGroups, function(group) {
+                    angular.forEach(machineIds, function(machineId) {
+                        group.machines.push(machineId);
+                    });
+                    group.update();
+                });
             }
 
             $scope.closeDialog();
