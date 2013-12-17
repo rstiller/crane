@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('MachineMenuCtrl',
-    ['$rootScope', '$scope', 'Dialog', 'MachineGroupEntity', 'MachineEntity', 'RenderPipeline',
-    function($rootScope, $scope, Dialog, MachineGroupEntity, MachineEntity, RenderPipeline) {
+    ['$rootScope', '$scope', 'Dialog', 'MachineGroupEntity', 'MachineEntity', 'RenderPipeline', 'async',
+    function($rootScope, $scope, Dialog, MachineGroupEntity, MachineEntity, RenderPipeline, async) {
 
     $scope.data = {};
     $scope.data.ready = false;
@@ -63,7 +63,30 @@ angular.module('dashboard.controllers').controller('MachineMenuCtrl',
     };
 
     $scope.removeMachine = function(group, machine) {
-        console.log(group, machine);
+        var dialog = new Dialog('#dialog', 'RemoveMachineCtrl', 'app/machines/remove-machine-dialog.tpl.html', {
+            removeMachine: function() {
+                MachineGroupEntity.all(function(err, groups) {
+                    var funcs = [];
+
+                    angular.forEach(groups, function(group) {
+                        funcs.push(function(next) {
+                            group.removeMachine(machine, function(err) {
+                                next(null);
+                            });
+                        });
+                    });
+
+                    async.series(funcs, function(err) {
+                        dialog.close();
+                    });
+                });
+            },
+            removeFromGroup: function() {
+                group.removeMachine(machine, function(err) {
+                    dialog.close();
+                });
+            }
+        });
     };
 
     $rootScope.$on('groups.update', function(event, group) {

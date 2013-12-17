@@ -10,7 +10,13 @@
         var slf = this;
         var updateQueue = async.queue(function(task, callback) {
             var method = !!slf._id ? DBS.MachineGroups.put : DBS.MachineGroups.post;
-            method(slf, function(err, response) {
+            var obj = _.clone(slf);
+            _.each(_.keys(obj), function(key) {
+                if(key[0] === '$') {
+                    delete obj[key];
+                }
+            });
+            method(obj, function(err, response) {
                 if(!!err) {
                     callback(err);
                     return;
@@ -32,7 +38,7 @@
         this.update = function(callback) {
             updateQueue.push({}, function() {
                 if(!!callback) {
-                    callback(slf);
+                    callback(null, slf);
                 }
             });
         };
@@ -50,7 +56,60 @@
             });
         };
 
+        this.removeMachine = function(machine, callback) {
+            var machines = [];
+
+            MachineGroup.countGroupsForMachine(machine, function(err, count) {
+                if(!!err) {
+                    callback(err);
+                    return;
+                }
+
+                _.each(slf.machines, function(id) {
+                    if(machine._id !== id) {
+                        machines.push(id);
+                    }
+                });
+                slf.machines = machines;
+
+                slf.update(function(err, group) {
+                    if(count <= 1) {
+                        machine.remove(function(err) {
+                            if(!!err) {
+                                callback(err);
+                                return;
+                            }
+
+                            if(!!callback) {
+                                callback(null);
+                            }
+                        });
+                    }
+                });
+            });
+        };
+
     }
+
+    MachineGroup.countGroupsForMachine = function(machine, callback) {
+        var count = 0;
+
+        MachineGroup.all(function(err, groups) {
+            if(!!err) {
+                callback(err);
+                return;
+            }
+
+            _.each(groups, function(group) {
+                var index = _.indexOf(group.machines, machine._id);
+                if(index !== -1) {
+                    count++;
+                }
+            });
+
+            callback(null, count);
+        });
+    };
 
     MachineGroup.addChangeListener = function(callback) {
         DBS.MachineGroups.changes({

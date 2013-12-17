@@ -45,6 +45,7 @@
             </div>
 
             <ul class="machine-list">
+                <li ng-show="data.machines[group._id].length == 0">No Machines in Group</li>
                 <li ng-repeat="machine in data.machines[group._id] | limitTo:3">
                     <a ui-sref="machines.machine({ machineId: machine._id })">
                         {{ machine.username }}@{{ machine.address }} ({{ machine.type }})

@@ -10,7 +10,13 @@
         var slf = this;
         var updateQueue = async.queue(function(task, callback) {
             var method = !!slf._id ? DBS.Machines.put : DBS.Machines.post;
-            method(slf, function(err, response) {
+            var obj = _.clone(slf);
+            _.each(_.keys(obj), function(key) {
+                if(key[0] === '$') {
+                    delete obj[key];
+                }
+            });
+            method(obj, function(err, response) {
                 if(!!err) {
                     callback(err);
                     return;
@@ -33,7 +39,7 @@
         this.update = function(callback) {
             updateQueue.push({}, function() {
                 if(!!callback) {
-                    callback(slf);
+                    callback(null, slf);
                 }
             });
         };
@@ -104,13 +110,13 @@
 
         _.each(group.machines, function(machineId) {
             funcs.push(function(next) {
-                DBS.Machines.get(machineId, function(err, machine) {
+                Machine.get(machineId, function(err, machine) {
                     if(!!err) {
                         next(err);
                         return;
                     }
 
-                    next(null, Machine.fromJson(machine));
+                    next(null, machine);
                 });
             });
         });
