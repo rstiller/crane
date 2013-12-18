@@ -1,112 +1,106 @@
 
 (function() {
-    
+
     var _ = null;
     var async = null;
+    var BaseEntity = null;
     var DBS = null;
-    
-    function BuildLog(cmd) {
-        
-        var slf = this;
-        var updateQueue = async.queue(function(task, callback) {
-            var method = !!slf._id ? DBS.BuildLogs.put : DBS.BuildLogs.post;
-            method(slf, function(err, response) {
-                if(!!err) {
-                    callback(err);
-                    return;
+
+    function Factory() {
+
+        return BaseEntity.extend({
+            defaults: {
+                output: [],
+                exitCode: -1,
+                cmd: '',
+                started: null,
+                finished: null,
+                enabled: false
+            },
+            updateOut: function(data) {
+                this.get('output').push({
+                    'type': 'out',
+                    'data': data
+                });
+                this.update();
+            },
+            updateErr: function(data) {
+                this.get('output').push({
+                    'type': 'err',
+                    'data': data
+                });
+                this.update();
+            },
+            update: function(callback) {
+                var slf = this;
+
+                if(slf.get('enabled') === true) {
+                    slf.updateQueue.push({}, function (err) {
+                        if(!!err) {
+                            callback(err);
+                            return;
+                        }
+
+                        if(!!callback) {
+                            callback(null, slf);
+                        }
+                    });
+                } else {
+                    if(!!callback) {
+                        callback(null, slf);
+                    }
                 }
-                
-                slf._id = response.id;
-                slf._rev = response.rev;
-                
-                callback();
-            });
-        }, 1);
-        
-        this.output = [];
-        this.exitCode = -1;
-        this.cmd = cmd;
-        this.started = null;
-        this.finished = null;
-        this.enabled = false;
-        
-        this.updateOut = function(data) {
-            slf.output.push({
-                'type': 'out',
-                'data': data
-            });
-            slf.update();
-        };
-        
-        this.updateErr = function(data) {
-            slf.output.push({
-                'type': 'err',
-                'data': data
-            });
-            slf.update();
-        };
-        
-        this.update = function(callback) {
-            if(slf.enabled === true) {
-                updateQueue.push({}, function (err) {
+            }
+        }, {
+            db: DBS.BuildLogs,
+            forBuild: function(build, callback) {
+                var slf = this;
+                var funcs = [];
+
+                _.each(build.logs, function(logId) {
+                    funcs.push(function(next) {
+                        slf.db.get(logId, function(err, log) {
+                            if(!!err) {
+                                next(err);
+                                return;
+                            }
+
+                            next(null, log);
+                        });
+                    });
+                });
+
+                async.series(funcs, function(err, logs) {
                     if(!!err) {
                         callback(err);
                         return;
                     }
-                    
+
                     if(!!callback) {
-                        callback();
+                        callback(null, logs);
                     }
                 });
-            } else {
-                if(!!callback) {
-                    callback();
-                }
             }
-        };
-        
+        });
+
     }
-    
-    BuildLog.forBuild = function(build, callback) {
-        var funcs = [];
-        
-        _.each(build.logs, function(logId) {
-            funcs.push(function(next) {
-                DBS.BuildLogs.get(logId, function(err, log) {
-                    if(!!err) {
-                        next(err);
-                        return;
-                    }
-                    
-                    next(null, log);
-                });
-            });
-        });
-        
-        async.series(funcs, function(err, logs) {
-            if(!!err) {
-                callback(err);
-                return;
-            }
-            
-            if(!!callback) {
-                callback(null, logs);
-            }
-        });
-    };
-    
+
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
+        BaseEntity = require('./base-entity');
         DBS = require('../lib/dbs');
-        module.exports.BuildLog = BuildLog;
+
+        module.exports.BuildLog = Factory();
     } else {
-        angular.module('shared.entities').factory('BuildLogEntity', ['_', 'async', 'DBS', function(a, b, c) {
+        angular.module('shared.entities').factory('BuildLogEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
-            DBS = c;
-            return BuildLog;
+            BaseEntity = c;
+            DBS = d;
+
+            return Factory();
         }]);
     }
-    
+
 })();

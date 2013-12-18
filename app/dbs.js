@@ -19,32 +19,9 @@ angular.module('dashboard.dbs').factory('DBS',
         'MachineGroups': db('machine-groups'),
         'Commands': db('commands'),
         'Builds': db('builds'),
-        'BuildLogs': db('build-logs')
+        'BuildLogs': db('build-logs'),
+        'BaseImages': db('base-images')
     };
-
-    dbs.Projects.changes({
-        continuous: true,
-        include_docs: true,
-        onChange: function(change) {
-            $rootScope.$broadcast('projects.update', change.doc);
-        }
-    });
-
-    dbs.Machines.changes({
-        continuous: true,
-        include_docs: true,
-        onChange: function(change) {
-            $rootScope.$broadcast('machines.update', change.doc);
-        }
-    });
-
-    dbs.MachineGroups.changes({
-        continuous: true,
-        include_docs: true,
-        onChange: function(change) {
-            $rootScope.$broadcast('groups.update', change.doc);
-        }
-    });
 
     return dbs;
 

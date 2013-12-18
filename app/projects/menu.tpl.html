@@ -46,22 +46,22 @@
 
 <ul class="menu" ng-show="data.ready">
 
-    <li ng-repeat="project in data.projects | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project._id}">
+    <li ng-repeat="project in data.projects | filter:projectNameQuery" class="menu-item" ng-class="{selected: $stateParams.projectId == project.attributes._id}">
         <div class="menu-item-container project-menu-item">
             <div class="project-owner-image-container">
-                <a ui-sref="projects.detail({ projectId: project._id })">
-                    <span class="project-owner-image" title="{{ project.name }}" style="background-image: url('{{ project.imageUrl }}');"></span>
+                <a ui-sref="projects.detail({ projectId: project.attributes._id })">
+                    <span class="project-owner-image" title="{{ project.attributes.name }}" style="background-image: url('{{ project.attributes.imageUrl }}');"></span>
                 </a>
             </div>
             <div class="project-menu-item-header pure-u-2-3">
-                <a ui-sref="projects.detail({ projectId: project._id })">
-                    <span title="{{ project.name }}">{{ project.name }}</span>
+                <a ui-sref="projects.detail({ projectId: project.attributes._id })">
+                    <span title="{{ project.attributes.name }}">{{ project.attributes.name }}</span>
                 </a>
-                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project)" title="Remove {{ project.name }}">
+                <a class="float-right project-menu-item-header-action" href="" ng-click="remove(project)" title="Remove {{ project.attributes.name }}">
                     <i class="fa fa-trash-o"></i>
                 </a>
             </div>
-            <small><a target="_blank" href="{{ project.url }}">{{ project.url }}</a></small>
+            <small><a target="_blank" href="{{ project.attributes.url }}">{{ project.attributes.url }}</a></small>
         </div>
     </li>
 

@@ -32,7 +32,7 @@
             <div class="pure-u-1">
                 <select class="pure-input-1" size="11" multiple="multiple"
                     ng-model="data.selectedMachines"
-                    ng-options="machine.username + '@' + machine.address for machine in data.machines track by machine._id"></select>
+                    ng-options="machine.attributes.username + '@' + machine.attributes.address for machine in data.machines track by machine.attributes._id"></select>
             </div>
         </fieldset>
 

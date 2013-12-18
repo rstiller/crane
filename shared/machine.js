@@ -3,177 +3,95 @@
 
     var _ = null;
     var async = null;
+    var BaseEntity = null;
     var DBS = null;
 
-    function Machine(options) {
+    function Factory() {
 
-        var slf = this;
-        var updateQueue = async.queue(function(task, callback) {
-            var method = !!slf._id ? DBS.Machines.put : DBS.Machines.post;
-            var obj = _.clone(slf);
-            _.each(_.keys(obj), function(key) {
-                if(key[0] === '$') {
-                    delete obj[key];
-                }
-            });
-            method(obj, function(err, response) {
-                if(!!err) {
-                    callback(err);
-                    return;
-                }
-
-                slf._id = response.id;
-                slf._rev = response.rev;
-
-                callback();
-            });
-        }, 1);
-
-        this.address = '';
-        this.username = '';
-        this.password = '';
-        this.type = Machine.Type.DOCKER;
-
-        _.extend(slf, options);
-
-        this.update = function(callback) {
-            updateQueue.push({}, function() {
-                if(!!callback) {
-                    callback(null, slf);
-                }
-            });
+        var Type = {
+            LXC: 'lxc',
+            DOCKER: 'docker'
         };
 
-        this.remove = function(callback) {
-            DBS.Machines.remove(slf, function(err, response) {
-                if(!!err) {
-                    callback(err);
-                    return;
-                }
+        return BaseEntity.extend({
+            defaults: {
+                address: '',
+                username: '',
+                password: '',
+                type: Type.DOCKER
+            }
+        }, {
+            db: DBS.Machines,
+            Type: Type,
+            forGroup: function(group, callback) {
+                var funcs = [];
+                var slf = this;
 
-                if(!!callback) {
-                    callback(null);
-                }
-            });
-        };
+                _.each(group.get('machines'), function(machineId) {
+                    funcs.push(function(next) {
+                        slf.get(machineId, function(err, machine) {
+                            if(!!err) {
+                                next(err);
+                                return;
+                            }
 
-    }
-
-    Machine.addChangeListener = function(callback) {
-        DBS.Machines.changes({
-            continuous: true,
-            onChange: function(change) {
-                Machine.get(change.id, function(err, machine) {
-                    if(!!callback) {
-                        callback(err, machine);
-                    }
+                            next(null, machine);
+                        });
+                    });
                 });
-            }
-        });
-    };
 
-    Machine.get = function(id, callback) {
-        DBS.Machines.get(id, function(err, machine) {
-            if(!!err) {
-                callback(err);
-                return;
-            }
-
-            if(!!callback) {
-                callback(null, Machine.fromJson(machine));
-            }
-        });
-    };
-
-    Machine.all = function(callback) {
-        DBS.Machines.allDocs({
-            include_docs: true
-        }, function(err, docs) {
-            if(!!err) {
-                callback(err);
-                return;
-            }
-
-            var machines = [];
-            _.each(docs.rows, function(row) {
-                machines.push(Machine.fromJson(row.doc));
-            });
-
-            if(!!callback) {
-                callback(null, machines);
-            }
-        });
-    };
-
-    Machine.forGroup = function(group, callback) {
-        var funcs = [];
-
-        _.each(group.machines, function(machineId) {
-            funcs.push(function(next) {
-                Machine.get(machineId, function(err, machine) {
+                async.series(funcs, function(err, machines) {
                     if(!!err) {
-                        next(err);
+                        callback(err);
                         return;
                     }
 
-                    next(null, machine);
+                    if(!!callback) {
+                        callback(null, machines);
+                    }
                 });
-            });
-        });
+            },
+            saveAll: function(machines, callback) {
+                var slf = this;
+                var db = slf.db;
 
-        async.series(funcs, function(err, machines) {
-            if(!!err) {
-                callback(err);
-                return;
-            }
+                db.bulkDocs({
+                    'docs': machines
+                }, function(err, response) {
+                    if(!!err) {
+                        callback(err);
+                        return;
+                    }
 
-            if(!!callback) {
-                callback(null, machines);
-            }
-        });
-    };
+                    _.each(machines, function(machine, index) {
+                        machine.set('_id', response[index].id);
+                        machine.set('_rev', response[index].rev);
+                    });
 
-    Machine.saveAll = function(machines, callback) {
-        DBS.Machines.bulkDocs({
-            'docs': machines
-        }, function(err, response) {
-            if(!!err) {
-                callback(err);
-                return;
-            }
-
-            _.each(machines, function(machine, index) {
-                machine._id = response[index].id;
-                machine._rev = response[index].rev;
-            });
-
-            if(!!callback) {
-                callback(null, machines);
+                    if(!!callback) {
+                        callback(null, machines);
+                    }
+                });
             }
         });
-    };
 
-    Machine.fromJson = function(json) {
-        var machine = new Machine();
-        _.extend(machine, json);
-        return machine;
-    };
-
-    Machine.Type = {};
-    Machine.Type.LXC = 'lxc';
-    Machine.Type.DOCKER = 'docker';
+    }
 
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
+        BaseEntity = require('./base-entity');
         DBS = require('../lib/dbs');
-        module.exports.Machine = Machine;
+
+        module.exports.Machine = Factory();
     } else {
-        angular.module('shared.entities').factory('MachineEntity', ['_', 'async', 'DBS', function(a, b, c) {
+        angular.module('shared.entities').factory('MachineEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
-            DBS = c;
-            return Machine;
+            BaseEntity = c;
+            DBS = d;
+
+            return Factory();
         }]);
     }
 

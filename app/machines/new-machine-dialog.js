@@ -70,7 +70,7 @@ angular.module('dashboard.controllers').controller('NewMachineCtrl',
             var machineIds = [];
 
             angular.forEach(machines, function(machine) {
-                machineIds.push(machine._id);
+                machineIds.push(machine.get('_id'));
             });
 
             if(!!$scope.data.newGroupName) {
@@ -83,7 +83,7 @@ angular.module('dashboard.controllers').controller('NewMachineCtrl',
             if($scope.data.selectedGroups.length > 0) {
                 angular.forEach($scope.data.selectedGroups, function(group) {
                     angular.forEach(machineIds, function(machineId) {
-                        group.machines.push(machineId);
+                        group.get('machines').push(machineId);
                     });
                     group.update();
                 });

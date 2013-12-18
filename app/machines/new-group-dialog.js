@@ -28,7 +28,7 @@ angular.module('dashboard.controllers').controller('NewGroupCtrl',
         var machines = [];
 
         angular.forEach($scope.data.selectedMachines, function(machine) {
-            machines.push(machine._id);
+            machines.push(machine.get('_id'));
         });
 
         var group = new MachineGroupEntity({

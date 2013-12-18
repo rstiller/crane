@@ -9,14 +9,8 @@
     function Factory() {
 
         return BaseEntity.extend({
-            defaults: {
-                branches: null,
-                name: '',
-                tags: null,
-                url: ''
-            }
         }, {
-            db: DBS.Projects
+            db: DBS.BaseImages
         });
 
     }
@@ -27,9 +21,9 @@
         BaseEntity = require('./base-entity');
         DBS = require('../lib/dbs');
 
-        module.exports.Project = Factory();
+        module.exports.BaseImage = Factory();
     } else {
-        angular.module('shared.entities').factory('ProjectEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('BaseImageEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
             BaseEntity = c;

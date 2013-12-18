@@ -36,26 +36,27 @@
     <li class="menu-item" ng-repeat="group in data.groups | filter:machineQuery">
         <div class="menu-item-container machine-menu-item">
             <div class="machine-menu-item-header">
-                <a ui-sref="machines.group({ groupId: group._id })">
-                    <span title="{{ group.name }}">{{ group.name }}</span>
+                <a ui-sref="machines.group({ groupId: group.attributes._id })">
+                    <span title="{{ group.attributes.name }}">{{ group.attributes.name }}</span>
                 </a>
-                <a class="float-right machine-menu-item-header-action" ng-click="removeGroup(group)" title="Remove {{ group.name }}">
+                <a class="float-right machine-menu-item-header-action" ng-click="removeGroup(group)" title="Remove {{ group.attributes.name }}">
                     <i class="fa fa-trash-o"></i>
                 </a>
             </div>
 
             <ul class="machine-list">
-                <li ng-show="data.machines[group._id].length == 0">No Machines in Group</li>
-                <li ng-repeat="machine in data.machines[group._id] | limitTo:3">
-                    <a ui-sref="machines.machine({ machineId: machine._id })">
-                        {{ machine.username }}@{{ machine.address }} ({{ machine.type }})
+                <li ng-show="data.machines[group.attributes._id].length == 0">No Machines in Group</li>
+                <li ng-repeat="machine in data.machines[group.attributes._id] | limitTo:3">
+                    <a ui-sref="machines.machine({ machineId: machine.attributes._id })">
+                        {{ machine.attributes.username }}@{{ machine.attributes.address }} ({{ machine.attributes.type }})
                     </a>
-                    <a class="float-right machine-list-item-action" ng-click="removeMachine(group, machine)" title="Remove {{ machine.username }}@{{ machine.address }}">
+                    <a class="float-right machine-list-item-action" ng-click="removeMachine(group, machine)"
+                        title="Remove {{ machine.attributes.username }}@{{ machine.attributes.address }}">
                         <i class="fa fa-trash-o"></i>
                     </a>
                 </li>
-                <li ng-show="data.machines[group._id].length > 3">
-                    <a ui-sref="machines.group({ groupId: group._id })">{{ data.machines[group._id].length - 3 }} more &hellip;</a>
+                <li ng-show="data.machines[group.attributes._id].length > 3">
+                    <a ui-sref="machines.group({ groupId: group.attributes._id })">{{ data.machines[group.attributes._id].length - 3 }} more &hellip;</a>
                 </li>
             </ul>
         </div>

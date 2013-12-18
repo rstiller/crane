@@ -31,7 +31,7 @@ angular.module('dashboard.controllers').controller('MachineMenuCtrl',
 
     var refreshGroup = function(group) {
         MachineEntity.forGroup(group, function(err, machines) {
-            $scope.data.machines[group._id] = machines;
+            $scope.data.machines[group.get('_id')] = machines;
             $scope.$apply();
         });
     };
@@ -57,7 +57,7 @@ angular.module('dashboard.controllers').controller('MachineMenuCtrl',
                 return;
             }
 
-            delete $scope.data.machines[group._id];
+            delete $scope.data.machines[group.get('_id')];
             renderPipeline.push({});
         });
     };
@@ -98,8 +98,8 @@ angular.module('dashboard.controllers').controller('MachineMenuCtrl',
 
         if(!!$scope.data.groups) {
             angular.forEach($scope.data.groups, function(group) {
-                angular.forEach(group.machines, function(machineId) {
-                    if(machine._id === machineId) {
+                angular.forEach(group.get('machines'), function(machineId) {
+                    if(machine.get('_id') === machineId) {
                         affectedGroups.push(group);
                     }
                 });

@@ -1,5 +1,6 @@
 
 angular.module('components.async', ['ng']);
+angular.module('components.backbone', []);
 angular.module('components.diagram', []);
 angular.module('components.dialog', []);
 angular.module('components.focus', []);

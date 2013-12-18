@@ -3,212 +3,116 @@
 
     var _ = null;
     var async = null;
+    var BaseEntity = null;
     var DBS = null;
 
-    function Build(projectId, workingCopyName, workingCopyType, workingCopyRev, service, environment) {
+    function Factory() {
 
-        var slf = this;
-        var updateQueue = async.queue(function(task, callback) {
-            var method = !!slf._id ? DBS.Builds.put : DBS.Builds.post;
-            method(slf, function(err, response) {
-                if(!!err) {
-                    callback(err);
-                    return;
-                }
-
-                slf._id = response.id;
-                slf._rev = response.rev;
-
-                callback();
-            });
-        }, 1);
-
-        this.projectId = projectId;
-        this.workingCopyName = workingCopyName;
-        this.workingCopyType = workingCopyType;
-        this.workingCopyRev = workingCopyRev;
-        this.service = service;
-        this.environment = environment;
-        this.status = Build.Status.CREATED;
-        this.created = new Date();
-        this.started = null;
-        this.finished = null;
-        this.successful = false;
-        this.logs = [];
-
-        this.start = function() {
-            slf.status = Build.Status.STARTED;
-            slf.started = new Date();
+        var Status = {
+            CREATED: 'created',
+            STARTED: 'started',
+            FINISHED: 'finished'
         };
 
-        this.finish = function() {
-            slf.status = Build.Status.FINISHED;
-            slf.finished = new Date();
-        };
+        return BaseEntity.extend({
+            defaults: {
+                projectId: '',
+                workingCopyName: '',
+                workingCopyType: '',
+                workingCopyRev: '',
+                service: '',
+                environment: '',
+                status: '',
+                created: new Date(),
+                started: null,
+                finished: null,
+                successful: false,
+                logs: []
+            },
+            start: function() {
+                this.set('status', Status.STARTED);
+                this.set('started', new Date());
+            },
+            finish: function() {
+                this.set('status', Status.FINISHED);
+                this.set('finished', new Date());
+            },
+            addBuildLog: function(buildLog) {
+                this.get('logs').push(buildLog._id);
+            }
+        }, {
+            db: DBS.Builds,
+            Status: Status,
+            forProject: function(projectId, version, service, environment, callback) {
+                var slf = this;
+                var db = slf.db;
 
-        this.addBuildLog = function(buildLog) {
-            slf.logs.push(buildLog._id);
-        };
+                db.query({
+                    map: function(doc) {
+                        emit(null, doc);
+                    }
+                }, {
+                    reduce: false
+                }, function(err, docs) {
+                    if(!!err) {
+                        callback(err);
+                        return;
+                    }
 
-        this.toJson = function() {
-            return {
-                'projectId': slf.projectId,
-                'workingCopyName': slf.workingCopyName,
-                'workingCopyType': slf.workingCopyType,
-                'workingCopyRev': slf.workingCopyRev,
-                'service': slf.service,
-                'environment': slf.environment,
-                'status': slf.status,
-                'created': slf.created,
-                'started': slf.started,
-                'finished': slf.finished,
-                'successful': slf.successful,
-                'logs': slf.logs
-            };
-        };
+                    var builds = [];
 
-        this.update = function(callback) {
-            updateQueue.push({}, function(err) {
-                if(!!err) {
-                    callback(err);
-                    return;
-                }
+                    _.each(docs.rows, function(doc) {
+                        var build = slf.fromJson(doc.value);
 
-                if(!!callback) {
-                    callback();
-                }
-            });
-        };
+                        if( build.projectId === projectId &&
+                            build.workingCopyRev === version &&
+                            build.service === service &&
+                            build.environment === environment) {
+                            builds.push(build);
+                        }
+                    });
 
-    }
-
-    Build.addChangeListener = function(callback) {
-        DBS.Builds.changes({
-            continuous: true,
-            onChange: function(change) {
-                Build.get(change.id, function(err, build) {
                     if(!!callback) {
-                        callback(err, build);
+                        callback(null, builds);
+                    }
+                })
+            },
+            saveAll: function(builds, callback) {
+                var slf = this;
+                var db = slf.constructor.db;
+
+                db.bulkDocs({
+                    'docs': builds
+                }, function(err) {
+                    if(!!err) {
+                        callback(err);
+                        return;
+                    }
+
+                    if(!!callback) {
+                        callback(null);
                     }
                 });
             }
         });
-    };
 
-    Build.get = function(id, callback) {
-        DBS.Builds.get(id, function(err, build) {
-            if(!!err) {
-                callback(err);
-                return;
-            }
-
-            if(!!callback) {
-                callback(null, Build.fromJson(build));
-            }
-        });
-    };
-
-    Build.forProject = function(projectId, version, service, environment, callback) {
-        /*DBS.Builds.gql({
-            select: '*',
-            where: 'projectId = \'' + projectId + '\''
-        }, function(err, docs) {
-
-            console.log('err', err, 'docs', docs);
-            if(!!err) {
-                callback(err);
-                return;
-            }
-
-            console.log('docs', docs);
-
-            var builds = [];
-
-            _.each(docs.rows, function(build) {
-                builds.push(Build.fromJson(build.value));
-            });
-
-            if(!!callback) {
-                callback(null, builds);
-            }
-        });*/
-
-        // fix performance penalties
-        DBS.Builds.query({
-            map: function(doc) {
-                emit(null, doc);
-            }
-        }, {
-            reduce: false
-        }, function(err, docs) {
-            if(!!err) {
-                callback(err);
-                return;
-            }
-
-            var builds = [];
-
-            _.each(docs.rows, function(doc) {
-                var build = Build.fromJson(doc.value);
-
-                if( build.projectId === projectId &&
-                    build.workingCopyRev === version &&
-                    build.service === service &&
-                    build.environment === environment) {
-                    builds.push(build);
-                }
-            });
-
-            if(!!callback) {
-                callback(null, builds);
-            }
-        })
-    };
-
-    Build.saveAll = function(builds, callback) {
-        DBS.Builds.bulkDocs({
-            'docs': builds
-        }, function(err) {
-            if(!!err) {
-                callback(err);
-                return;
-            }
-
-            if(!!callback) {
-                callback();
-            }
-        });
-    };
-
-    Build.fromJson = function(json) {
-        var build = new Build(
-            json.projectId,
-            json.workingCopyName,
-            json.workingCopyType,
-            json.workingCopyRev,
-            json.service,
-            json.environment
-        );
-        _.extend(build, json);
-        return build;
-    };
-
-    Build.Status = {};
-    Build.Status.CREATED = 'created';
-    Build.Status.STARTED = 'started';
-    Build.Status.FINISHED = 'finished';
+    }
 
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
+        BaseEntity = require('./base-entity');
         DBS = require('../lib/dbs');
-        module.exports.Build = Build;
+
+        module.exports.Build = Factory();
     } else {
-        angular.module('shared.entities').factory('BuildEntity', ['_', 'async', 'DBS', function(a, b, c) {
+        angular.module('shared.entities').factory('BuildEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
-            DBS = c;
-            return Build;
+            BaseEntity = c;
+            DBS = d;
+
+            return Factory();
         }]);
     }
 

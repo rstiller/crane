@@ -21,13 +21,13 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
             var versions = {};
             var workingCopy = null;
 
-            angular.forEach(project.branches, function(branch, branchName) {
+            angular.forEach(project.get('branches'), function(branch, branchName) {
                 versions[branchName] = branch;
                 if(branchName === 'master') {
                     $scope.data.selectedVersion = branch;
                 }
             });
-            angular.forEach(project.tags, function(tag, tagName) {
+            angular.forEach(project.get('tags'), function(tag, tagName) {
                 versions[tagName] = tag;
             });
 
@@ -69,7 +69,7 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
             return;
         }
 
-        if(project._id === $stateParams.projectId) {
+        if(project.get('_id') === $stateParams.projectId) {
             renderPipeline.push({});
         }
     });

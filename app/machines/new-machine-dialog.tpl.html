@@ -70,7 +70,7 @@
             <div class="pure-u-1">
                 <select class="pure-input-1" size="11" multiple="multiple"
                     ng-model="data.selectedGroups"
-                    ng-options="group.name for group in data.groups track by group._id">
+                    ng-options="group.attributes.name for group in data.groups track by group.attributes._id">
                     <option value="">&lt;New Group&gt;</option>
                 </select>
             </div>

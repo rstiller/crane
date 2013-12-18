@@ -31,13 +31,13 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     });
 
     var refreshProject = function(project) {
-        Hoster.get(project.url).getRepositoryImageUrl(project.url, function(err, imageUrl) {
+        Hoster.get(project.get('url')).getRepositoryImageUrl(project.get('url'), function(err, imageUrl) {
             if(!!err) {
                 console.log(err);
                 return;
             }
 
-            project.imageUrl = imageUrl;
+            project.set('imageUrl', imageUrl);
             $scope.$apply();
         });
     };
@@ -53,7 +53,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     };
 
     $scope.remove = function(project) {
-        Hoster.get(project.url).clearCache(project.url);
+        Hoster.get(project.get('url')).clearCache(project.get('url'));
 
         project.remove(function(err, response) {
             if(!!err) {
@@ -61,7 +61,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
                 return;
             }
 
-            if($rootScope.$stateParams.projectId == project._id) {
+            if($rootScope.$stateParams.projectId == project.get('_id')) {
                 $location.path('/projects/');
             }
         });

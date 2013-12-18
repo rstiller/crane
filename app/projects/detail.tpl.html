@@ -6,9 +6,9 @@
 <div class="project-detail-header" ng-show="data.ready">
     <form class="pure-form pure-form-stacked">
         <fieldset>
-            <legend><h1>{{ data.project.name }}</h1></legend>
-            <a href="{{ data.project.url }}" target="_blank" class="source-code-link">
-                {{ data.project.url }}
+            <legend><h1>{{ data.project.attributes.name }}</h1></legend>
+            <a href="{{ data.project.attributes.url }}" target="_blank" class="source-code-link">
+                {{ data.project.attributes.url }}
             </a>
 
             <div class="pure-g version-chooser">
@@ -39,7 +39,7 @@
         <div class="project-services-detail pure-g">
             <div ng-repeat="(key, value) in data.services" class="pure-u-1-2">
                 <div service-widget
-                     data-project="{{ data.project._id }}"
+                     data-project="{{ data.project.attributes._id }}"
                      data-service="{{ key }}"
                      data-version="{{ data.selectedVersion.rev }}"
                      data-environment="{{ data.selectedEnvironment }}">
