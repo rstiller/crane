@@ -15,31 +15,40 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     var renderPipeline = new RenderPipeline(function(next) {
         $scope.data.ready = false;
 
-        ProjectEntity.get($stateParams.projectId, function(err, project) {
-            $scope.data.project = project;
+        var project = new ProjectEntity({
+            '_id': $stateParams.projectId
+        });
 
-            var versions = {};
-            var workingCopy = null;
+        project.fetch({
+            error: function(model, err, options) {
+                console.log(err);
+            },
+            success: function(project, response, options) {
+                $scope.data.project = project;
 
-            angular.forEach(project.get('branches'), function(branch, branchName) {
-                versions[branchName] = branch;
-                if(branchName === 'master') {
-                    $scope.data.selectedVersion = branch;
+                var versions = {};
+                var workingCopy = null;
+
+                angular.forEach(project.get('branches'), function(branch, branchName) {
+                    versions[branchName] = branch;
+                    if(branchName === 'master') {
+                        $scope.data.selectedVersion = branch;
+                    }
+                });
+                angular.forEach(project.get('tags'), function(tag, tagName) {
+                    versions[tagName] = tag;
+                });
+
+                if(!!$scope.data.selectedVersion.infrastructure) {
+                    $scope.data.services = $scope.data.selectedVersion.infrastructure.services;
                 }
-            });
-            angular.forEach(project.get('tags'), function(tag, tagName) {
-                versions[tagName] = tag;
-            });
 
-            if(!!$scope.data.selectedVersion.infrastructure) {
-                $scope.data.services = $scope.data.selectedVersion.infrastructure.services;
+                $scope.data.versions = versions;
+                $scope.data.ready = true;
+                $scope.$apply();
+
+                next();
             }
-
-            $scope.data.versions = versions;
-            $scope.data.ready = true;
-            $scope.$apply();
-
-            next();
         });
     });
 

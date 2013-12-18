@@ -29,13 +29,17 @@
 
                 _.each(group.get('machines'), function(machineId) {
                     funcs.push(function(next) {
-                        slf.get(machineId, function(err, machine) {
-                            if(!!err) {
-                                next(err);
-                                return;
-                            }
+                        var machine = new (slf)({
+                            '_id': machineId
+                        });
 
-                            next(null, machine);
+                        machine.fetch({
+                            error: function(model, err, options) {
+                                next(err);
+                            },
+                            success: function(model, response, options) {
+                                next(null, model);
+                            }
                         });
                     });
                 });
@@ -80,7 +84,7 @@
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
-        BaseEntity = require('./base-entity');
+        BaseEntity = require('./base-entity').BaseEntity;
         DBS = require('../lib/dbs');
 
         module.exports.Machine = Factory();

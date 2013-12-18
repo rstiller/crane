@@ -40,23 +40,30 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                 $scope.data.environment = null;
                 $scope.data.builds = null;
 
-                ProjectEntity.get($scope.projectId, function(err, project) {
+                var project = new ProjectEntity({
+                    '_id': $scope.projectId
+                });
 
-                    $scope.data.workingCopy = getWorkingCopy(project, $scope.version);
-                    var service = $scope.data.workingCopy.infrastructure.services[$scope.service];
-                    service.ports = service.ports.join(', ');
-                    $scope.data.service = service;
-                    $scope.data.environment = $scope.data.service.environments[$scope.environment];
+                project.fetch({
+                    error: function(model, err, options) {
+                        console.log(err);
+                    },
+                    success: function(project, response, options) {
+                        $scope.data.workingCopy = getWorkingCopy(project, $scope.version);
+                        var service = $scope.data.workingCopy.infrastructure.services[$scope.service];
+                        service.ports = service.ports.join(', ');
+                        $scope.data.service = service;
+                        $scope.data.environment = $scope.data.service.environments[$scope.environment];
 
-                    BuildEntity.forProject($scope.projectId, $scope.version, $scope.service, $scope.environment, function(err, builds) {
-                        $scope.data.builds = builds;
-                        angular.forEach(builds, function(build) {
-                            build.finished = new Date(build.finished);
-                            build.started = new Date(build.started);
+                        BuildEntity.forProject($scope.projectId, $scope.version, $scope.service, $scope.environment, function(err, builds) {
+                            $scope.data.builds = builds;
+                            angular.forEach(builds, function(build) {
+                                build.set('finished', new Date(build.get('finished')));
+                                build.set('started', new Date(build.get('started')));
+                            });
+                            $scope.$apply();
                         });
-                        $scope.$apply();
-                    });
-
+                    }
                 });
             };
 

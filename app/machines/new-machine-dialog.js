@@ -77,7 +77,7 @@ angular.module('dashboard.controllers').controller('NewMachineCtrl',
                 new MachineGroupEntity({
                     name: $scope.data.newGroupName,
                     machines: machineIds
-                }).update();
+                }).save();
             }
 
             if($scope.data.selectedGroups.length > 0) {
@@ -85,7 +85,7 @@ angular.module('dashboard.controllers').controller('NewMachineCtrl',
                     angular.forEach(machineIds, function(machineId) {
                         group.get('machines').push(machineId);
                     });
-                    group.update();
+                    group.save();
                 });
             }
 

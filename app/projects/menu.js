@@ -55,14 +55,14 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     $scope.remove = function(project) {
         Hoster.get(project.get('url')).clearCache(project.get('url'));
 
-        project.remove(function(err, response) {
-            if(!!err) {
+        project.destroy({
+            error: function(model, err, options) {
                 console.log(err);
-                return;
-            }
-
-            if($rootScope.$stateParams.projectId == project.get('_id')) {
-                $location.path('/projects/');
+            },
+            success: function(model, response, options) {
+                if($rootScope.$stateParams.projectId == project.get('_id')) {
+                    $location.path('/projects/');
+                }
             }
         });
     };

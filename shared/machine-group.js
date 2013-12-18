@@ -17,7 +17,7 @@
             removeMachine: function(machine, callback) {
                 var slf = this;
 
-                this.countGroupsForMachine(machine, function(err, count) {
+                slf.constructor.countGroupsForMachine(machine, function(err, count) {
                     if(!!err) {
                         callback(err);
                         return;
@@ -32,18 +32,20 @@
                     });
                     slf.set('machines', machines);
 
-                    slf.update(function(err, group) {
-                        if(count <= 1) {
-                            machine.remove(function(err) {
-                                if(!!err) {
-                                    callback(err);
-                                    return;
-                                }
-
-                                if(!!callback) {
-                                    callback(null, slf);
-                                }
-                            });
+                    slf.save({
+                        success: function() {
+                            if(count <= 1) {
+                                machine.destroy({
+                                    error: function(model, err, options) {
+                                        callback(err);
+                                    },
+                                    success: function(model, response, options) {
+                                        if(!!callback) {
+                                            callback(null, slf);
+                                        }
+                                    }
+                                });
+                            }
                         }
                     });
                 });
@@ -76,7 +78,7 @@
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
-        BaseEntity = require('./base-entity');
+        BaseEntity = require('./base-entity').BaseEntity;
         DBS = require('../lib/dbs');
 
         module.exports.MachineGroup = Factory();

@@ -49,16 +49,16 @@ angular.module('dashboard.controllers').controller('NewProjectCtrl',
             'branches': branches
         });
 
-        project.update(function(err) {
-            if(!!err) {
+        project.save({
+            error: function(model, err, options) {
                 console.log(err);
-                return;
+            },
+            success: function(model, response, options) {
+                if($scope.saveCallback) {
+                    $scope.saveCallback();
+                }
+                $scope.$parent.close();
             }
-
-            if($scope.saveCallback) {
-                $scope.saveCallback();
-            }
-            $scope.$parent.close();
         });
 
     };

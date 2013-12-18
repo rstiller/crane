@@ -14,63 +14,99 @@
                 var db = slf.constructor.db;
 
                 slf.updateQueue = async.queue(function(task, callback) {
-                    var method = !!slf.has('_id') ? db.put : db.post;
-                    var obj = _.clone(slf.toJSON());
-                    _.each(_.keys(obj), function(key) {
-                        if(key[0] === '$') {
-                            delete obj[key];
-                        }
-                    });
+                    var method = slf.isNew() ? db.post : db.put;
 
-                    method(obj, function(err, response) {
+                    method(task, function(err, response) {
                         if(!!err) {
                             callback(err);
                             return;
                         }
 
-                        slf.set('_id', response.id);
-                        slf.set('_rev', response.rev);
+                        slf.set({
+                            '_id': response.id,
+                            '_rev': response.rev
+                        });
 
                         callback();
                     });
                 }, 1);
             },
-            remove: function(callback) {
+            idAttribute: '_id',
+            destroy: function(options) {
                 var slf = this;
                 var db = slf.constructor.db;
 
-                db.remove(slf.toJson(), function(err, response) {
-                    if(!!err) {
-                        callback(err);
+                db.remove(slf.pick('_id', '_rev'), function(err, response) {
+                    if(!!err && !!options && !!options.error) {
+                        options.error(slf, err, null);
                         return;
                     }
 
-                    if(!!callback) {
-                        callback(null, slf);
+                    if(!!options && !!options.success) {
+                        options.success(slf, null, null);
                     }
                 });
             },
-            update: function(callback) {
+            save: function(attributes, options) {
                 var slf = this;
+                var attrs = null;
 
-                slf.updateQueue.push({}, function() {
-                    if(!!callback) {
-                        callback(null, slf);
+                if(!options) {
+                    options = attributes;
+                } else {
+                    attrs = attributes;
+                }
+
+                var obj = _.clone(slf.attributes);
+
+                if(!!attrs) {
+                    _.extend(obj, attrs);
+                }
+
+                _.each(_.keys(obj), function(key) {
+                    if(key[0] === '$') {
+                        delete obj[key];
+                    }
+                });
+
+                slf.updateQueue.push(obj, function(err) {
+                    if(!!err && !!options && !!options.error) {
+                        options.error(slf, err, null);
+                        return;
+                    }
+
+                    if(!!options && !!options.success) {
+                        options.success(slf, null, null);
+                    }
+                });
+            },
+            fetch: function(options) {
+                var slf = this;
+                var db = slf.constructor.db;
+
+                db.get(slf.get('_id'), function(err, doc) {
+                    if(!!err && !!options && !!options.error) {
+                        options.error(slf, err, null);
+                        return;
+                    }
+
+                    slf.set(doc);
+                    if(!!options && !!options.success) {
+                        options.success(slf, null, null);
                     }
                 });
             }
         }, {
-            addChangeListener: function(callback) {
+            addChangeListener: function(options) {
                 var slf = this;
 
                 slf.db.changes({
                     continuous: true,
                     onChange: function(change) {
-                        slf.get(change.id, function(err, doc) {
-                            if(!!callback) {
-                                callback(err, doc);
-                            }
+                        var obj = new (slf)({
+                            '_id': change.id
                         });
+                        obj.fetch(options);
                     }
                 });
             },
@@ -91,20 +127,6 @@
                             objects.push(slf.fromJson(row.doc));
                         });
                         callback(null, objects);
-                    }
-                });
-            },
-            get: function(id, callback) {
-                var slf = this;
-
-                this.db.get(id, function(err, doc) {
-                    if(!!err) {
-                        callback(err);
-                        return;
-                    }
-
-                    if(!!callback) {
-                        callback(null, slf.fromJson(doc));
                     }
                 });
             },

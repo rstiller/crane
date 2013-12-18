@@ -18,7 +18,7 @@
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
-        BaseEntity = require('./base-entity');
+        BaseEntity = require('./base-entity').BaseEntity;
         DBS = require('../lib/dbs');
 
         module.exports.BaseImage = Factory();

@@ -22,32 +22,27 @@
                     'type': 'out',
                     'data': data
                 });
-                this.update();
+                this.save();
             },
             updateErr: function(data) {
                 this.get('output').push({
                     'type': 'err',
                     'data': data
                 });
-                this.update();
+                this.save();
             },
-            update: function(callback) {
+            save: function(attributes, options) {
                 var slf = this;
 
-                if(slf.get('enabled') === true) {
-                    slf.updateQueue.push({}, function (err) {
-                        if(!!err) {
-                            callback(err);
-                            return;
-                        }
+                if(!options) {
+                    options = attributes;
+                }
 
-                        if(!!callback) {
-                            callback(null, slf);
-                        }
-                    });
+                if(slf.get('enabled') === true) {
+                    BaseEntity.prototype.save.apply(this, arguments);
                 } else {
-                    if(!!callback) {
-                        callback(null, slf);
+                    if(!!options && !!options.success) {
+                        options.success(slf, null, null);
                     }
                 }
             }
@@ -88,7 +83,7 @@
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
-        BaseEntity = require('./base-entity');
+        BaseEntity = require('./base-entity').BaseEntity;
         DBS = require('../lib/dbs');
 
         module.exports.BuildLog = Factory();

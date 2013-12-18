@@ -37,14 +37,14 @@ angular.module('dashboard.controllers').controller('NewGroupCtrl',
             machines: machines
         });
 
-        group.update(function(err) {
-            if(!!err) {
+        group.save({
+            error: function(model, err, options) {
                 console.log(err);
-                return;
+            },
+            success: function(model, response, option) {
+                $scope.closeDialog();
+                $scope.$apply();
             }
-
-            $scope.closeDialog();
-            $scope.$apply();
         });
     };
 

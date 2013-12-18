@@ -51,14 +51,14 @@ angular.module('dashboard.controllers').controller('MachineMenuCtrl',
     };
 
     $scope.removeGroup = function(group) {
-        group.remove(function(err) {
-            if(!!err) {
+        group.destroy({
+            error: function(model, err, options) {
                 console.log(err);
-                return;
+            },
+            success: function(model, response, options) {
+                delete $scope.data.machines[group.get('_id')];
+                renderPipeline.push({});
             }
-
-            delete $scope.data.machines[group.get('_id')];
-            renderPipeline.push({});
         });
     };
 
