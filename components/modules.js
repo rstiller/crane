@@ -4,6 +4,7 @@ angular.module('components.backbone', []);
 angular.module('components.diagram', []);
 angular.module('components.dialog', []);
 angular.module('components.focus', []);
+angular.module('components.jquery', []);
 angular.module('components.list', []);
 angular.module('components.marked', []);
 angular.module('components.pouchdb', []);

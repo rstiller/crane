@@ -9,8 +9,9 @@
     function Factory() {
 
         return BaseEntity.extend({
+            type: 'base-image'
         }, {
-            db: DBS.BaseImages
+            TYPE: 'base-image'
         });
 
     }
@@ -23,7 +24,7 @@
 
         module.exports.BaseImage = Factory();
     } else {
-        angular.module('shared.entities').factory('BaseImageEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('BaseImage', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
             BaseEntity = c;

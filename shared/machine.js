@@ -8,7 +8,7 @@
 
     function Factory() {
 
-        var Type = {
+        var Runtime = {
             LXC: 'lxc',
             DOCKER: 'docker'
         };
@@ -18,11 +18,12 @@
                 address: '',
                 username: '',
                 password: '',
-                type: Type.DOCKER
+                runtime: Runtime.DOCKER,
+                type: 'machine'
             }
         }, {
-            db: DBS.Machines,
-            Type: Type,
+            TYPE: 'machine',
+            RUNTIME: Runtime,
             forGroup: function(group, callback) {
                 var funcs = [];
                 var slf = this;
@@ -57,7 +58,7 @@
             },
             saveAll: function(machines, callback) {
                 var slf = this;
-                var db = slf.db;
+                var db = slf.DB;
 
                 db.bulkDocs({
                     'docs': machines
@@ -89,7 +90,7 @@
 
         module.exports.Machine = Factory();
     } else {
-        angular.module('shared.entities').factory('MachineEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('Machine', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
             BaseEntity = c;

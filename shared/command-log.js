@@ -15,7 +15,8 @@
                 cmd: '',
                 started: null,
                 finished: null,
-                enabled: false
+                enabled: false,
+                type: 'command-log'
             },
             updateOut: function(data) {
                 this.get('output').push({
@@ -47,14 +48,15 @@
                 }
             }
         }, {
-            db: DBS.BuildLogs,
+            TYPE: 'command-log',
             forBuild: function(build, callback) {
                 var slf = this;
+                var db = slf.DB;
                 var funcs = [];
 
                 _.each(build.logs, function(logId) {
                     funcs.push(function(next) {
-                        slf.db.get(logId, function(err, log) {
+                        db.get(logId, function(err, log) {
                             if(!!err) {
                                 next(err);
                                 return;
@@ -86,9 +88,9 @@
         BaseEntity = require('./base-entity').BaseEntity;
         DBS = require('../lib/dbs');
 
-        module.exports.BuildLog = Factory();
+        module.exports.CommandLog = Factory();
     } else {
-        angular.module('shared.entities').factory('BuildLogEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('CommandLog', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
             BaseEntity = c;

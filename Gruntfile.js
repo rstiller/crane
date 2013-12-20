@@ -33,9 +33,9 @@ module.exports = function (grunt) {
                 src: [
                     './vendor/async/lib/async.js',
                     './vendor/d3/d3.js',
+                    './vendor/jquery/jquery.js',
                     './vendor/underscore/underscore.js',
                     './vendor/backbone/backbone.js',
-                    './vendor/jquery/jquery.js',
                     './vendor/angular/angular.js',
                     './vendor/angular-resource/angular-resource.js',
                     './vendor/angular-ui-router/release/angular-ui-router.js',
@@ -51,9 +51,9 @@ module.exports = function (grunt) {
                 src: [
                     './vendor/async/lib/async.js',
                     './vendor/d3/d3.min.js',
+                    './vendor/jquery/jquery.min.js',
                     './vendor/underscore/underscore.min.js',
                     './vendor/backbone/backbone.min.js',
-                    './vendor/jquery/jquery.min.js',
                     './vendor/angular/angular.min.js',
                     './vendor/angular-resource/angular-resource.min.js',
                     './vendor/angular-ui-router/release/angular-ui-router.min.js',

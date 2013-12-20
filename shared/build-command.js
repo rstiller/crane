@@ -3,18 +3,12 @@
 
     var _ = null;
     var async = null;
-    var BaseEntity = null;
+    var Command = null;
     var DBS = null;
 
     function Factory() {
 
-        var Status = {
-            CREATED: 'created',
-            STARTED: 'started',
-            FINISHED: 'finished'
-        };
-
-        return BaseEntity.extend({
+        return Command.extend({
             defaults: {
                 projectId: '',
                 workingCopyName: '',
@@ -22,30 +16,13 @@
                 workingCopyRev: '',
                 service: '',
                 environment: '',
-                status: '',
-                created: new Date(),
-                started: null,
-                finished: null,
-                successful: false,
-                logs: []
-            },
-            start: function() {
-                this.set('status', Status.STARTED);
-                this.set('started', new Date());
-            },
-            finish: function() {
-                this.set('status', Status.FINISHED);
-                this.set('finished', new Date());
-            },
-            addBuildLog: function(buildLog) {
-                this.get('logs').push(buildLog._id);
+                type: 'build-command'
             }
         }, {
-            db: DBS.Builds,
-            Status: Status,
+            TYPE: 'build-command',
             forProject: function(projectId, version, service, environment, callback) {
                 var slf = this;
-                var db = slf.db;
+                var db = slf.DB;
 
                 db.query({
                     map: function(doc) {
@@ -79,7 +56,7 @@
             },
             saveAll: function(builds, callback) {
                 var slf = this;
-                var db = slf.constructor.db;
+                var db = slf.DB;
 
                 db.bulkDocs({
                     'docs': builds
@@ -101,15 +78,15 @@
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
-        BaseEntity = require('./base-entity').BaseEntity;
+        Command = require('./command').Command;
         DBS = require('../lib/dbs');
 
-        module.exports.Build = Factory();
+        module.exports.BuildCommand = Factory();
     } else {
-        angular.module('shared.entities').factory('BuildEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('BuildCommand', ['_', 'async', 'Command', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
-            BaseEntity = c;
+            Command = c;
             DBS = d;
 
             return Factory();

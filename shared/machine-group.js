@@ -12,7 +12,8 @@
             defaults: {
                 machines: [],
                 description: '',
-                name: ''
+                name: '',
+                type: 'machine-group'
             },
             removeMachine: function(machine, callback) {
                 var slf = this;
@@ -51,7 +52,7 @@
                 });
             }
         }, {
-            db: DBS.MachineGroups,
+            TYPE: 'machine-group',
             countGroupsForMachine: function(machine, callback) {
                 var count = 0;
 
@@ -83,7 +84,7 @@
 
         module.exports.MachineGroup = Factory();
     } else {
-        angular.module('shared.entities').factory('MachineGroupEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('MachineGroup', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
             BaseEntity = c;

@@ -13,10 +13,11 @@
                 branches: null,
                 name: '',
                 tags: null,
-                url: ''
+                url: '',
+                type: 'project'
             }
         }, {
-            db: DBS.Projects
+            TYPE: 'project'
         });
 
     }
@@ -29,7 +30,7 @@
 
         module.exports.Project = Factory();
     } else {
-        angular.module('shared.entities').factory('ProjectEntity', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('Project', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
             BaseEntity = c;
