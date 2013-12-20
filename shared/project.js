@@ -15,6 +15,18 @@
                 tags: null,
                 url: '',
                 type: 'project'
+            },
+            getBuildCommands: function(options) {
+                var slf = this;
+                var clazz = slf.constructor;
+                var query = clazz.query;
+
+                query.apply(clazz, [_.extend({}, options, {
+                    params: {
+                        key: '"' + slf.get('_id') + '"'
+                    },
+                    view: 'build-commands'
+                })]);
             }
         }, {
             TYPE: 'project'

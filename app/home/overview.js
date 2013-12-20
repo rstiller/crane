@@ -5,10 +5,11 @@ angular.module('dashboard.controllers').controller('HomeOverviewCtrl',
 
     $scope.data = {};
 
-    Project.query({
-        view: 'all',
-        success: function(projects) {
-            console.log(projects);
+    new Project({
+        _id: '73bf0afcaa127ffdf85301e32e08570c'
+    }).getBuildCommands({
+        success: function(commands) {
+            console.log(commands);
         }
     });
 

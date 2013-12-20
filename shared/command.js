@@ -34,6 +34,20 @@
             },
             addLog: function(log) {
                 this.get('logs').push(log._id);
+            },
+            getLogs: function(options) {
+                var slf = this;
+                var clazz = slf.constructor;
+                var query = clazz.query;
+
+                query.apply(clazz, [_.extend({}, options, {
+                    params: {
+                        startkey: '[{},"' + slf.get('_id') + '"]',
+                        endkey: '[{},"' + slf.get('_id') + '"]',
+                        include_docs: true
+                    },
+                    view: 'logs'
+                })]);
             }
         }, {
             TYPE: 'command',

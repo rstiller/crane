@@ -18,8 +18,22 @@
                 address: '',
                 username: '',
                 password: '',
+                groups: [],
                 runtime: Runtime.DOCKER,
                 type: 'machine'
+            },
+            countGroups: function(options) {
+                var slf = this;
+                var clazz = slf.constructor;
+                var query = clazz.query;
+
+                query.apply(clazz, [_.extend({}, options, {
+                    params: {
+                        key: '"' + slf.get('_id') + '"',
+                        group: true
+                    },
+                    view: 'count-groups'
+                })]);
             }
         }, {
             TYPE: 'machine',
