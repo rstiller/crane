@@ -9,6 +9,7 @@
     function Factory() {
 
         return BaseEntity.extend({
+            defaults: _.extend({}, BaseEntity.prototype.defaults, {}),
             type: 'base-image'
         }, {
             TYPE: 'base-image'

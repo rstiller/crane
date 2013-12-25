@@ -9,7 +9,7 @@
     function Factory() {
 
         return BaseEntity.extend({
-            defaults: {
+            defaults: _.extend({}, BaseEntity.prototype.defaults, {
                 output: [],
                 exitCode: -1,
                 cmd: '',
@@ -17,7 +17,7 @@
                 finished: null,
                 enabled: false,
                 type: 'command-log'
-            },
+            }),
             updateOut: function(data) {
                 this.get('output').push({
                     'type': 'out',
@@ -48,36 +48,7 @@
                 }
             }
         }, {
-            TYPE: 'command-log',
-            forBuild: function(build, callback) {
-                var slf = this;
-                var db = slf.DB;
-                var funcs = [];
-
-                _.each(build.logs, function(logId) {
-                    funcs.push(function(next) {
-                        db.get(logId, function(err, log) {
-                            if(!!err) {
-                                next(err);
-                                return;
-                            }
-
-                            next(null, log);
-                        });
-                    });
-                });
-
-                async.series(funcs, function(err, logs) {
-                    if(!!err) {
-                        callback(err);
-                        return;
-                    }
-
-                    if(!!callback) {
-                        callback(null, logs);
-                    }
-                });
-            }
+            TYPE: 'command-log'
         });
 
     }

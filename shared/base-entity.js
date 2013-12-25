@@ -6,10 +6,16 @@
     var Backbone = null;
     var $ = null;
     var DBS = null;
+    var prefix = '';
 
     function Factory() {
 
         return Backbone.Model.extend({
+            defaults: {
+                '_id': null,
+                '_rev': null
+            },
+            idAttribute: '_id',
             initialize: function() {
                 var slf = this;
                 var db = slf.constructor.DB;
@@ -32,7 +38,6 @@
                     });
                 }, 1);
             },
-            idAttribute: '_id',
             destroy: function(options) {
                 var slf = this;
                 var db = slf.constructor.DB;
@@ -48,29 +53,44 @@
                     }
                 });
             },
-            save: function(attributes, options) {
+            getKeys: function() {
+                var currentParent = this.__proto__;
+                var prototypes = [];
+                var keys = [];
+
+                while(!!currentParent) {
+                    prototypes.push(currentParent);
+                    currentParent = currentParent.__proto__;
+                }
+
+                for(var i = prototypes.length - 1; i >= 0; i--) {
+                    if(!!prototypes[i].defaults) {
+                        keys = _.union(keys, _.keys(prototypes[i].defaults));
+                    }
+                }
+
+                return keys;
+            },
+            getDBObject: function() {
                 var slf = this;
-                var attrs = null;
+                var obj = _.pick(slf.attributes, slf.getKeys());
 
-                if(!options) {
-                    options = attributes;
-                } else {
-                    attrs = attributes;
-                }
-
-                var obj = _.clone(slf.attributes);
-
-                if(!!attrs) {
-                    _.extend(obj, attrs);
-                }
-
-                _.each(_.keys(obj), function(key) {
-                    if(key[0] === '$') {
+                _.each(obj, function(value, key) {
+                    if(!value) {
                         delete obj[key];
                     }
                 });
 
-                slf.updateQueue.push(obj, function(err) {
+                return obj;
+            },
+            save: function(attributes, options) {
+                var slf = this;
+
+                if(!options) {
+                    options = attributes;
+                }
+
+                slf.updateQueue.push(slf.getDBObject(), function(err) {
                     if(!!err && !!options && !!options.error) {
                         options.error(slf, err, null);
                         return;
@@ -99,6 +119,64 @@
             }
         }, {
             DB: DBS.DB,
+            fromJson: function(json) {
+                return new (this)(json);
+            },
+            saveAll: function(objects, callback) {
+                var slf = this;
+                var db = slf.DB;
+                var docs = [];
+
+                _.each(objects, function(object) {
+                    docs.push(object.getDBObject());
+                });
+
+                db.bulkDocs({
+                    'docs': docs
+                }, function(err, response) {
+                    if(!!err) {
+                        callback(err);
+                        return;
+                    }
+
+                    _.each(objects, function(object, index) {
+                        object.set({
+                            '_id': response[index].id,
+                            '_rev': response[index].rev
+                        });
+                    });
+
+                    if(!!callback) {
+                        callback(null, objects);
+                    }
+                });
+            },
+            addNewListener: function(options) {
+                var slf = this;
+                var db = slf.DB;
+
+                db.changes({
+                    continuous: true,
+                    filter: slf.TYPE + '/' + (options.filter || 'all'),
+                    onChange: function(change) {
+                        if(!change['deleted'] && !!change.changes) {
+                            for(var i = 0; i < change.changes.length; i++) {
+                                var revChange = change.changes[i];
+
+                                if(revChange.rev.indexOf('1-') === 0) {
+                                    if(!!options && !!options.success) {
+                                        var obj = new (slf)({
+                                            '_id': change.id
+                                        });
+
+                                        obj.fetch(options);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            },
             addChangeListener: function(options) {
                 var slf = this;
                 var db = slf.DB;
@@ -107,48 +185,58 @@
                     continuous: true,
                     filter: slf.TYPE + '/' + (options.filter || 'all'),
                     onChange: function(change) {
-                        if(!!options && !!options.success) {
-                            var obj = new (slf)({
-                                '_id': change.id
-                            });
+                        if(!change['deleted']) {
+                            if(!!options && !!options.success) {
+                                var obj = new (slf)({
+                                    '_id': change.id
+                                });
 
-                            obj.fetch(options);
+                                obj.fetch(options);
+                            }
                         }
                     }
                 });
             },
-            all: function(callback) {
+            all: function(options) {
                 var slf = this;
 
                 slf.query({
                     view: 'all',
-                    success: callback
+                    error: options.error,
+                    success: function(model, response) {
+                        var objects = [];
+
+                        _.each(model.rows, function(row) {
+                            objects.push(new (slf)(row.value));
+                        });
+
+                        if(!!options && !!options.success) {
+                            options.success(objects, response, null);
+                        }
+                    }
                 });
-            },
-            fromJson: function(json) {
-                return new (this)(json);
             },
             query: function(options) {
                 var slf = this;
                 var url = '';
 
                 if(!!options.view) {
-                    url = '/crane/_design/' + slf.TYPE + '/_view/' + options.view;
+                    url = prefix + '/crane/_design/' + slf.TYPE + '/_view/' + options.view;
                 } else if(!!options.filter) {
-                    url = '/crane/_changes?filter=' + slf.TYPE + '/' + options.filter;
+                    url = prefix + '/crane/_changes?filter=' + slf.TYPE + '/' + options.filter;
                 }
 
-                $.ajax({
+                $.ajax(_.extend({}, options, {
                     url: url,
                     contentType: 'text/plain',
                     data: options.params,
-                    success: function(data) {
+                    success: function(data, request) {
                         var objects = JSON.parse(data);
                         if(!!options && !!options.success) {
-                            options.success(objects, null, null);
+                            options.success(objects, request, null);
                         }
                     }
-                });
+                }));
             }
         });
 
@@ -160,6 +248,7 @@
         Backbone = require('backbone');
         $ = require('jquery');
         DBS = require('../lib/dbs');
+        prefix = 'http://127.0.0.1:5984';
 
         module.exports.BaseEntity = Factory();
     } else {

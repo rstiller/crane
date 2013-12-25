@@ -9,13 +9,13 @@
     function Factory() {
 
         return BaseEntity.extend({
-            defaults: {
+            defaults: _.extend({}, BaseEntity.prototype.defaults, {
                 branches: null,
                 name: '',
                 tags: null,
                 url: '',
                 type: 'project'
-            },
+            }),
             getBuildCommands: function(options) {
                 var slf = this;
                 var clazz = slf.constructor;

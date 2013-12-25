@@ -9,12 +9,12 @@
     function Factory() {
 
         return BaseEntity.extend({
-            defaults: {
+            defaults: _.extend({}, BaseEntity.prototype.defaults, {
                 machines: [],
                 description: '',
                 name: '',
                 type: 'machine-group'
-            },
+            }),
             removeMachine: function(machine, callback) {
                 var slf = this;
 
@@ -66,26 +66,7 @@
                 })]);
             }
         }, {
-            TYPE: 'machine-group',
-            countGroupsForMachine: function(machine, callback) {
-                var count = 0;
-
-                this.all(function(err, groups) {
-                    if(!!err) {
-                        callback(err);
-                        return;
-                    }
-
-                    _.each(groups, function(group) {
-                        var index = _.indexOf(group.get('machines'), machine.get('_id'));
-                        if(index !== -1) {
-                            count++;
-                        }
-                    });
-
-                    callback(null, count);
-                });
-            }
+            TYPE: 'machine-group'
         });
 
     }

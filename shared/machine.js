@@ -14,14 +14,14 @@
         };
 
         return BaseEntity.extend({
-            defaults: {
+            defaults: _.extend({}, BaseEntity.prototype.defaults, {
                 address: '',
                 username: '',
                 password: '',
                 groups: [],
                 runtime: Runtime.DOCKER,
                 type: 'machine'
-            },
+            }),
             countGroups: function(options) {
                 var slf = this;
                 var clazz = slf.constructor;
@@ -37,61 +37,7 @@
             }
         }, {
             TYPE: 'machine',
-            RUNTIME: Runtime,
-            forGroup: function(group, callback) {
-                var funcs = [];
-                var slf = this;
-
-                _.each(group.get('machines'), function(machineId) {
-                    funcs.push(function(next) {
-                        var machine = new (slf)({
-                            '_id': machineId
-                        });
-
-                        machine.fetch({
-                            error: function(model, err, options) {
-                                next(err);
-                            },
-                            success: function(model, response, options) {
-                                next(null, model);
-                            }
-                        });
-                    });
-                });
-
-                async.series(funcs, function(err, machines) {
-                    if(!!err) {
-                        callback(err);
-                        return;
-                    }
-
-                    if(!!callback) {
-                        callback(null, machines);
-                    }
-                });
-            },
-            saveAll: function(machines, callback) {
-                var slf = this;
-                var db = slf.DB;
-
-                db.bulkDocs({
-                    'docs': machines
-                }, function(err, response) {
-                    if(!!err) {
-                        callback(err);
-                        return;
-                    }
-
-                    _.each(machines, function(machine, index) {
-                        machine.set('_id', response[index].id);
-                        machine.set('_rev', response[index].rev);
-                    });
-
-                    if(!!callback) {
-                        callback(null, machines);
-                    }
-                });
-            }
+            RUNTIME: Runtime
         });
 
     }

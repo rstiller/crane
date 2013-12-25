@@ -15,15 +15,15 @@
         };
 
         return BaseEntity.extend({
-            defaults: {
-                status: '',
+            defaults: _.extend({}, BaseEntity.prototype.defaults, {
+                status: Status.CREATED,
                 created: new Date(),
                 started: null,
                 finished: null,
                 successful: false,
                 logs: [],
                 type: 'command'
-            },
+            }),
             start: function() {
                 this.set('status', Status.STARTED);
                 this.set('started', new Date());
