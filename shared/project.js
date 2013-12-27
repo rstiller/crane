@@ -5,6 +5,7 @@
     var async = null;
     var BaseEntity = null;
     var DBS = null;
+    var BuildJob = null;
 
     function Factory() {
 
@@ -14,9 +15,10 @@
                 name: '',
                 tags: null,
                 url: '',
+                buildTags: true,
                 type: 'project'
             }),
-            getBuildCommands: function(options) {
+            getBuildJobs: function(options) {
                 var slf = this;
                 var clazz = slf.constructor;
                 var query = clazz.query;
@@ -25,7 +27,18 @@
                     params: {
                         key: '"' + slf.get('_id') + '"'
                     },
-                    view: 'build-commands'
+                    view: 'build-jobs',
+                    success: function(model, response) {
+                        var objects = [];
+
+                        _.each(model.rows, function(row) {
+                            objects.push(new BuildJob(row.value));
+                        });
+
+                        if(!!options && !!options.success) {
+                            options.success(objects, response, null);
+                        }
+                    }
                 })]);
             }
         }, {
@@ -38,15 +51,17 @@
         _ = require('underscore');
         async = require('async');
         BaseEntity = require('./base-entity').BaseEntity;
+        BuildJob = require('./build-job').BuildJob;
         DBS = require('../lib/dbs');
 
         module.exports.Project = Factory();
     } else {
-        angular.module('shared.entities').factory('Project', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('Project', ['_', 'async', 'BaseEntity', 'BuildJob', 'DBS', function(a, b, c, d, e) {
             _ = a;
             async = b;
             BaseEntity = c;
-            DBS = d;
+            BuildJob = d;
+            DBS = e;
 
             return Factory();
         }]);

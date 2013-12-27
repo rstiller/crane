@@ -1,25 +1,29 @@
 
 angular.module('dashboard.widgets').controller('BuildOutputDialogCtrl',
-    ['$scope', 'BuildLogEntity', function($scope, BuildLogEntity) {
-    
+    ['$scope', function($scope) {
+
     $scope.cssClass = 'build-output-dialog';
     $scope.data = {};
     $scope.data.ready = false;
-    
+
     $scope.$watch('build', function(build) {
-        BuildLogEntity.forBuild(build, function(err, logs) {
-            angular.forEach(logs, function(log) {
-                log.collapsed = true;
-            });
-            $scope.data.logs = logs;
-            $scope.data.ready = true;
-            $scope.$apply();
+        build.getCommands({
+            error: function(err) {
+                console.log(err);
+            },
+            success: function(commands) {
+                angular.forEach(commands, function(command) {
+                    command.collapsed = true;
+                });
+                $scope.data.commands = commands;
+                $scope.data.ready = true;
+                $scope.$apply();
+            }
         });
     });
-    
+
     $scope.closeDialog = function() {
         $scope.$parent.close();
     };
-    
-}]);
 
+}]);

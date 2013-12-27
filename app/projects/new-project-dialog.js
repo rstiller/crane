@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('NewProjectCtrl',
-    ['$scope', 'Hoster', 'ProjectEntity',
-    function($scope, Hoster, ProjectEntity) {
+    ['$scope', 'Hoster', 'Project',
+    function($scope, Hoster, Project) {
 
     $scope.project = {};
     $scope.branches = [];
@@ -16,6 +16,7 @@ angular.module('dashboard.controllers').controller('NewProjectCtrl',
             if(!!info.description && !!info.description.length > 0) {
                 $scope.cssClass = "new-project-dialog-with-description";
             }
+            $scope.$apply();
         });
 
         Hoster.get($scope.url).getBranches($scope.url, function(err, branches) {
@@ -26,6 +27,8 @@ angular.module('dashboard.controllers').controller('NewProjectCtrl',
                     $scope.buildBranches = [branch];
                 }
             });
+
+            $scope.$apply();
         });
 
     };
@@ -36,13 +39,15 @@ angular.module('dashboard.controllers').controller('NewProjectCtrl',
 
     $scope.saveProject = function() {
 
-        var branches = [];
+        var branches = {};
 
         angular.forEach($scope.buildBranches, function(branch) {
-            branches.push(branch.name);
+            branches[branch.name] = {
+                _rev: ''
+            };
         });
 
-        var project = new ProjectEntity({
+        var project = new Project({
             'name': $scope.project.name,
             'url': $scope.project.html_url,
             'buildTags': $scope.buildTags,

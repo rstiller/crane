@@ -1,6 +1,6 @@
 angular.module('dashboard.widgets').directive('serviceWidget',
-    ['ProjectEntity', 'BuildEntity', 'Dialog',
-    function(ProjectEntity, BuildEntity, Dialog) {
+    ['Project', 'Dialog',
+    function(Project, Dialog) {
 
     function getWorkingCopy(project, version) {
         var workingCopy = null;
@@ -40,7 +40,7 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                 $scope.data.environment = null;
                 $scope.data.builds = null;
 
-                var project = new ProjectEntity({
+                var project = new Project({
                     '_id': $scope.projectId
                 });
 
@@ -55,13 +55,18 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                         $scope.data.service = service;
                         $scope.data.environment = $scope.data.service.environments[$scope.environment];
 
-                        BuildEntity.forProject($scope.projectId, $scope.version, $scope.service, $scope.environment, function(err, builds) {
-                            $scope.data.builds = builds;
-                            angular.forEach(builds, function(build) {
-                                build.set('finished', new Date(build.get('finished')));
-                                build.set('started', new Date(build.get('started')));
-                            });
-                            $scope.$apply();
+                        project.getBuildJobs({
+                            error: function(model, err) {
+                                console.log(err);
+                            },
+                            success: function(builds) {
+                                angular.forEach(builds, function(build) {
+                                    build.set('finished', new Date(build.get('finished')));
+                                    build.set('started', new Date(build.get('started')));
+                                });
+                                $scope.data.builds = builds;
+                                $scope.$apply();
+                            }
                         });
                     }
                 });

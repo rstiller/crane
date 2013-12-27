@@ -34,11 +34,11 @@
         <p class="no-description" ng-show="!data.service.description">No Description</p>
         <ul class="builds">
             <li ng-repeat="build in data.builds | limitTo:3">
-                <a ng-click="openDialog(build)" ng-class="{'err': !build.successful}">
-                    <i class="fa fa-exclamation-triangle err" ng-show="!build.successful"></i>
-                    <i class="fa fa-check-circle" ng-show="build.successful"></i>
-                    {{ build.started | date:'yy/MM/dd HH:mm:ss' }} - {{ build.finished | date:'HH:mm:ss' }}
-                    ({{ (build.finished.getTime() - build.started.getTime()) / 1000 | number:1 }} s)
+                <a ng-click="openDialog(build)" ng-class="{'err': !build.attributes.successful}">
+                    <i class="fa fa-exclamation-triangle err" ng-show="!build.attributes.successful"></i>
+                    <i class="fa fa-check-circle" ng-show="build.attributes.successful"></i>
+                    {{ build.attributes.started | date:'yy/MM/dd HH:mm:ss' }} - {{ build.attributes.finished | date:'HH:mm:ss' }}
+                    ({{ (build.attributes.finished.getTime() - build.attributes.started.getTime()) / 1000 | number:1 }} s)
                 </a>
             </li>
         </ul>

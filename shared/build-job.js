@@ -3,23 +3,23 @@
 
     var _ = null;
     var async = null;
-    var Command = null;
+    var AbstractJob = null;
     var DBS = null;
 
     function Factory() {
 
-        return Command.extend({
-            defaults: _.extend({}, Command.prototype.defaults, {
+        return AbstractJob.extend({
+            defaults: _.extend({}, AbstractJob.prototype.defaults, {
                 projectId: '',
                 workingCopyName: '',
                 workingCopyType: '',
                 workingCopyRev: '',
                 service: '',
                 environment: '',
-                type: 'build-command'
+                type: 'build-job'
             })
         }, {
-            TYPE: 'build-command'
+            TYPE: 'build-job'
         });
 
     }
@@ -27,15 +27,15 @@
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
-        Command = require('./command').Command;
+        AbstractJob = require('./abstract-job').AbstractJob;
         DBS = require('../lib/dbs');
 
-        module.exports.BuildCommand = Factory();
+        module.exports.BuildJob = Factory();
     } else {
-        angular.module('shared.entities').factory('BuildCommand', ['_', 'async', 'Command', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('BuildJob', ['_', 'async', 'AbstractJob', 'DBS', function(a, b, c, d) {
             _ = a;
             async = b;
-            Command = c;
+            AbstractJob = c;
             DBS = d;
 
             return Factory();

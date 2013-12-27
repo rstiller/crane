@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
-    ['$rootScope', '$scope', '$http', '$location', 'Hoster', 'Dialog', 'ProjectEntity', 'RenderPipeline',
-     function($rootScope, $scope, $http, $location, Hoster, Dialog, ProjectEntity, RenderPipeline) {
+    ['$rootScope', '$scope', '$http', '$location', 'Hoster', 'Dialog', 'Project', 'RenderPipeline', 'ShellCommand',
+     function($rootScope, $scope, $http, $location, Hoster, Dialog, Project, RenderPipeline, ShellCommand) {
 
     $scope.data = {};
     $scope.data.newProject = {
@@ -9,29 +9,37 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     };
     $scope.data.ready = false;
 
+    ShellCommand.all({
+        success: function(commands) {
+            console.log(commands);
+        }
+    });
+
     var renderPipeline = new RenderPipeline(function(next) {
         $scope.data.ready = false;
 
-        ProjectEntity.all(function(err, projects) {
-            if(!!err) {
+        Project.all({
+            error: function(err) {
                 console.log(err);
-                return;
+                next(err);
+            },
+            success: function(projects) {
+                $scope.data.projects = projects;
+                angular.forEach(projects, function(project) {
+                    refreshProject(project);
+                });
+
+                $scope.data.ready = true;
+                $scope.$apply();
+
+                next();
             }
-
-            $scope.data.projects = projects;
-            angular.forEach(projects, function(project) {
-                refreshProject(project);
-            });
-
-            $scope.data.ready = true;
-            $scope.$apply();
-
-            next();
         });
     });
 
     var refreshProject = function(project) {
-        Hoster.get(project.get('url')).getRepositoryImageUrl(project.get('url'), function(err, imageUrl) {
+        var url = project.get('url');
+        Hoster.get(url).getRepositoryImageUrl(url, function(err, imageUrl) {
             if(!!err) {
                 console.log(err);
                 return;
@@ -58,11 +66,13 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
         project.destroy({
             error: function(model, err, options) {
                 console.log(err);
+                renderPipeline.push({});
             },
             success: function(model, response, options) {
                 if($rootScope.$stateParams.projectId == project.get('_id')) {
                     $location.path('/projects/');
                 }
+                renderPipeline.push({});
             }
         });
     };

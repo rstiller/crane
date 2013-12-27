@@ -12,19 +12,23 @@ angular.module('dashboard.cache').factory('Cache', ['$http', 'PouchDB', function
 
             slf.store.get(key, function(err, doc) {
                 if(!!err) {
-                    callback(err);
+                    if(!!callback) {
+                        callback(err);
+                    }
                     return;
                 }
 
-                if(doc.expiration < date.getTime()) {
-                    callback({
-                        err: 404,
-                        reason: 'expired'
-                    });
-                    return;
-                }
+                if(!!callback) {
+                    if(doc.expiration < date.getTime()) {
+                        callback({
+                            err: 404,
+                            reason: 'expired'
+                        });
+                        return;
+                    }
 
-                callback(null, doc.value);
+                    callback(null, doc.value);
+                }
             });
         };
 
@@ -41,11 +45,15 @@ angular.module('dashboard.cache').factory('Cache', ['$http', 'PouchDB', function
                     value: value
                 }, function(err) {
                     if(!!err) {
-                        callback(err);
+                        if(!!callback) {
+                            callback(err);
+                        }
                         return;
                     }
 
-                    callback();
+                    if(!!callback) {
+                        callback(null);
+                    }
                 });
             });
         };
@@ -53,7 +61,9 @@ angular.module('dashboard.cache').factory('Cache', ['$http', 'PouchDB', function
         this.remove = function(key, callback) {
             slf.store.remove(key, function(err, response) {
                 if(!!err) {
-                    callback(err);
+                    if(!!callback) {
+                        callback(err);
+                    }
                     return;
                 }
 

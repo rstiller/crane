@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
-    ['$scope', '$stateParams', 'ProjectEntity', 'RenderPipeline',
-    function($scope, $stateParams, ProjectEntity, RenderPipeline) {
+    ['$scope', '$stateParams', 'Project', 'RenderPipeline',
+    function($scope, $stateParams, Project, RenderPipeline) {
 
     $scope.data = {};
     $scope.data.selectedEnvironment = '';
@@ -15,7 +15,7 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     var renderPipeline = new RenderPipeline(function(next) {
         $scope.data.ready = false;
 
-        var project = new ProjectEntity({
+        var project = new Project({
             '_id': $stateParams.projectId
         });
 
@@ -70,16 +70,6 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
         $scope.data.environments = environments;
         if(!!environments[0]) {
             $scope.data.selectedEnvironment = environments[0];
-        }
-    });
-
-    ProjectEntity.addChangeListener(function(err, project) {
-        if(!!err) {
-            return;
-        }
-
-        if(project.get('_id') === $stateParams.projectId) {
-            renderPipeline.push({});
         }
     });
 
