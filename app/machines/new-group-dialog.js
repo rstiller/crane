@@ -1,40 +1,22 @@
 
 angular.module('dashboard.controllers').controller('NewGroupCtrl',
-    ['$scope', 'MachineGroupEntity', 'MachineEntity',
-    function($scope, MachineGroupEntity, MachineEntity) {
+    ['$scope', 'MachineGroup', 'Machine',
+    function($scope, MachineGroup, Machine) {
 
     $scope.data = {
         name: '',
-        description: '',
-        ready: false,
-        selectedMachines: []
+        description: ''
     };
     $scope.cssClass = 'new-group-dialog';
-
-    $scope.init = function() {
-        $scope.data.ready = false;
-        MachineEntity.all(function(err, machines) {
-            $scope.data.machines = machines;
-            $scope.data.ready = true;
-            $scope.$apply();
-        });
-    };
 
     $scope.closeDialog = function() {
         $scope.$parent.close();
     };
 
     $scope.saveGroup = function() {
-        var machines = [];
-
-        angular.forEach($scope.data.selectedMachines, function(machine) {
-            machines.push(machine.get('_id'));
-        });
-
-        var group = new MachineGroupEntity({
+        var group = new MachineGroup({
             name: $scope.data.name,
-            description: $scope.data.description,
-            machines: machines
+            description: $scope.data.description
         });
 
         group.save({
@@ -43,6 +25,9 @@ angular.module('dashboard.controllers').controller('NewGroupCtrl',
             },
             success: function(model, response, option) {
                 $scope.closeDialog();
+                if(!!$scope.saveCallback) {
+                    $scope.saveCallback();
+                }
                 $scope.$apply();
             }
         });

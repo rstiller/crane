@@ -43,8 +43,10 @@
                 var db = slf.constructor.DB;
 
                 db.remove(slf.pick('_id', '_rev'), function(err, response) {
-                    if(!!err && !!options && !!options.error) {
-                        options.error(slf, err, null);
+                    if(!!err) {
+                        if(!!options && !!options.error) {
+                            options.error(slf, err, null);
+                        }
                         return;
                     }
 
@@ -148,6 +150,32 @@
 
                     if(!!callback) {
                         callback(null, objects);
+                    }
+                });
+            },
+            destroyAll: function(objects, options) {
+                var slf = this;
+                var db = slf.DB;
+                var docs = [];
+
+                _.each(objects, function(object) {
+                    docs.push(_.extend({}, _.pick(object.getDBObject(), ['_id', '_rev']), {
+                        _deleted: true
+                    }));
+                });
+
+                db.bulkDocs({
+                    'docs': docs
+                }, function(err, response) {
+                    if(!!err) {
+                        if(!!options && !!options.error) {
+                            options.error(null, err);
+                        }
+                        return;
+                    }
+
+                    if(!!options && !!options.error) {
+                        options.success();
                     }
                 });
             },

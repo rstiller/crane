@@ -9,7 +9,23 @@
 
     <form class="pure-form pure-form-stacked pure-u-2-5" ng-show="data.ready">
 
-        <fieldset class="pure-g">
+        <label>
+            <input type="radio" name="data.addressType" value="hostname" checked="checked" ng-click="changeAddressType('hostname')">
+            Hostname
+        </label>
+
+        <fieldset class="pure-g hostname-fieldset">
+            <div class="pure-u-1">
+                <input class="pure-input-1" type="text" ng-model="data.hostname">
+            </div>
+        </fieldset>
+
+        <label>
+            <input type="radio" name="data.addressType" value="ip" ng-click="changeAddressType('ip')">
+            IP-Addresses
+        </label>
+
+        <fieldset class="pure-g ip-fieldset">
             <label class="pure-u-1">Start-IP</label>
             <div class="pure-u-1-5">
                 <input class="pure-input-2-3" type="number" ng-model="data.startIp1" tabindex="0">
@@ -22,6 +38,8 @@
             </div>
             <div class="pure-u-1-5">
                 <input class="pure-input-2-3" type="number" ng-model="data.startIp4">
+            </div>
+            <div class="pure-u-1-5">
             </div>
 
             <label class="pure-u-1">End-IP</label>
@@ -36,21 +54,6 @@
             </div>
             <div class="pure-u-1-5">
                 <input class="pure-input-2-3" type="number" ng-model="data.endIp4">
-            </div>
-
-            <label class="pure-u-1">Username</label>
-            <div class="pure-u-1">
-                <input class="pure-input-1" type="text" ng-model="data.username">
-            </div>
-
-            <label class="pure-u-1">Password</label>
-            <div class="pure-u-1">
-                <input class="pure-input-1" type="password" ng-model="data.password">
-            </div>
-
-            <label class="pure-u-1">Type</label>
-            <div class="pure-u-1">
-                <select class="pure-input-1" ng-model="data.type" ng-options="value for value in data.types"></select>
             </div>
         </fieldset>
 
@@ -76,6 +79,36 @@
             </div>
         </fieldset>
 
+    </form>
+
+    <form class="pure-form pure-form-stacked pure-u-2-5" ng-show="data.ready">
+        <fieldset class="pure-g">
+            <label class="pure-u-1">Username</label>
+            <div class="pure-u-1">
+                <input class="pure-input-1" type="text" ng-model="data.username">
+            </div>
+
+            <label class="pure-u-1">Password</label>
+            <div class="pure-u-1">
+                <input class="pure-input-1" type="password" ng-model="data.password">
+            </div>
+        </fieldset>
+    </form>
+
+    <div class="pure-u-1-5" ng-show="data.ready"></div>
+
+    <form class="pure-form pure-form-stacked pure-u-2-5" ng-show="data.ready">
+        <fieldset class="pure-g">
+            <label class="pure-u-1">SSH Port</label>
+            <div class="pure-u-1">
+                <input class="pure-input-1" type="number" ng-model="data.port">
+            </div>
+
+            <label class="pure-u-1">Type</label>
+            <div class="pure-u-1">
+                <select class="pure-input-1" ng-model="data.runtime" ng-options="value for value in data.runtimes"></select>
+            </div>
+        </fieldset>
     </form>
 
     <div class="pure-u-1">

@@ -59,6 +59,20 @@
                         }
                     }
                 })]);
+            },
+            destroy: function(options) {
+                var slf = this;
+                var destroyAll = slf.constructor.destroyAll;
+
+                slf.getCommands({
+                    success: function(commands) {
+                        destroyAll(commands, {
+                            success: function() {
+                                BaseEntity.prototype.destroy.apply(slf, options);
+                            }
+                        });
+                    }
+                });
             }
         }, {
             STATUS: Status

@@ -40,6 +40,20 @@
                         }
                     }
                 })]);
+            },
+            destroy: function(options) {
+                var slf = this;
+                var destroyAll = slf.constructor.destroyAll;
+
+                slf.getBuildJobs({
+                    success: function(buildJobs) {
+                        destroyAll(buildJobs, {
+                            success: function() {
+                                BaseEntity.prototype.destroy.apply(slf, options);
+                            }
+                        });
+                    }
+                });
             }
         }, {
             TYPE: 'project'

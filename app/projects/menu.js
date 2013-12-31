@@ -9,12 +9,6 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
     };
     $scope.data.ready = false;
 
-    ShellCommand.all({
-        success: function(commands) {
-            console.log(commands);
-        }
-    });
-
     var renderPipeline = new RenderPipeline(function(next) {
         $scope.data.ready = false;
 

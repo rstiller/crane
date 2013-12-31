@@ -2,9 +2,7 @@
 (function() {
 
     var _ = null;
-    var async = null;
-    var BaseEntity = null;
-    var DBS = null;
+    var Backbone = null;
 
     function Factory() {
 
@@ -13,30 +11,15 @@
             DOCKER: 'docker'
         };
 
-        return BaseEntity.extend({
-            defaults: _.extend({}, BaseEntity.prototype.defaults, {
+        return Backbone.Model.extend({
+            defaults: _.extend({}, Backbone.Model.prototype.defaults, {
                 address: '',
                 username: '',
                 password: '',
-                groups: [],
-                runtime: Runtime.DOCKER,
-                type: 'machine'
-            }),
-            countGroups: function(options) {
-                var slf = this;
-                var clazz = slf.constructor;
-                var query = clazz.query;
-
-                query.apply(clazz, [_.extend({}, options, {
-                    params: {
-                        key: '"' + slf.get('_id') + '"',
-                        group: true
-                    },
-                    view: 'count-groups'
-                })]);
-            }
+                port: 22,
+                runtime: Runtime.DOCKER
+            })
         }, {
-            TYPE: 'machine',
             RUNTIME: Runtime
         });
 
@@ -44,17 +27,13 @@
 
     if (typeof module !== 'undefined') {
         _ = require('underscore');
-        async = require('async');
-        BaseEntity = require('./base-entity').BaseEntity;
-        DBS = require('../lib/dbs');
+        Backbone = require('backbone');
 
         module.exports.Machine = Factory();
     } else {
-        angular.module('shared.entities').factory('Machine', ['_', 'async', 'BaseEntity', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('Machine', ['_', 'backbone', function(a, b) {
             _ = a;
-            async = b;
-            BaseEntity = c;
-            DBS = d;
+            Backbone = b;
 
             return Factory();
         }]);

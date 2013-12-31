@@ -44,21 +44,7 @@
                 </a>
             </div>
 
-            <ul class="machine-list">
-                <li ng-show="data.machines[group.attributes._id].length == 0">No Machines in Group</li>
-                <li ng-repeat="machine in data.machines[group.attributes._id] | limitTo:3">
-                    <a ui-sref="machines.machine({ machineId: machine.attributes._id })">
-                        {{ machine.attributes.username }}@{{ machine.attributes.address }} ({{ machine.attributes.type }})
-                    </a>
-                    <a class="float-right machine-list-item-action" ng-click="removeMachine(group, machine)"
-                        title="Remove {{ machine.attributes.username }}@{{ machine.attributes.address }}">
-                        <i class="fa fa-trash-o"></i>
-                    </a>
-                </li>
-                <li ng-show="data.machines[group.attributes._id].length > 3">
-                    <a ui-sref="machines.group({ groupId: group.attributes._id })">{{ data.machines[group.attributes._id].length - 3 }} more &hellip;</a>
-                </li>
-            </ul>
+            <a ui-sref="machines.group({ groupId: group.attributes._id })">{{ group.attributes.machines.length }} machine(s)</a>
         </div>
     </li>
 </ul>

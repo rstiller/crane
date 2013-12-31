@@ -2,9 +2,8 @@
 (function() {
 
     var _ = null;
-    var async = null;
     var AbstractJob = null;
-    var DBS = null;
+    var ShellCommand = null;
 
     function Factory() {
 
@@ -26,17 +25,15 @@
 
     if (typeof module !== 'undefined') {
         _ = require('underscore');
-        async = require('async');
         AbstractJob = require('./abstract-job').AbstractJob;
-        DBS = require('../lib/dbs');
+        ShellCommand = require('./shell-command').ShellCommand;
 
         module.exports.BuildJob = Factory();
     } else {
-        angular.module('shared.entities').factory('BuildJob', ['_', 'async', 'AbstractJob', 'DBS', function(a, b, c, d) {
+        angular.module('shared.entities').factory('BuildJob', ['_', 'AbstractJob', 'ShellCommand', function(a, b, c) {
             _ = a;
-            async = b;
-            AbstractJob = c;
-            DBS = d;
+            AbstractJob = b;
+            ShellCommand = c;
 
             return Factory();
         }]);
