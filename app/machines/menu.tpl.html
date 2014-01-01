@@ -33,7 +33,7 @@
 </form>
 
 <ul class="menu">
-    <li class="menu-item" ng-repeat="group in data.groups | filter:machineQuery">
+    <li class="menu-item" ng-repeat="group in data.groups | filter:machineQuery" ng-class="{selected: $stateParams.groupId == group.attributes._id}">
         <div class="menu-item-container machine-menu-item">
             <div class="machine-menu-item-header">
                 <a ui-sref="machines.group({ groupId: group.attributes._id })">
