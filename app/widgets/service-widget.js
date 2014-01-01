@@ -36,6 +36,10 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                         $scope.data.environment = $scope.data.service.environments[$scope.environment];
 
                         project.getBuildJobs({
+                            params: {
+                                limit: 3,
+                                descending: true
+                            },
                             error: function(model, err) {
                                 console.log(err);
                             },

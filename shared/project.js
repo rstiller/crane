@@ -29,9 +29,9 @@
                 var query = clazz.query;
 
                 query.apply(clazz, [_.extend({}, options, {
-                    params: {
+                    params: _.extend({}, options.params, {
                         key: '"' + slf.get('_id') + '"'
-                    },
+                    }),
                     view: 'build-jobs',
                     success: function(model, response) {
                         var objects = [];

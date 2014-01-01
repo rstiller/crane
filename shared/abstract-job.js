@@ -43,7 +43,7 @@
 
                 query.apply(clazz, [_.extend({}, options, {
                     params: {
-                        job_id: '"' + slf.get('_id') + '"',
+                        job_id: slf.get('_id'),
                         include_docs: true
                     },
                     filter: 'commands',
