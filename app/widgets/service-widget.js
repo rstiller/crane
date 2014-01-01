@@ -1,26 +1,6 @@
 angular.module('dashboard.widgets').directive('serviceWidget',
-    ['Project', 'Dialog',
-    function(Project, Dialog) {
-
-    function getWorkingCopy(project, version) {
-        var workingCopy = null;
-
-        angular.forEach(project.get('branches'), function(branch) {
-            if(version === branch.rev) {
-                workingCopy = branch;
-            }
-        });
-
-        if(!workingCopy) {
-            angular.forEach(project.get('tags'), function(tag) {
-                if(version === tag.rev) {
-                    workingCopy = tag;
-                }
-            });
-        }
-
-        return workingCopy;
-    }
+    ['Project', 'Dialog', 'BuildJob',
+    function(Project, Dialog, BuildJob) {
 
     return {
         replace: true,
@@ -49,7 +29,7 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                         console.log(err);
                     },
                     success: function(project, response, options) {
-                        $scope.data.workingCopy = getWorkingCopy(project, $scope.version);
+                        $scope.data.workingCopy = Project.getWorkingCopy(project, $scope.version).workingCopy;
                         var service = $scope.data.workingCopy.infrastructure.services[$scope.service];
                         service.ports = service.ports.join(', ');
                         $scope.data.service = service;
@@ -61,9 +41,18 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                             },
                             success: function(builds) {
                                 angular.forEach(builds, function(build) {
-                                    build.set('finished', new Date(build.get('finished')));
+                                    if(!!build.get('finished')) {
+                                        build.set('finished', new Date(build.get('finished')));
+                                    } else {
+                                        build.set('finished', 'in Progress');
+                                    }
                                     build.set('started', new Date(build.get('started')));
                                 });
+
+                                builds.sort(function(a, b) {
+                                    return a.get('started').getTime() < b.get('started').getTime();
+                                });
+
                                 $scope.data.builds = builds;
                                 $scope.$apply();
                             }
@@ -77,6 +66,32 @@ angular.module('dashboard.widgets').directive('serviceWidget',
             $scope.$watch('service', update);
             $scope.$watch('version', update);
             $scope.$watch('environment', update);
+
+            $scope.build = function() {
+                var project = new Project({
+                    '_id': $scope.projectId
+                });
+
+                project.fetch({
+                    error: function(model, err, options) {
+                        console.log(err);
+                    },
+                    success: function(project, response, options) {
+                        var workingCopy = Project.getWorkingCopy(project, $scope.version);
+                        var buildJob = new BuildJob({
+                            'projectId': $scope.projectId,
+                            'workingCopyName': workingCopy.name,
+                            'workingCopyType': workingCopy.type,
+                            'workingCopyRev': workingCopy.rev,
+                            'service': $scope.service,
+                            'environment': $scope.environment
+                        });
+                        buildJob.save({
+                            success: update
+                        });
+                    }
+                });
+            };
 
             $scope.openDialog = function(build) {
                 new Dialog('#service-widget-console-output', 'BuildOutputDialogCtrl', 'app/widgets/build-output-dialog.tpl.html', {

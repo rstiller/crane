@@ -9,6 +9,11 @@
 
     function Factory() {
 
+        var WorkingCopyType = {
+            BRANCH: 'branch',
+            TAG: 'tag'
+        };
+
         return BaseEntity.extend({
             defaults: _.extend({}, BaseEntity.prototype.defaults, {
                 branches: null,
@@ -56,7 +61,37 @@
                 });
             }
         }, {
-            TYPE: 'project'
+            TYPE: 'project',
+            WORKING_COPY_TYPE: WorkingCopyType,
+            getWorkingCopy: function(project, revision) {
+                var workingCopy = null;
+                var workingCopyName = null;
+                var isTag = false;
+
+                angular.forEach(project.get('branches'), function(branch, name) {
+                    if(revision === branch.rev) {
+                        workingCopy = branch;
+                        workingCopyName = name;
+                    }
+                });
+
+                if(!workingCopy) {
+                    angular.forEach(project.get('tags'), function(tag, name) {
+                        if(revision === tag.rev) {
+                            workingCopy = tag;
+                            isTag = true;
+                            workingCopyName = name;
+                        }
+                    });
+                }
+
+                return {
+                    type: isTag ? WorkingCopyType.TAG : WorkingCopyType.BRANCH,
+                    name: workingCopyName,
+                    rev: workingCopy.rev,
+                    workingCopy: workingCopy
+                };
+            }
         });
 
     }

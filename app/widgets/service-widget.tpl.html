@@ -1,7 +1,7 @@
 
 <div class="service-container pure-g">
     <div class="pure-u-1">
-        <h3>{{ service }}</h3>
+        <h3>{{ service }} <a class="float-right" title="Build {{ service }}" ng-click="build()"><i class="fa fa-cog"></i></a></h3>
     </div>
     <dl class="pure-u-1-2 info">
         <div class="pure-g">
@@ -38,7 +38,6 @@
                     <i class="fa fa-exclamation-triangle err" ng-show="!build.attributes.successful"></i>
                     <i class="fa fa-check-circle" ng-show="build.attributes.successful"></i>
                     {{ build.attributes.started | date:'yy/MM/dd HH:mm:ss' }} - {{ build.attributes.finished | date:'HH:mm:ss' }}
-                    ({{ (build.attributes.finished.getTime() - build.attributes.started.getTime()) / 1000 | number:1 }} s)
                 </a>
             </li>
         </ul>

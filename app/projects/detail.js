@@ -1,16 +1,18 @@
 
 angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
-    ['$scope', '$stateParams', 'Project', 'RenderPipeline',
-    function($scope, $stateParams, Project, RenderPipeline) {
+    ['$scope', '$stateParams', 'Project', 'BuildJob', 'RenderPipeline',
+    function($scope, $stateParams, Project, BuildJob, RenderPipeline) {
 
-    $scope.data = {};
-    $scope.data.selectedEnvironment = '';
-    $scope.data.selectedVersion = {};
-    $scope.data.versions = [];
-    $scope.data.environments = [];
-    $scope.data.services = [];
-    $scope.data.ready = false;
-    $scope.data.project = null;
+    $scope.data = {
+        selectedEnvironment: '',
+        selectedVersion: {},
+        selectedVersionName: '',
+        versions: [],
+        environments: [],
+        services: [],
+        ready: false,
+        project: null
+    };
 
     var renderPipeline = new RenderPipeline(function(next) {
         $scope.data.ready = false;
@@ -52,6 +54,14 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
         });
     });
 
+    $scope.$watch('data.selectedVersion', function(selectedVersion) {
+        angular.forEach($scope.data.versions, function(version, name) {
+            if(selectedVersion._rev === version._rev) {
+                $scope.data.selectedVersionName = name;
+            }
+        });
+    });
+
     $scope.selectEnvironment = function(environment) {
         $scope.data.selectedEnvironment = environment;
     };
@@ -72,6 +82,57 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
             $scope.data.selectedEnvironment = environments[0];
         }
     });
+
+    var generateBuildJobs = function(buildJobs, project, workingCopy, name, type, selectedEnvironment) {
+        var infrastructure = workingCopy.infrastructure;
+        angular.forEach(infrastructure.environments, function(variables, environment) {
+            if(!selectedEnvironment || selectedEnvironment === environment) {
+                angular.forEach(infrastructure.services, function(config, service) {
+                    var buildJob = new BuildJob({
+                        'projectId': project.get('_id'),
+                        'workingCopyName': name,
+                        'workingCopyType': type,
+                        'workingCopyRev': workingCopy.rev,
+                        'service': service,
+                        'environment': environment
+                    });
+                    buildJobs.push(buildJob);
+                });
+            }
+        });
+    };
+
+    var build = function(version, environment) {
+        var buildJobs = [];
+        var project = $scope.data.project;
+
+        angular.forEach(project.get('branches'), function(branch, name) {
+            if(!version || name === version) {
+                generateBuildJobs(buildJobs, project, branch, name, Project.WORKING_COPY_TYPE.BRANCH, environment);
+            }
+        });
+        angular.forEach($scope.data.project.get('tags'), function(tag, name) {
+            if(!version || name === version) {
+                generateBuildJobs(buildJobs, project, tag, name, Project.WORKING_COPY_TYPE.TAG, environment);
+            }
+        });
+
+        BuildJob.saveAll(buildJobs, function(err) {
+            renderPipeline.push({});
+        });
+    };
+
+    $scope.buildProject = function() {
+        build();
+    };
+
+    $scope.buildVersion = function(version) {
+        build(version);
+    };
+
+    $scope.buildEnvironment = function(version, environment) {
+        build(version, environment);
+    };
 
     renderPipeline.push({});
 

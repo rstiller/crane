@@ -41,6 +41,7 @@ module.exports = function (grunt) {
                     './vendor/angular-ui-router/release/angular-ui-router.js',
                     './vendor/pouchdb/dist/pouchdb-nightly.js',
                     './vendor/marked/lib/marked.js',
+                    './vendor/bootstrap/dist/js/bootstrap.js',
                     //'./vendor/pouchdb-collate/dist/pouchdb-collate.js',
                     //'./vendor/pouchdb/src/plugins/pouchdb.gql.js',
                     './.tmp/script.js'
@@ -59,6 +60,7 @@ module.exports = function (grunt) {
                     './vendor/angular-ui-router/release/angular-ui-router.min.js',
                     './vendor/pouchdb/dist/pouchdb-nightly.min.js',
                     './vendor/marked/lib/marked.js',
+                    './vendor/bootstrap/dist/js/bootstrap.min.js',
                     //'./vendor/pouchdb-collate/dist/pouchdb-collate.js',
                     //'./vendor/pouchdb/src/plugins/pouchdb.gql.js',
                     './.tmp/script.js'

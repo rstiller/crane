@@ -27,6 +27,28 @@
                     <select class="pure-input-2-3" ng-model="data.selectedEnvironment" ng-options="environment for environment in data.environments">
                     </select>
                 </div>
+
+                <div class="pure-u-1-4">
+                    <label>&nbsp;</label>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-color2">Build</button>
+                        <button type="button" class="btn btn-color2 dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a ng-click="buildProject()">
+                                Build Project
+                            </a></li>
+                            <li><a ng-click="buildVersion(data.selectedVersionName)">
+                                Build {{ data.selectedVersionName }}
+                            </a></li>
+                            <li><a ng-click="buildEnvironment(data.selectedVersionName, data.selectedEnvironment)">
+                                Build {{ data.selectedVersionName }}/{{ data.selectedEnvironment }}
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </fieldset>
     </form>
