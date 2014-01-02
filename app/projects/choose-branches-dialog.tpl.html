@@ -1,0 +1,30 @@
+
+<h1>Choose Branches</h1>
+
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+</div>
+
+<div class="pure-g choose-branches-info" ng-show="data.ready">
+
+    <form class="pure-form pure-form-aligned pure-u-1">
+
+        <div class="pure-g">
+            <fieldset class="pure-u-1">
+                <div class="pure-control-group">
+                    <select class="pure-u-1" multiple="multiple" size="10" ng-model="data.selectedBranches" ng-options="branch.name for branch in data.branches">
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="vertical-pad-20"></div>
+
+        <div class="float-right">
+            <button type="button" class="pure-button" ng-click="closeDialog()">Cancel</button>
+            <button type="submit" class="pure-button pure-button-success" ng-click="saveBranches()">Save Branches</button>
+        </div>
+
+    </form>
+
+</div>

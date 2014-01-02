@@ -7,9 +7,18 @@
     <form class="pure-form pure-form-stacked">
         <fieldset>
             <legend><h1>{{ data.project.attributes.name }}</h1></legend>
-            <a href="{{ data.project.attributes.url }}" target="_blank" class="source-code-link">
-                {{ data.project.attributes.url }}
-            </a>
+            <div class="pure-g">
+                <div class="pure-u-1-2">
+                    <a href="{{ data.project.attributes.url }}" target="_blank" class="source-code-link">
+                        {{ data.project.attributes.url }}
+                    </a>
+                </div>
+                <div class="pure-u-1-4">
+                    <label for="build-tags" class="float-left">
+                        <input id="build-tags" type="checkbox" ng-model="data.project.attributes.buildTags" ng-click="setBuildTags($event)"> Build Tags
+                    </label>
+                </div>
+            </div>
 
             <div class="pure-g version-chooser">
                 <div class="pure-u-1-4">
@@ -48,6 +57,8 @@
                             </a></li>
                         </ul>
                     </div>
+
+                    <button type="button" class="btn btn-color2" ng-click="chooseBranches()">Branches</button>
                 </div>
             </div>
         </fieldset>

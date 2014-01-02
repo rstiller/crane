@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
-    ['$scope', '$stateParams', 'Project', 'BuildJob', 'RenderPipeline',
-    function($scope, $stateParams, Project, BuildJob, RenderPipeline) {
+    ['$scope', '$stateParams', 'Project', 'BuildJob', 'Dialog', 'RenderPipeline',
+    function($scope, $stateParams, Project, BuildJob, Dialog, RenderPipeline) {
 
     $scope.data = {
         selectedEnvironment: '',
@@ -132,6 +132,39 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
 
     $scope.buildEnvironment = function(version, environment) {
         build(version, environment);
+    };
+
+    $scope.setBuildTags = function(event) {
+        $scope.data.project.set('buildTags', event.target.checked);
+        $scope.data.project.save();
+    };
+
+    $scope.chooseBranches = function() {
+        new Dialog('#dialog', 'ChooseBranchesCtrl', 'app/projects/choose-branches-dialog.tpl.html', {
+            url: $scope.data.project.get('url'),
+            branches: $scope.data.project.get('branches'),
+            saveCallback: function(branches) {
+                var projectBranches = $scope.data.project.get('branches');
+
+                angular.forEach(branches, function(branch, name) {
+                    if(!projectBranches[name]) {
+                        projectBranches[name] = branch;
+                    }
+                });
+                angular.forEach(projectBranches, function(branch, name) {
+                    if(!branches[name]) {
+                        delete projectBranches[name];
+                    }
+                });
+
+                $scope.data.project.set('branches', projectBranches);
+                $scope.data.project.save({
+                    success: function() {
+                        renderPipeline.push({});
+                    }
+                });
+            }
+        });
     };
 
     renderPipeline.push({});

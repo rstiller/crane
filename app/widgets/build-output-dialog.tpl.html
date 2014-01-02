@@ -10,7 +10,8 @@
     <div class="console">
         <div ng-repeat="command in data.commands" class="command" ng-class="{'command-collapsed': command.collapsed, 'command-expanded': !command.collapsed}">
             <span class="cmd" ng-click="command.collapsed=!command.collapsed" ng-class="{'cmd-err': command.attributes.exitCode != 0}">
-                <i class="fa" ng-class="{'fa-plus-square-o': command.collapsed, 'fa-minus-square-o': !command.collapsed}"></i> {{ command.attributes.cmd }} {{ command.attributes.args.join(' ') }}
+                <i class="fa" ng-class="{'fa-plus-square-o': command.collapsed, 'fa-minus-square-o': !command.collapsed}"></i>
+                {{ command.attributes.cmd }} {{ command.attributes.args.join(' ') }}
             </span>
             <code ng-repeat="output in command.attributes.output" ng-class="output.type">{{ output.data }}</code>
             <span class="exit">exited with {{ command.attributes.exitCode }}</span>
