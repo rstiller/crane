@@ -1,18 +1,18 @@
 
-angular.module('dashboard.widgets').controller('DeployHistoryDialogCtrl',
-    ['$scope', 'DeployJob', function($scope, DeployJob) {
+angular.module('dashboard.widgets').controller('UploadHistoryDialogCtrl',
+    ['$scope', 'UploadJob', function($scope, UploadJob) {
 
-    $scope.cssClass = 'deploy-history-dialog';
+    $scope.cssClass = 'upload-history-dialog';
     $scope.data = {};
     $scope.data.ready = false;
     
     $scope.init = function() {
-    	$scope.project.getDeployJobs({
+    	$scope.project.getUploadJobs({
             error: function(err) {
                 console.log(err);
             },
-            success: function(deployments) {
-                $scope.data.deployments = deployments;
+            success: function(uploads) {
+                $scope.data.uploads = uploads;
                 $scope.data.ready = true;
                 $scope.$apply();
             }

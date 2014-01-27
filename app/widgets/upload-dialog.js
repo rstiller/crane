@@ -1,8 +1,8 @@
 
-angular.module('dashboard.widgets').controller('DeployDialogCtrl',
-    ['$scope', 'Project', 'MachineGroup', 'DeployJob', function($scope, Project, MachineGroup, DeployJob) {
+angular.module('dashboard.widgets').controller('UploadDialogCtrl',
+    ['$scope', 'Project', 'MachineGroup', 'UploadJob', function($scope, Project, MachineGroup, UploadJob) {
 
-    $scope.cssClass = 'deploy-dialog';
+    $scope.cssClass = 'upload-dialog';
     $scope.data = {};
     $scope.data.ready = false;
     $scope.data.group = null;
@@ -28,9 +28,9 @@ angular.module('dashboard.widgets').controller('DeployDialogCtrl',
         });
     };
 
-    $scope.deploy = function() {
+    $scope.upload = function() {
         var workingCopy = Project.getWorkingCopy($scope.project, $scope.version);
-        var deployJob = new DeployJob({
+        var uploadJob = new UploadJob({
             'projectId': $scope.project.get('_id'),
             'workingCopyName': workingCopy.name,
             'workingCopyType': workingCopy.type,
@@ -39,7 +39,7 @@ angular.module('dashboard.widgets').controller('DeployDialogCtrl',
             'service': $scope.service,
             'environment': $scope.environment
         });
-        deployJob.save({
+        uploadJob.save({
         	error: function(err) {
         		console.log(err);
         	},

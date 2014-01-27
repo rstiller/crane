@@ -1,6 +1,6 @@
 angular.module('dashboard.widgets').directive('serviceWidget',
-    ['Project', 'Dialog', 'BuildJob', 'DeployJob',
-    function(Project, Dialog, BuildJob, DeployJob) {
+    ['Project', 'Dialog', 'BuildJob',
+    function(Project, Dialog, BuildJob) {
 
     return {
         replace: true,
@@ -97,7 +97,7 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                 });
             };
 
-            $scope.deploy = function() {
+            $scope.upload = function() {
                 var project = new Project({
                     '_id': $scope.projectId
                 });
@@ -107,7 +107,7 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                         console.log(err);
                     },
                     success: function(project, response, options) {
-                        new Dialog('#dialog', 'DeployDialogCtrl', 'app/widgets/deploy-dialog.tpl.html', {
+                        new Dialog('#dialog', 'UploadDialogCtrl', 'app/widgets/upload-dialog.tpl.html', {
                             'project': project,
                             'version': $scope.version,
                             'service': $scope.service,

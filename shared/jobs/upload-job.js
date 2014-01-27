@@ -15,10 +15,10 @@
                 service: '',
                 environment: '',
                 machineGroupId: '',
-                type: 'deploy-job'
+                type: 'upload-job'
             })
         }, {
-            TYPE: 'deploy-job'
+            TYPE: 'upload-job'
         });
 
     }
@@ -27,9 +27,9 @@
         _ = require('underscore');
         AbstractJob = require('./abstract-job').AbstractJob;
 
-        module.exports.DeployJob = Factory();
+        module.exports.UploadJob = Factory();
     } else {
-        angular.module('shared.entities').factory('DeployJob', ['_', 'AbstractJob', function(a, b) {
+        angular.module('shared.entities').factory('UploadJob', ['_', 'AbstractJob', function(a, b) {
             _ = a;
             AbstractJob = b;
 

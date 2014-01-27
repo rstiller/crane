@@ -139,23 +139,23 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
         $scope.data.project.save();
     };
 
-    $scope.deployVersion = function(version) {
-        new Dialog('#dialog', 'DeployDialogCtrl', 'app/widgets/deploy-dialog.tpl.html', {
+    $scope.uploadVersion = function(version) {
+        new Dialog('#dialog', 'UploadDialogCtrl', 'app/widgets/upload-dialog.tpl.html', {
             'project': $scope.data.project,
             'version': version
         });
     };
 
-    $scope.deployEnvironment = function(version, environment) {
-        new Dialog('#dialog', 'DeployDialogCtrl', 'app/widgets/deploy-dialog.tpl.html', {
+    $scope.uploadEnvironment = function(version, environment) {
+        new Dialog('#dialog', 'UploadDialogCtrl', 'app/widgets/upload-dialog.tpl.html', {
             'project': $scope.data.project,
             'version': version,
             'environment': environment
         });
     };
     
-    $scope.deploymentHistory = function() {
-    	new Dialog('#dialog', 'DeployHistoryDialogCtrl', 'app/widgets/deploy-history-dialog.tpl.html', {
+    $scope.uploadHistory = function() {
+    	new Dialog('#dialog', 'UploadHistoryDialogCtrl', 'app/widgets/upload-history-dialog.tpl.html', {
             'project': $scope.data.project
         });
     };

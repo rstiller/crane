@@ -1,17 +1,17 @@
 
-<h1>Deployment History for {{ project.attributes.name }}</h1>
+<h1>Upload History for {{ project.attributes.name }}</h1>
 
 <div class="load-indicator" ng-show="!data.ready">
     <i class="fa fa-spinner fa-spin fa-5x"></i>
 </div>
 
-<div class="deploy-history-container" ng-show="data.ready">
+<div class="upload-history-container" ng-show="data.ready">
     
-    <div ng-show="data.deployments.length <= 0">
-        <aside>Not yet deploy.</aside>
+    <div ng-show="data.uploads.length <= 0">
+        <aside>Not yet uploaded.</aside>
     </div>
     
-    <div ng-show="data.deployments.length > 0">
+    <div ng-show="data.uploads.length > 0">
         TODO
     </div>
     

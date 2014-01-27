@@ -59,20 +59,20 @@
                     </div>
 
                     <div class="btn-group">
-                        <button type="button" class="btn btn-color2"><i class="fa fa-cloud-upload"></i> Deployment</button>
+                        <button type="button" class="btn btn-color2"><i class="fa fa-cloud-upload"></i> Upload</button>
                         <button type="button" class="btn btn-color2 dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a ng-click="deployVersion(data.selectedVersion.rev)">
-                                Deploy {{ data.selectedVersionName }}
+                            <li><a ng-click="uploadVersion(data.selectedVersion.rev)">
+                                Upload {{ data.selectedVersionName }}
                             </a></li>
-                            <li><a ng-click="deployEnvironment(data.selectedVersion.rev, data.selectedEnvironment)">
-                                Deploy {{ data.selectedVersionName }}/{{ data.selectedEnvironment }}
+                            <li><a ng-click="uploadEnvironment(data.selectedVersion.rev, data.selectedEnvironment)">
+                                Upload {{ data.selectedVersionName }}/{{ data.selectedEnvironment }}
                             </a></li>
                             <li class="divider"></li>
-                            <li><a ng-click="deploymentHistory()">
+                            <li><a ng-click="uploadHistory()">
                                 History
                             </a></li>
                         </ul>

@@ -1,11 +1,11 @@
 
-<h1>Deploy {{ project.attributes.name }} / {{ data.version }}</h1>
+<h1>Upload {{ project.attributes.name }} / {{ data.version }}</h1>
 
 <div class="load-indicator" ng-show="!data.ready">
     <i class="fa fa-spinner fa-spin fa-5x"></i>
 </div>
 
-<div class="deploy-container" ng-show="data.ready">
+<div class="upload-container" ng-show="data.ready">
     <form class="pure-form pure-form-aligned pure-u-1">
 
         <div class="pure-g">
@@ -21,7 +21,7 @@
         
         <div class="float-right">
             <button type="button" class="pure-button" ng-click="closeDialog()">Close</button>
-            <button type="submit" class="pure-button pure-button-success" ng-click="deploy()">Deploy</button>
+            <button type="submit" class="pure-button pure-button-success" ng-click="upload()">Upload</button>
         </div>
 
     </form>
