@@ -15,7 +15,6 @@ angular.module('dashboard.widgets').controller('DeployHistoryDialogCtrl',
                 $scope.data.deployments = deployments;
                 $scope.data.ready = true;
                 $scope.$apply();
-                console.log($scope.data.deployments);
             }
         });
     };

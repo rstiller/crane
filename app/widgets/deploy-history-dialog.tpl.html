@@ -6,7 +6,15 @@
 </div>
 
 <div class="deploy-history-container" ng-show="data.ready">
-
+    
+    <div ng-show="data.deployments.length <= 0">
+        <aside>Not yet deploy.</aside>
+    </div>
+    
+    <div ng-show="data.deployments.length > 0">
+        TODO
+    </div>
+    
     <div class="actions">
         <button type="button" class="pure-button float-right" ng-click="closeDialog()">Close</button>
     </div>
