@@ -153,6 +153,12 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
             'environment': environment
         });
     };
+    
+    $scope.deploymentHistory = function() {
+    	new Dialog('#dialog', 'DeployHistoryDialogCtrl', 'app/widgets/deploy-history-dialog.tpl.html', {
+            'project': $scope.data.project
+        });
+    };
 
     $scope.chooseBranches = function() {
         new Dialog('#dialog', 'ChooseBranchesCtrl', 'app/projects/choose-branches-dialog.tpl.html', {

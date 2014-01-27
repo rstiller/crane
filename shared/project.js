@@ -6,6 +6,7 @@
     var BaseEntity = null;
     var DBS = null;
     var BuildJob = null;
+    var DeployJob = null;
 
     function Factory() {
 
@@ -38,6 +39,29 @@
 
                         _.each(model.rows, function(row) {
                             objects.push(new BuildJob(row.value));
+                        });
+
+                        if(!!options && !!options.success) {
+                            options.success(objects, response, null);
+                        }
+                    }
+                })]);
+            },
+            getDeployJobs: function(options) {
+                var slf = this;
+                var clazz = slf.constructor;
+                var query = clazz.query;
+
+                query.apply(clazz, [_.extend({}, options, {
+                    params: _.extend({}, options.params, {
+                        key: '"' + slf.get('_id') + '"'
+                    }),
+                    view: 'deploy-jobs',
+                    success: function(model, response) {
+                        var objects = [];
+
+                        _.each(model.rows, function(row) {
+                            objects.push(new DeployJob(row.value));
                         });
 
                         if(!!options && !!options.success) {
@@ -101,16 +125,18 @@
         async = require('async');
         BaseEntity = require('./base-entity').BaseEntity;
         BuildJob = require('./jobs/build-job').BuildJob;
+        DeployJob = require('./jobs/deploy-job').DeployJob;
         DBS = require('../lib/dbs');
 
         module.exports.Project = Factory();
     } else {
-        angular.module('shared.entities').factory('Project', ['_', 'async', 'BaseEntity', 'BuildJob', 'DBS', function(a, b, c, d, e) {
+        angular.module('shared.entities').factory('Project', ['_', 'async', 'BaseEntity', 'BuildJob', 'DBS', 'DeployJob', function(a, b, c, d, e, f) {
             _ = a;
             async = b;
             BaseEntity = c;
             BuildJob = d;
             DBS = e;
+            DeployJob = f;
 
             return Factory();
         }]);
