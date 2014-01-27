@@ -1,6 +1,6 @@
 angular.module('dashboard.widgets').directive('serviceWidget',
-    ['Project', 'Dialog', 'BuildJob',
-    function(Project, Dialog, BuildJob) {
+    ['Project', 'Dialog', 'BuildJob', 'DeployJob',
+    function(Project, Dialog, BuildJob, DeployJob) {
 
     return {
         replace: true,
@@ -97,8 +97,28 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                 });
             };
 
+            $scope.deploy = function() {
+                var project = new Project({
+                    '_id': $scope.projectId
+                });
+
+                project.fetch({
+                    error: function(model, err, options) {
+                        console.log(err);
+                    },
+                    success: function(project, response, options) {
+                        new Dialog('#dialog', 'DeployDialogCtrl', 'app/widgets/deploy-dialog.tpl.html', {
+                            'project': project,
+                            'version': $scope.version,
+                            'service': $scope.service,
+                            'environment': $scope.environment
+                        });
+                    }
+                });
+            };
+
             $scope.openDialog = function(build) {
-                new Dialog('#service-widget-console-output', 'BuildOutputDialogCtrl', 'app/widgets/build-output-dialog.tpl.html', {
+                new Dialog('#dialog', 'BuildOutputDialogCtrl', 'app/widgets/build-output-dialog.tpl.html', {
                     build: build
                 });
             };

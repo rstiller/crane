@@ -1,1 +1,19 @@
-Group Detail
+
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+</div>
+
+<div class="group-detail-header" ng-show="data.ready">
+    <form class="pure-form pure-form-stacked">
+        <fieldset>
+            <legend><h1>{{ data.group.attributes.name }}</h1></legend>
+        </fieldset>
+    </form>
+</div>
+
+<div class="pure-g" ng-show="data.ready">
+
+    <div class="group-detail pure-u-1">
+    </div>
+
+</div>

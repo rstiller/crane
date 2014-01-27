@@ -33,7 +33,6 @@ angular.module('dashboard.cache').factory('Cache', ['$http', 'PouchDB', function
         };
 
         this.put = function(key, value, options, callback) {
-
             if(!callback) {
                 callback = options;
             }

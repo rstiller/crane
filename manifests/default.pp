@@ -82,7 +82,7 @@ exec { 'docker pull -t="0.6.0" stackbrew/registry':
     require => Service["docker-daemon"],
 }
 
-exec { 'docker pull -t="1.5.0-ubuntu-12.04" rstiller/couchdb':
+exec { 'docker pull rstiller/couchdb':
     user    => root,
     timeout => 0,
     require => Service["docker-daemon"],

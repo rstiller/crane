@@ -3,7 +3,6 @@
 
     var _ = null;
     var AbstractJob = null;
-    var ShellCommand = null;
 
     function Factory() {
 
@@ -15,10 +14,11 @@
                 workingCopyRev: '',
                 service: '',
                 environment: '',
-                type: 'build-job'
+                machineGroupId: '',
+                type: 'deploy-job'
             })
         }, {
-            TYPE: 'build-job'
+            TYPE: 'deploy-job'
         });
 
     }
@@ -26,14 +26,12 @@
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         AbstractJob = require('./abstract-job').AbstractJob;
-        ShellCommand = require('./shell-command').ShellCommand;
 
-        module.exports.BuildJob = Factory();
+        module.exports.DeployJob = Factory();
     } else {
-        angular.module('shared.entities').factory('BuildJob', ['_', 'AbstractJob', 'ShellCommand', function(a, b, c) {
+        angular.module('shared.entities').factory('DeployJob', ['_', 'AbstractJob', function(a, b) {
             _ = a;
             AbstractJob = b;
-            ShellCommand = c;
 
             return Factory();
         }]);

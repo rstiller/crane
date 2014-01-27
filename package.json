@@ -19,7 +19,7 @@
         "js-yaml": "*",
         "winston": "*",
         "async": "*",
-        "pouchdb": "git://github.com/daleharvey/pouchdb.git",
+        "pouchdb": "1.1.0",
         "http-proxy": "*",
         "express": "*"
     },

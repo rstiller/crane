@@ -1,0 +1,13 @@
+
+<h1>Deploy {{ project.attributes.name }} / {{ data.version }}</h1>
+
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+</div>
+
+<div class="deploy-container" ng-show="data.ready">
+
+    <div class="actions">
+        <button type="button" class="pure-button float-right" ng-click="closeDialog()">Close</button>
+    </div>
+</div>

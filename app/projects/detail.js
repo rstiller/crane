@@ -139,6 +139,21 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
         $scope.data.project.save();
     };
 
+    $scope.deployVersion = function(version) {
+        new Dialog('#dialog', 'DeployDialogCtrl', 'app/widgets/deploy-dialog.tpl.html', {
+            'project': $scope.data.project,
+            'version': version
+        });
+    };
+
+    $scope.deployEnvironment = function(version, environment) {
+        new Dialog('#dialog', 'DeployDialogCtrl', 'app/widgets/deploy-dialog.tpl.html', {
+            'project': $scope.data.project,
+            'version': version,
+            'environment': environment
+        });
+    };
+
     $scope.chooseBranches = function() {
         new Dialog('#dialog', 'ChooseBranchesCtrl', 'app/projects/choose-branches-dialog.tpl.html', {
             url: $scope.data.project.get('url'),

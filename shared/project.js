@@ -100,7 +100,7 @@
         _ = require('underscore');
         async = require('async');
         BaseEntity = require('./base-entity').BaseEntity;
-        BuildJob = require('./build-job').BuildJob;
+        BuildJob = require('./jobs/build-job').BuildJob;
         DBS = require('../lib/dbs');
 
         module.exports.Project = Factory();

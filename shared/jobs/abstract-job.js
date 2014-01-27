@@ -83,9 +83,9 @@
     if (typeof module !== 'undefined') {
         _ = require('underscore');
         async = require('async');
-        BaseEntity = require('./base-entity').BaseEntity;
-        ShellCommand = require('./shell-command').ShellCommand;
-        DBS = require('../lib/dbs');
+        BaseEntity = require('../base-entity').BaseEntity;
+        ShellCommand = require('../shell-command').ShellCommand;
+        DBS = require('../../lib/dbs');
 
         module.exports.AbstractJob = Factory();
     } else {

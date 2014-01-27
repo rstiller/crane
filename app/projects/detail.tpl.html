@@ -37,10 +37,10 @@
                     </select>
                 </div>
 
-                <div class="pure-u-1-4">
+                <div class="pure-u-1-3">
                     <label>&nbsp;</label>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-color2">Build</button>
+                        <button type="button" class="btn btn-color2"><i class="fa fa-wrench"></i> Build</button>
                         <button type="button" class="btn btn-color2 dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
                             <span class="sr-only">Toggle Dropdown</span>
@@ -58,7 +58,23 @@
                         </ul>
                     </div>
 
-                    <button type="button" class="btn btn-color2" ng-click="chooseBranches()">Branches</button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-color2"><i class="fa fa-cloud-upload"></i> Deploy</button>
+                        <button type="button" class="btn btn-color2 dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a ng-click="deployVersion(data.selectedVersion.rev)">
+                                Deploy {{ data.selectedVersionName }}
+                            </a></li>
+                            <li><a ng-click="deployEnvironment(data.selectedVersion.rev, data.selectedEnvironment)">
+                                Deploy {{ data.selectedVersionName }}/{{ data.selectedEnvironment }}
+                            </a></li>
+                        </ul>
+                    </div>
+
+                    <button type="button" class="btn btn-color2" ng-click="chooseBranches()"><i class="fa fa-code-fork"></i> Branches</button>
                 </div>
             </div>
         </fieldset>

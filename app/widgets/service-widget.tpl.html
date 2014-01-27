@@ -1,7 +1,13 @@
 
 <div class="service-container pure-g">
     <div class="pure-u-1">
-        <h3>{{ service }} <a class="float-right" title="Build {{ service }}" ng-click="build()"><i class="fa fa-cog"></i></a></h3>
+        <h3>
+            {{ service }}
+            <div class="float-right">
+                <a title="Build {{ service }}" ng-click="build()"><i class="fa fa-wrench"></i></a>
+                <a title="Deploy {{ service }}" ng-click="deploy()"><i class="fa fa-cloud-upload"></i></a>
+            </div>
+        </h3>
     </div>
     <dl class="pure-u-1-2 info">
         <div class="pure-g">
@@ -42,5 +48,4 @@
             </li>
         </ul>
     </div>
-    <div class="pure-u-1" id="service-widget-console-output" dialog="" data-template=""></div>
 </div>

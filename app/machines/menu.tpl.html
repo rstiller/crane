@@ -1,12 +1,11 @@
 <div class="pure-g action-container">
 
     <div class="pure-u-1">
-        <button href="" class="action-box" ng-click="openNewGroupDialog()">
+        <button class="action-box" ng-click="openNewGroupDialog()">
             <span>Add Group</span>
             <i class="fa fa-sitemap fa-2x"></i>
         </button>
-
-        <button href="" class="action-box" ng-click="openNewMachineDialog()">
+        <button class="action-box" ng-click="openNewMachineDialog()">
             <span>Add Machine</span>
             <i class="fa fa-desktop fa-2x"></i>
         </button>
@@ -18,7 +17,7 @@
     <i class="fa fa-spinner fa-spin fa-5x"></i>
 </div>
 
-<form class="pure-form search-filter" ng-show="data.groups.length > 1" ng-show="data.ready">
+<form class="pure-form search-filter" ng-show="data.groups.length > 1 and data.ready">
     <fieldset>
 
         <legend>
