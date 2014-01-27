@@ -6,8 +6,23 @@
 </div>
 
 <div class="deploy-container" ng-show="data.ready">
+    <form class="pure-form pure-form-aligned pure-u-1">
 
-    <div class="actions">
-        <button type="button" class="pure-button float-right" ng-click="closeDialog()">Close</button>
-    </div>
+        <div class="pure-g">
+            <fieldset class="pure-u-1">
+                <div class="pure-control-group">
+                    <select class="pure-u-1" size="10" ng-model="data.group" ng-options="group.attributes.name for group in data.groups">
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="vertical-pad-20"></div>
+        
+        <div class="float-right">
+            <button type="button" class="pure-button" ng-click="closeDialog()">Close</button>
+            <button type="submit" class="pure-button pure-button-success" ng-click="deploy()">Deploy</button>
+        </div>
+
+    </form>
 </div>
