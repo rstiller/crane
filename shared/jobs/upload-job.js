@@ -15,6 +15,7 @@
                 service: '',
                 environment: '',
                 machineGroupId: '',
+                services: [],
                 type: 'upload-job'
             })
         }, {

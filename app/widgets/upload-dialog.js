@@ -36,7 +36,7 @@ angular.module('dashboard.widgets').controller('UploadDialogCtrl',
             'workingCopyType': workingCopy.type,
             'workingCopyRev': workingCopy.rev,
             'machineGroupId': $scope.data.group.get('_id'),
-            'service': $scope.service,
+            'services': $scope.services,
             'environment': $scope.environment
         });
         uploadJob.save({

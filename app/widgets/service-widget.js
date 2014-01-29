@@ -110,7 +110,7 @@ angular.module('dashboard.widgets').directive('serviceWidget',
                         new Dialog('#dialog', 'UploadDialogCtrl', 'app/widgets/upload-dialog.tpl.html', {
                             'project': project,
                             'version': $scope.version,
-                            'service': $scope.service,
+                            'services': [$scope.service],
                             'environment': $scope.environment
                         });
                     }

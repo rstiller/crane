@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
-    ['$scope', '$stateParams', 'Project', 'BuildJob', 'Dialog', 'RenderPipeline',
-    function($scope, $stateParams, Project, BuildJob, Dialog, RenderPipeline) {
+    ['$scope', '$stateParams', '_', 'Project', 'BuildJob', 'Dialog', 'RenderPipeline',
+    function($scope, $stateParams, _, Project, BuildJob, Dialog, RenderPipeline) {
 
     $scope.data = {
         selectedEnvironment: '',
@@ -142,7 +142,8 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     $scope.uploadVersion = function(version) {
         new Dialog('#dialog', 'UploadDialogCtrl', 'app/widgets/upload-dialog.tpl.html', {
             'project': $scope.data.project,
-            'version': version
+            'version': version,
+            'services': _.keys($scope.data.services)
         });
     };
 
@@ -150,13 +151,15 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
         new Dialog('#dialog', 'UploadDialogCtrl', 'app/widgets/upload-dialog.tpl.html', {
             'project': $scope.data.project,
             'version': version,
-            'environment': environment
+            'environment': environment,
+            'services': _.keys($scope.data.services)
         });
     };
     
     $scope.uploadHistory = function() {
     	new Dialog('#dialog', 'UploadHistoryDialogCtrl', 'app/widgets/upload-history-dialog.tpl.html', {
-            'project': $scope.data.project
+            'project': $scope.data.project,
+            'services': _.keys($scope.data.services)
         });
     };
 
