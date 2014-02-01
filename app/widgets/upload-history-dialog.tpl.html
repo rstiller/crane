@@ -14,7 +14,7 @@
     <div ng-show="data.uploads.length > 0">
         <ul>
             <li ng-repeat="upload in data.uploads">
-                {{ upload.attributes.workingCopyName }} - [{{ upload.attributes.services }}] ({{ upload.attributes.status }} - {{ upload.attributes.created }})
+                {{ upload.attributes.workingCopyName }} - {{ upload.attributes.services }} ({{ upload.attributes.status }} - {{ upload.attributes.created }})
             </li>
         </ul>
     </div>

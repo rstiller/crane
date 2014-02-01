@@ -37,6 +37,9 @@ angular.module('dashboard.widgets').directive('serviceWidget',
 
                         project.getBuildJobs({
                             params: {
+                            	service: $scope.service,
+                                version: $scope.version,
+                                environment: $scope.environment,
                                 limit: 3,
                                 descending: true
                             },

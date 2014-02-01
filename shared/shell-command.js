@@ -33,30 +33,44 @@
 
                     slf.process.stdout.setEncoding('utf8');
                     slf.process.stdout.on('data', function(data) {
-                        slf.get('output').push({
+                    	var tmp = _.union(slf.get('output'), [{
                             'type': 'out',
                             'data': data
-                        });
-                        if(slf.get('enabled') === true) {
-                            slf.save();
-                        }
-
-                        if(!!options && !!options.out) {
+                        }]);
+                    	
+                    	slf.set('output', tmp)
+                        
+                    	if(slf.get('enabled') === true) {
+                            slf.save({
+                            	success: function() {
+                            		if(!!options && !!options.out) {
+                                        options.out(data);
+                                    }
+                            	}
+                            });
+                        } else if(!!options && !!options.out) {
                             options.out(data);
                         }
                     });
 
                     slf.process.stderr.setEncoding('utf8');
                     slf.process.stderr.on('data', function(data) {
-                        slf.get('output').push({
+                    	var tmp = _.union(slf.get('output'), [{
                             'type': 'err',
                             'data': data
-                        });
+                        }]);
+                    	
+                    	slf.set('output', tmp)
+                        
                         if(slf.get('enabled') === true) {
-                            slf.save();
-                        }
-
-                        if(!!options && !!options.err) {
+                            slf.save({
+                            	success: function() {
+                            		if(!!options && !!options.err) {
+                                        options.err(data);
+                                    }
+                            	}
+                            });
+                        } else if(!!options && !!options.err) {
                             options.err(data);
                         }
                     });
@@ -67,17 +81,33 @@
                             'finished': new Date()
                         });
                         if(slf.get('enabled') === true) {
-                            slf.save();
-                        }
-
-                        if(!!options && !!options.done) {
+                            slf.save({
+                            	success: function() {
+                            		if(!!options && !!options.done) {
+                                        options.done(code);
+                                    }
+                            	}
+                            });
+                        } else if(!!options && !!options.done) {
                             options.done(code);
                         }
                     });
 
                     slf.process.on('error', function() {
-                        if(!!options && !!options.err) {
-                            options.err(data);
+                    	slf.set({
+                            'exitCode': -1,
+                            'finished': new Date()
+                        });
+                        if(slf.get('enabled') === true) {
+                            slf.save({
+                            	success: function() {
+                            		if(!!options && !!options.err) {
+                                        options.err();
+                                    }
+                            	}
+                            });
+                        } else if(!!options && !!options.err) {
+                            options.err();
                         }
                     });
                 }

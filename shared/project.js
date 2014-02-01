@@ -31,14 +31,15 @@
 
                 query.apply(clazz, [_.extend({}, options, {
                     params: _.extend({}, options.params, {
-                        key: '"' + slf.get('_id') + '"'
+                        project_id: slf.get('_id'),
+                        include_docs: true
                     }),
-                    view: 'build-jobs',
+                    filter: 'build-jobs',
                     success: function(model, response) {
                         var objects = [];
 
-                        _.each(model.rows, function(row) {
-                            objects.push(new BuildJob(row.value));
+                        _.each(model.results, function(result) {
+                            objects.push(new BuildJob(result.doc));
                         });
 
                         if(!!options && !!options.success) {
