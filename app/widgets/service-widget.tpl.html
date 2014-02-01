@@ -3,37 +3,30 @@
     <div class="pure-u-1">
         <h3>
             {{ service }}
-            <div class="float-right">
+            <span class="float-right">
                 <a title="Build {{ service }}" ng-click="build()"><i class="fa fa-wrench"></i></a>
                 <a title="Upload {{ service }}" ng-click="upload()"><i class="fa fa-cloud-upload"></i></a>
-            </div>
+            </span>
         </h3>
     </div>
-    <dl class="pure-u-1-2 info">
-        <div class="pure-g">
-            <dt ng-show="data.service.category" class="pure-u-1-4">Category</dt>
-            <dd ng-show="data.service.category" class="pure-u-2-3">{{ data.service.category }}</dd>
+    <dl class="pure-u-1-2 info pure-g">
+        <dt ng-show="data.service.category" class="pure-u-1-4">Category</dt>
+        <dd ng-show="data.service.category" class="pure-u-2-3">{{ data.service.category }}</dd>
 
-            <dt ng-show="data.service.version" class="pure-u-1-4">Version</dt>
-            <dd ng-show="data.service.version" class="pure-u-2-3">{{ data.service.version }}</dd>
+        <dt ng-show="data.service.version" class="pure-u-1-4">Version</dt>
+        <dd ng-show="data.service.version" class="pure-u-2-3">{{ data.service.version }}</dd>
 
-            <dt ng-show="data.service.ports" class="pure-u-1-4">Ports</dt>
-            <dd ng-show="data.service.ports" class="pure-u-2-3">{{ data.service.ports }}</dd>
+        <dt ng-show="data.service.ports" class="pure-u-1-4">Ports</dt>
+        <dd ng-show="data.service.ports" class="pure-u-2-3">{{ data.service.ports }}</dd>
 
-            <dt ng-show="data.service.nodes" class="pure-u-1-4">Nodes</dt>
-            <dd ng-show="data.service.nodes" class="pure-u-2-3">
-                {{ data.service.nodes }} <span ng-show="data.service.minNodes && data.service.maxNodes">({{ data.service.minNodes }} - {{ data.service.maxNodes }})</span>
-            </dd>
-
-            <dt ng-show="data.service.options" class="pure-u-1-4">Options</dt>
-            <dd ng-show="data.service.options" class="pure-u-2-3">
-                <ul class="option-list">
-                    <li ng-repeat="(key, value) in data.service.options">
-                        {{ key }}: {{ value }}
-                    </li>
-                </ul>
-            </dd>
-        </div>
+        <dt ng-show="data.service.options" class="pure-u-1-4">Options</dt>
+        <dd ng-show="data.service.options" class="pure-u-2-3">
+            <ul class="option-list">
+                <li ng-repeat="(key, value) in data.service.options">
+                    {{ key }}: {{ value }}
+                </li>
+            </ul>
+        </dd>
     </dl>
     <div class="pure-u-1-2">
         <p class="description" ng-show="data.service.description">{{ data.service.description }}</p>

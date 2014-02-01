@@ -19,18 +19,12 @@ file.
 ```yaml
 services:
     mongodb:
-        nodes: auto
-        minNodes: 3
-        maxNodes: 9
         manifest: mongodb.yml
     nginx:
-        nodes: auto
         manifest: nginx.yml
     my_app:
-        nodes: auto
         manifest: my_app.yml
     haproxy:
-        nodes: 2
         manifest: https://raw.github.com/user/repo/master/haproxy.yml
 
 environments:
@@ -48,10 +42,7 @@ environments:
 ```
 
 - ``services`` - a list of service definition which represents your entire project / application.
-    - each service got a name, a node-configuration and a provisioning-configuration
-    - ``nodes`` - the number of nodes or `auto` for automatic deployment
-    - ``minNodes`` - the minimum number of nodes
-    - ``maxNodes`` - the maximum number of nodes
+    - each service got a name and a provisioning-configuration
     - ``manifest`` - the relative path or URL to the services' provisioning-configuration
 - ``environments`` - a list of environment-labels, which contain some environment variables
     that are used when building the [docker](http://www.docker.io/) images.
