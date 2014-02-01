@@ -42,6 +42,9 @@ angular.module('dashboard.controllers').controller('GroupDetailCtrl',
     	var selectedCheckboxes = table.find('tbody tr td input:checked');
     	
     	checkboxes.prop('checked', selectedCheckboxes.length < checkboxes.length && thisCheckbox.is(':checked'));
+    	
+    	selectedCheckboxes = table.find('tbody tr td input:checked');
+    	$('.group-detail-header button').prop('disabled', selectedCheckboxes.length > 0 ? null : 'disabled');
     };
     
     $scope.checkSelectAll = function($event) {
@@ -49,8 +52,10 @@ angular.module('dashboard.controllers').controller('GroupDetailCtrl',
     	var checkbox = table.find('thead tr th input[type=checkbox]');
     	var checkboxes = table.find('tbody tr td input[type=checkbox]');
     	var selectedCheckboxes = table.find('tbody tr td input:checked');
+    	var enabled = selectedCheckboxes.length >= checkboxes.length;
     	
-    	checkbox.prop('checked', selectedCheckboxes.length >= checkboxes.length);
+    	$('.group-detail-header button').prop('disabled', selectedCheckboxes.length > 0 ? null : 'disabled');
+    	checkbox.prop('checked', enabled);
     };
 
     renderPipeline.push({});
