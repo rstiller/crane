@@ -1,13 +1,33 @@
 
 <h1>Manage Uploads for {{ group.attributes.name }}</h1>
 
-<div class="pure-g manage-uploads-info">
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+</div>
+
+<div class="pure-g manage-uploads-info" ng-show="data.ready">
 
     <div class="pure-u-1">
-        <div class="float-right">
-            <button type="button" class="pure-button" ng-click="closeDialog()">Cancel</button>
-            <button type="submit" class="pure-button pure-button-success" ng-click="applyChanges()">Apply</button>
-        </div>
+        <form class="pure-form pure-form-aligned pure-u-1">
+    
+            <div class="pure-g">
+                <fieldset class="pure-u-1">
+                    <div class="pure-control-group">
+                        <select class="pure-u-1" multiple="multiple" size="10" ng-model="data.selectedImages"
+                            ng-options="image.project + ' / ' + image.version + ' / ' + image.environment + ' / ' + image.service for image in data.images">
+                        </select>
+                    </div>
+                </fieldset>
+            </div>
+    
+            <div class="vertical-pad-20"></div>
+    
+            <div class="float-right">
+                <button type="button" class="pure-button" ng-click="closeDialog()">Cancel</button>
+                <button type="submit" class="pure-button pure-button-success" ng-click="upload()"><i class="fa fa-cloud-upload"></i> Upload</button>
+            </div>
+    
+        </form>
     </div>
 
 </div>

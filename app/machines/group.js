@@ -82,7 +82,7 @@ angular.module('dashboard.controllers').controller('GroupDetailCtrl',
     	
     	new Dialog('#dialog', 'ManageUploadsCtrl', 'app/machines/manage-uploads-dialog.tpl.html', {
     		group: $scope.data.group,
-    		machines: machines
+    		machines:  _.values(_.pick($scope.data.group.get('machines'), machines))
         });
     };
 

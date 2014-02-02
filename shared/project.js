@@ -116,6 +116,26 @@
                     rev: workingCopy.rev,
                     workingCopy: workingCopy
                 };
+            },
+            getImages: function(options) {
+                var clazz = this;
+                var query = clazz.query;
+
+                query.apply(clazz, [_.extend({}, options, {
+                    params: _.extend({}, options.params),
+                    view: 'images',
+                    success: function(model, response) {
+                        var objects = [];
+
+                        _.each(model.rows, function(row) {
+                            objects.push(row.value);
+                        });
+
+                        if(!!options && !!options.success) {
+                            options.success(objects, response, null);
+                        }
+                    }
+                })]);
             }
         });
 
