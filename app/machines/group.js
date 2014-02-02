@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('GroupDetailCtrl',
-    ['$scope', '$stateParams', 'jquery', 'MachineGroup', 'RenderPipeline',
-    function($scope, $stateParams, $, MachineGroup, RenderPipeline) {
+    ['$scope', '$stateParams', 'jquery', '_', 'MachineGroup', 'Dialog', 'RenderPipeline',
+    function($scope, $stateParams, $, _, MachineGroup, Dialog, RenderPipeline) {
 
     $scope.data = {
         ready: false,
@@ -56,6 +56,34 @@ angular.module('dashboard.controllers').controller('GroupDetailCtrl',
     	
     	$('.group-detail-header button').prop('disabled', selectedCheckboxes.length > 0 ? null : 'disabled');
     	checkbox.prop('checked', enabled);
+    };
+    
+    $scope.removeMachines = function($event) {
+    	var machines = [];
+    	
+    	$('.group-detail table tbody tr td input[type=checkbox]:checked').each(function() {
+    		machines.push(parseInt($(this).attr('data-index')));
+    	});
+    	
+    	var newMachines = _.difference($scope.data.group.get('machines'), _.values(_.pick($scope.data.group.get('machines'), machines)));
+    	
+    	$scope.data.group.set('machines', newMachines);
+    	$scope.data.group.save(function() {
+    		renderPipeline.push({});
+    	});
+    };
+    
+    $scope.manageUploads = function($event) {
+    	var machines = [];
+    	
+    	$('.group-detail table tbody tr td input[type=checkbox]:checked').each(function() {
+    		machines.push(parseInt($(this).attr('data-index')));
+    	});
+    	
+    	new Dialog('#dialog', 'ManageUploadsCtrl', 'app/machines/manage-uploads-dialog.tpl.html', {
+    		group: $scope.data.group,
+    		machines: machines
+        });
     };
 
     renderPipeline.push({});

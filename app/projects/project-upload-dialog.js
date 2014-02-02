@@ -1,8 +1,8 @@
 
-angular.module('dashboard.widgets').controller('UploadDialogCtrl',
+angular.module('dashboard.widgets').controller('ProjectUploadDialogCtrl',
     ['$scope', 'Project', 'MachineGroup', 'UploadJob', function($scope, Project, MachineGroup, UploadJob) {
 
-    $scope.cssClass = 'upload-dialog';
+    $scope.cssClass = 'project-upload-dialog';
     $scope.data = {};
     $scope.data.ready = false;
     $scope.data.group = null;

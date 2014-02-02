@@ -1,8 +1,8 @@
 
-angular.module('dashboard.widgets').controller('UploadHistoryDialogCtrl',
+angular.module('dashboard.widgets').controller('ProjectUploadHistoryDialogCtrl',
     ['$scope', 'UploadJob', function($scope, UploadJob) {
 
-    $scope.cssClass = 'upload-history-dialog';
+    $scope.cssClass = 'project-upload-history-dialog';
     $scope.data = {};
     $scope.data.ready = false;
     

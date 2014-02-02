@@ -140,7 +140,7 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     };
 
     $scope.uploadVersion = function(version) {
-        new Dialog('#dialog', 'UploadDialogCtrl', 'app/widgets/upload-dialog.tpl.html', {
+        new Dialog('#dialog', 'ProjectUploadDialogCtrl', 'app/projects/project-upload-dialog.tpl.html', {
             'project': $scope.data.project,
             'version': version,
             'services': _.keys($scope.data.services)
@@ -148,7 +148,7 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     };
 
     $scope.uploadEnvironment = function(version, environment) {
-        new Dialog('#dialog', 'UploadDialogCtrl', 'app/widgets/upload-dialog.tpl.html', {
+        new Dialog('#dialog', 'ProjectUploadDialogCtrl', 'app/projects/project-upload-dialog.tpl.html', {
             'project': $scope.data.project,
             'version': version,
             'environment': environment,
@@ -157,7 +157,7 @@ angular.module('dashboard.controllers').controller('ProjectDetailCtrl',
     };
     
     $scope.uploadHistory = function() {
-    	new Dialog('#dialog', 'UploadHistoryDialogCtrl', 'app/widgets/upload-history-dialog.tpl.html', {
+    	new Dialog('#dialog', 'ProjectUploadHistoryDialogCtrl', 'app/projects/project-upload-history-dialog.tpl.html', {
             'project': $scope.data.project,
             'services': _.keys($scope.data.services)
         });
