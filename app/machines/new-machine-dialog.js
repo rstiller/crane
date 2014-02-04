@@ -134,7 +134,7 @@ angular.module('dashboard.controllers').controller('NewMachineCtrl',
 
             $scope.closeDialog();
             if(!!$scope.saveCallback) {
-                $scope.saveCallback();
+                $scope.saveCallback(machines, groups);
             }
             $scope.$apply();
         });

@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('GroupDetailCtrl',
-    ['$scope', '$stateParams', 'jquery', '_', 'MachineGroup', 'Dialog', 'RenderPipeline',
-    function($scope, $stateParams, $, _, MachineGroup, Dialog, RenderPipeline) {
+    ['$rootScope', '$scope', '$stateParams', 'jquery', '_', 'MachineGroup', 'Dialog', 'RenderPipeline',
+    function($rootScope, $scope, $stateParams, $, _, MachineGroup, Dialog, RenderPipeline) {
 
     $scope.data = {
         ready: false,
@@ -29,9 +29,13 @@ angular.module('dashboard.controllers').controller('GroupDetailCtrl',
         });
     });
     
-    MachineGroup.addChangeListener({
-    	success: function() {
-    		renderPipeline.push({});
+    $rootScope.$on('groups.update', function(event, groups) {
+    	if(!!$scope.data.group) {
+    		angular.forEach(groups, function(group) {
+    			if(group.get('_id') === $scope.data.group.get('_id')) {
+    				renderPipeline.push({});
+    			}
+    		});
     	}
     });
     
@@ -69,7 +73,7 @@ angular.module('dashboard.controllers').controller('GroupDetailCtrl',
     	
     	$scope.data.group.set('machines', newMachines);
     	$scope.data.group.save(function() {
-    		renderPipeline.push({});
+    		$rootScope.$emit('groups.update', [$scope.data.group]);
     	});
     };
     

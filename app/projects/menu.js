@@ -73,7 +73,7 @@ angular.module('dashboard.controllers').controller('ProjectsMenuCtrl',
 
     $rootScope.$on('projects.update', function(event, project) {
         renderPipeline.push({});
-    })
+    });
 
     renderPipeline.push({});
 

@@ -26,7 +26,7 @@ angular.module('dashboard.controllers').controller('NewGroupCtrl',
             success: function(model, response, option) {
                 $scope.closeDialog();
                 if(!!$scope.saveCallback) {
-                    $scope.saveCallback();
+                    $scope.saveCallback(group);
                 }
                 $scope.$apply();
             }
