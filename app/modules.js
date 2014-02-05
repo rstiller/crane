@@ -16,6 +16,9 @@ angular.module('dashboard.deps', [
 angular.module('dashboard.dbs', [
     'dashboard.deps'
 ]);
+angular.module('dashboard.eventbus', [
+	'dashboard.deps'
+]);
 angular.module('dashboard.provider', [
     'dashboard.cache',
     'dashboard.deps'
@@ -35,6 +38,7 @@ angular.module('dashboard.widgets', [
 ]);
 angular.module('dashboard.controllers', [
     'dashboard.deps',
+    'dashboard.eventbus',
     'dashboard.provider',
     'dashboard.services',
     'dashboard.utils',

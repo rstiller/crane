@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('GroupDetailCtrl',
-    ['$rootScope', '$scope', '$stateParams', 'jquery', '_', 'MachineGroup', 'Dialog', 'RenderPipeline',
-    function($rootScope, $scope, $stateParams, $, _, MachineGroup, Dialog, RenderPipeline) {
+    ['EventBus', '$scope', '$stateParams', 'jquery', '_', 'MachineGroup', 'Dialog', 'RenderPipeline',
+    function(EventBus, $scope, $stateParams, $, _, MachineGroup, Dialog, RenderPipeline) {
 
     $scope.data = {
         ready: false,
@@ -29,7 +29,7 @@ angular.module('dashboard.controllers').controller('GroupDetailCtrl',
         });
     });
     
-    $rootScope.$on('groups.update', function(event, groups) {
+    EventBus.$on('groups.update', function(event, groups) {
     	if(!!$scope.data.group) {
     		angular.forEach(groups, function(group) {
     			if(group.get('_id') === $scope.data.group.get('_id')) {
@@ -72,8 +72,10 @@ angular.module('dashboard.controllers').controller('GroupDetailCtrl',
     	var newMachines = _.difference($scope.data.group.get('machines'), _.values(_.pick($scope.data.group.get('machines'), machines)));
     	
     	$scope.data.group.set('machines', newMachines);
-    	$scope.data.group.save(function() {
-    		$rootScope.$emit('groups.update', [$scope.data.group]);
+    	$scope.data.group.save({
+    		success: function() {
+        		EventBus.$broadcast('groups.update', [$scope.data.group]);
+        	}
     	});
     };
     

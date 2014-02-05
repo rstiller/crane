@@ -1,7 +1,7 @@
 
 angular.module('dashboard.controllers').controller('MachineMenuCtrl',
-    ['$rootScope', '$scope', 'Dialog', 'MachineGroup', 'Machine', 'RenderPipeline', 'async',
-    function($rootScope, $scope, Dialog, MachineGroup, Machine, RenderPipeline, async) {
+    ['EventBus', '$scope', 'Dialog', 'MachineGroup', 'Machine', 'RenderPipeline', 'async',
+    function(EventBus, $scope, Dialog, MachineGroup, Machine, RenderPipeline, async) {
 
     $scope.data = {};
     $scope.data.ready = false;
@@ -24,14 +24,14 @@ angular.module('dashboard.controllers').controller('MachineMenuCtrl',
         });
     });
     
-    $rootScope.$on('groups.update', function(event, groups) {
+    EventBus.$on('groups.update', function(event, groups) {
         renderPipeline.push({});
     });
 
     $scope.openNewGroupDialog = function() {
         new Dialog('#dialog', 'NewGroupCtrl', 'app/machines/new-group-dialog.tpl.html', {
             saveCallback: function(group) {
-            	$rootScope.$emit('groups.update', [group]);
+            	EventBus.$broadcast('groups.update', [group]);
             }
         });
     };
@@ -39,7 +39,7 @@ angular.module('dashboard.controllers').controller('MachineMenuCtrl',
     $scope.openNewMachineDialog = function() {
         new Dialog('#dialog', 'NewMachineCtrl', 'app/machines/new-machine-dialog.tpl.html', {
             saveCallback: function(machines, groups) {
-            	$rootScope.$emit('groups.update', groups);
+            	EventBus.$broadcast('groups.update', groups);
             }
         });
     };
