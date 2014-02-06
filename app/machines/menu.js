@@ -50,7 +50,11 @@ angular.module('dashboard.controllers').controller('MachineMenuCtrl',
                 console.log(err);
             },
             success: function(model, response, options) {
-                renderPipeline.push({});
+                if($rootScope.$stateParams.baseImageId === model.get('_id')) {
+                    $location.path('/machines/');
+                } else {
+                	renderPipeline.push({});
+                }
             }
         });
     };

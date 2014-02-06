@@ -1,6 +1,7 @@
 
-angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl', ['$rootScope', '$scope', '$location', 'BaseImages', 'DockerUtil', 'Dialog',
-                                                                          function($rootScope, $scope, $location, BaseImages, DockerUtil, Dialog) {
+angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl',
+	['$rootScope', '$scope', '$location', 'BaseImages', 'Dialog', 'Registry',
+	function($rootScope, $scope, $location, BaseImages, Dialog, Registry) {
     
     $scope.data = {};
     $scope.data.baseImages = [];
@@ -40,10 +41,16 @@ angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl', ['$root
         }
     };
     
-    $scope.url = function(name) {
-        return DockerUtil.indexUrl(name);
-    };
-    
     $scope.refresh();
+    
+    new Registry({
+    	username: 'user',
+    	password: 'password',
+    	namespace: 'user'
+    }).ping({
+    	success: function(data) {
+    		console.log(data);
+    	}
+    });
     
 }]);

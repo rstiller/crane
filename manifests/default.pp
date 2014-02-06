@@ -76,7 +76,7 @@ file { '/var/crane/registry/config.yml':
     group  => root,
 } ->
 
-exec { 'docker pull -t="0.6.0" stackbrew/registry':
+exec { 'docker pull stackbrew/registry':
     user    => root,
     timeout => 0,
     require => Service["docker-daemon"],
