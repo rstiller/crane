@@ -12,16 +12,17 @@
         "src": "lib"
     },
     "dependencies": {
-        "cron": "*",
-        "jquery": "*",
-        "backbone": "*",
-        "underscore": "*",
-        "js-yaml": "*",
-        "winston": "*",
-        "async": "*",
+        "cron": "~1.0",
+        "jquery": "~1.8",
+        "backbone": "~1.1",
+        "underscore": "~1.5",
+        "js-yaml": "~2.1",
+        "winston": "~0.7",
+        "async": "~0.2",
         "pouchdb": "1.1.0",
-        "http-proxy": "*",
-        "express": "*"
+        "http-proxy": "~0.10",
+        "express": "~3.4",
+        "request": "~2"
     },
     "devDependencies": {
         "lodash": "*",

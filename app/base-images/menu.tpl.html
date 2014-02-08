@@ -1,76 +1,69 @@
 
 <div class="base-images-add-container">
-    
+
     <form class="pure-form base-images-add">
-        
+
         <fieldset>
-            
+
             <legend class="legend-and-button">
-                <span><i class="icon-plus-sign"></i> New Base-Image</span>
+                <span><i class="fa fa-plus"></i> New Base Image</span>
             </legend>
-            
+
             <div class="pure-g">
-                <div class="pure-u-3-5">
-                    <input class="pure-input-1" type="text" placeholder="Repository" ng-model="data.pullBaseImage.name"/>
+                <div class="pure-u-2-3">
+                    <input class="pure-input-1" type="text" placeholder="repository:tag" ng-model="data.newProject.url"/>
                 </div>
-                <div class="pure-u-1-8 right-float base-image-button">
-                    <button type="submit" class="pure-input-1 pure-button pure-button-success pure-button-small" ng-click="pullImage()">
-                        <i class="icon-arrow-down"></i>
+                <div class="pure-u-1-8">
+                    <button type="submit" class="pure-input-1 pure-button pure-button-success pure-button-small base-image-pull" ng-click="openDialog()" title="Pull Image">
+                        <i class="fa fa-cloud-download"></i>
                     </button>
                 </div>
-                <div class="pure-u-1-8 right-float base-image-button">
-                    <button type="button" class="pure-input-1 pure-button pure-button-success pure-button-small" ng-click="openDialog()">
-                        <i class="icon-plus-sign"></i>
+                <div class="pure-u-1-8">
+                    <button type="submit" class="pure-input-1 pure-button pure-button-success pure-button-small base-image-add" ng-click="openDialog()" title="Add new Image">
+                        <i class="fa fa-plus"></i>
                     </button>
                 </div>
             </div>
-            
+
         </fieldset>
-        
+
     </form>
-    
+
 </div>
 
-<form class="pure-form base-image-name-filter" ng-show="data.baseImages.elements.length > 1">
+<div class="load-indicator" ng-show="!data.ready">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+</div>
+
+<form class="pure-form search-filter" ng-show="data.images.length > 1 && data.ready">
     <fieldset>
-        
+
         <legend>
-            <span><i class="icon-search"></i> Imagesearch</span>
+            <span><i class="fa fa-search"></i> Base-Imagesearch</span>
         </legend>
-        
+
         <div class="pure-u-1">
-            <input type="text" class="pure-input-rounded pure-input-1" ng-model="baseImageNameQuery" placeholder="Filter"/>
+            <input type="text" class="pure-input-rounded pure-input-1" ng-model="imageNameQuery" placeholder="Filter"/>
         </div>
-        
+
     </fieldset>
 </form>
 
-<ul class="menu">
+<ul class="menu" ng-show="data.ready">
 
-    <li ng-repeat="baseImage in data.baseImages.elements | filter:baseImageNameQuery" class="menu-item" ng-class="{selected: $stateParams.baseImageId == baseImage.id}">
-        <div class="menu-item-container base-image-menu-item" ng-show="baseImage.type == 'standard'">
+    <li ng-repeat="image in data.images | filter:imageNameQuery" class="menu-item" ng-class="{selected: $stateParams.baseImageId == image.attributes._id}">
+        <div class="menu-item-container base-image-menu-item">
             <div class="base-image-menu-item-header">
-                <a ui-sref="baseImages.detail({ baseImageId: baseImage.id })">
-                    <span title="{{ baseImage.name }}">{{ baseImage.name }}</span>
+                <a ui-sref="machines.group({ groupId: image.attributes._id })">
+                    <span title="{{ image.attributes.name }}">{{ image.attributes.name }}</span>
                 </a>
-                <a class="float-right base-image-menu-item-header-action" href="" ng-click="remove(baseImage.id)" title="Remove {{ baseImage.name }}">
-                    <i class="icon-remove"></i>
+                <a class="float-right base-image-menu-item-header-action" ng-click="removeImage(image)" title="Remove {{ image.attributes.name }}">
+                    <i class="fa fa-trash-o"></i>
                 </a>
             </div>
-            <a href="{{ url(baseImage.name) }}" title="href="{{ url(baseImage.name) }}"" target="_blank" ng-show="baseImage.type == 'standard'">
-                <small>{{ url(baseImage.name) }}</small>
-            </a>
-        </div>
-        <div class="menu-item-container base-image-menu-item" ng-show="baseImage.type == 'custom'">
-            <div class="base-image-menu-item-header">
-                <a ui-sref="baseImages.detail({ baseImageId: baseImage.id })">
-                    <span title="{{ baseImage.name }}">{{ baseImage.name }}</span>
-                </a>
-                <a class="float-right base-image-menu-item-header-action" href="" ng-click="remove(baseImage.id)" title="Remove {{ baseImage.name }}">
-                    <i class="icon-remove"></i>
-                </a>
-            </div>
+
+            <a ui-sref="machines.group({ groupId: image.attributes._id })">{{ image.attributes.images.length }} image(s)</a>
         </div>
     </li>
-    
+
 </ul>

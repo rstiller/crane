@@ -1,56 +1,34 @@
 
 angular.module('dashboard.controllers').controller('BaseImagesMenuCtrl',
-	['$rootScope', '$scope', '$location', 'BaseImages', 'Dialog', 'Registry',
-	function($rootScope, $scope, $location, BaseImages, Dialog, Registry) {
+	['$rootScope', '$scope', '$location', 'RenderPipeline', 'Dialog', 'DockerRegistry',
+	function($rootScope, $scope, $location, RenderPipeline, Dialog, DockerRegistry) {
     
-    $scope.data = {};
-    $scope.data.baseImages = [];
-    $scope.data.pullBaseImage = {
-        'name': ''
+    $scope.data = {
+    	ready: false
     };
-    
-    $scope.refresh = function() {
-        
-        BaseImages.query({}, function(baseImages) {
-            $scope.data.baseImages = baseImages;
+    var registry = new DockerRegistry();
+
+    var renderPipeline = new RenderPipeline(function(next) {
+        $scope.data.ready = false;
+
+        registry.getRepositories({
+            error: function(err) {
+                console.log(err);
+                next(err);
+            },
+            success: function(repositories) {
+            	repositories.sort(function(a, b) {
+            		return a.get('name') > b.get('name');
+            	});
+                $scope.data.images = repositories;
+                $scope.data.ready = true;
+                $scope.$apply();
+                
+                next();
+            }
         });
-        
-    };
-    
-    $scope.pullImage = function() {
-        BaseImages.pull({
-            'id': $scope.data.pullBaseImage.name
-        }, function() {
-            $scope.data.pullBaseImage.name = '';
-            $scope.refresh();
-        });
-    };
-    
-    $scope.openDialog = function() {
-        new Dialog('#dialog', 'BaseImagesFormCtrl', 'app/base-images/base-image-dialog.tpl.html', {
-        });
-    };
-    
-    $scope.remove = function(id) {
-        BaseImages.remove({ 'id': id }, function() {
-            $scope.refresh();
-        });
-        
-        if($rootScope.$stateParams.baseImageId == id) {
-            $location.path('/base-images/');
-        }
-    };
-    
-    $scope.refresh();
-    
-    new Registry({
-    	username: 'user',
-    	password: 'password',
-    	namespace: 'user'
-    }).ping({
-    	success: function(data) {
-    		console.log(data);
-    	}
     });
+    
+    renderPipeline.push({});
     
 }]);

@@ -5,6 +5,8 @@
     var Backbone = null;
     var $ = null;
     var host = '';
+    var DockerImage = null;
+    var DockerRepository = null;
 
     function Factory() {
     	
@@ -102,6 +104,52 @@
             	$.ajax(_.extend({}, options, {
             		url: host + '/v1/images/' + imageId + '/layer'
             	}));
+            },
+            getRepositories: function(options) {
+            	var slf = this;
+            	
+            	$.ajax(_.extend({}, options, {
+            		url: host + '/_docker/images/json',
+            		success: function(data, textStatus, xhr) {
+            			if(!!options && !!options.success) {
+            				var repositories = [];
+            				var tmpRepositories = {};
+            				
+            				_.each(data, function(rawImage) {
+            					var tags = [];
+            					var repositoryName = '';
+            					var image = new DockerImage({
+            						created: rawImage.Created,
+            						id: rawImage.Id,
+            						parent: rawImage.ParentId,
+            						size: rawImage.Size,
+            						virtualSize: rawImage.VirtualSize
+            					});
+            					
+            					_.each(rawImage.RepoTags, function(rawTag) {
+            						var delimiterIndex = rawTag.indexOf(':');
+            						var tagName = rawTag.substr(delimiterIndex + 1);
+            						repositoryName = rawTag.substr(0, delimiterIndex);
+            						tags.push(tagName);
+            					});
+            					
+            					image.set('tags', tags);
+            					
+            					tmpRepositories[repositoryName] = tmpRepositories[repositoryName] || [];
+            					tmpRepositories[repositoryName].push(image);
+            				});
+            				
+            				_.each(tmpRepositories, function(repo, name) {
+            					repositories.push(new DockerRepository({
+            						name: name,
+            						images: tmpRepositories[name]
+            					}));
+            				});
+            				
+            				options.success(repositories, textStatus, xhr);
+            			}
+            		}
+            	}));
             }
         }, {
         });
@@ -112,14 +160,18 @@
         _ = require('underscore');
         $ = require('jquery');
         Backbone = require('backbone');
+        DockerImage = require('./docker-repository');
+        DockerRepository = require('./docker-image');
         host = '127.0.0.1:5000';
 
-        module.exports.Registry = Factory();
+        module.exports.DockerRegistry = Factory();
     } else {
-        angular.module('shared.entities').factory('Registry', ['_', 'jquery', 'backbone', function(a, b, c) {
+        angular.module('shared.entities').factory('DockerRegistry', ['_', 'jquery', 'backbone', 'DockerImage', 'DockerRepository', function(a, b, c, d, e) {
             _ = a;
             $ = b;
             Backbone = c;
+            DockerImage = d;
+            DockerRepository = e;
 
             return Factory();
         }]);
